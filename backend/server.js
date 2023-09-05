@@ -3,8 +3,6 @@ const MongoDB = require("./app/utils/mongodb.util.js");
 const config = require("./app/config");
 const bodyParser = require("body-parser");
 
-const passportConfig = require("./app/lib/passportConfig");
-
 const fs = require("fs");
 
 async function startServer() {

@@ -23,11 +23,9 @@ let schema = new mongoose.Schema(
   { collation: { locale: "en" } }
 );
 
-// Password hashing
 schema.pre("save", function (next) {
   let user = this;
 
-  // if the data is not modified
   if (!user.isModified("password")) {
     return next();
   }
@@ -41,7 +39,6 @@ schema.pre("save", function (next) {
   });
 });
 
-// Password verification upon login
 schema.methods.login = function (password) {
   let user = this;
 
