@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100" height="100" viewBox="0 0 100 100">
+  <defs>
+    <style>
+      .cls-1, .cls-2 {
+        fill: #efefef;
+      }
+
+      .cls-1 {
+        stroke: #efefef;
+        stroke-width: 7px;
+        fill-rule: evenodd;
+      }
+    </style>
+  </defs>
+  <image x="5" y="22" width="43" height="73" xlink:href="data:img/png;base64,iVBORw0KGgoAAAANSUhEUgAAACsAAABJCAYAAACkYd+RAAADMElEQVRoge2bTYhNYRjHf3PHjBEKi8msCJmRj0IymURWLFCzsyBEVsrKwnasZIOSUJQmCzU7oSxIgxT5yjdZyEfiEsJkXD3judNxO+9zzu3Oec97J786ncX7nnt+9z3nnvN+/G9DsVhkBGgCJgEtum/TbSIwO/Lxi4xTVdat5OiYGjxnArOAebrNBVqBaSPx7WNorlZW6ncD64CFQAdQyEiuklJa2QnAVmAL0A6M8yQYpSFJVlptFXAAmCMHZCz0wyhrtGQnAz3ADr38afkOfAQ+AAO6/6nHPge+GZ9z1zqHS2I8cAJYn0JQWuMacAd4CrwCXutexD9X8UVN4mTHAqeBtQnHPgAOAzeAF9qCmRInuzdBVFpsD3BWL7c3Kl8KnXpJXfQDm7QlvRN9RjYDxwyBPmBNXqJUyG7QN1Ecz4DNwJd8NP8Sld1p1NuWtygRWXkrLXbUkfv0skcnJ2XZbqPOvhz9/qEs2+Uo/wScz8ErlrLsSkf5dX1lBoHIztDXaxxXQhFFZacb5fc8uiRS0K6fi8ehyU41yp94dElEZBsdlUoBeQ4hssscZY88uyRSMFrwTUCeQ1gjU1+j1tQEJ2Rh3QbBYT0NmkOUXeAou+XZJZGCTqTF8TJEWRdZz75UjSXbWk+yrsFjbliyv+tJNjj+y2bFqJGtq17Xe48eqbBkgxrZkiBbyxpZJoyaH9gvjx6pKOjkWxzWfEJusq61J2umJhdEdtBx4qYQZV2d7CBl64a668+6boM2zy6JiOxVR6WOgDyHsJ4GQY5u3xrlVsDGOyL70Dhpe2iy1szLfI8uiRR0ldsVBVkekOvwc/aSo7wzpNnEsmy/o1wm7VZ79DEpy/YZlXbn7DhMWVYW52466sgi9ArPXrFE+waHjHrHNdiYK1FZiUfdd8hIQPJk3sJRWVmq327UlQDFOV1Fz4XKLqLkC/YbIl0aQdkITPEtHBf2lcTcmRATc65ksoQlekPLIlox6ixSnu90c2GmPJMy3yHlZ08lDRhlHHYRWArsAm5ry2VFi7ENph3dfgUOAks05terPzCfg8pSLdF/32n6I7VMa0okWrYLXv6nAAN/ALy4mn35G5wLAAAAAElFTkSuQmCC"/>
+  <image id="Layer_3_copy" data-name="Layer 3 copy" x="50" y="5" width="43" height="90" xlink:href="data:img/png;base64,iVBORw0KGgoAAAANSUhEUgAAACsAAABaCAYAAAAhI6+kAAACi0lEQVRoge2bP1LCUBDGP/8WVvQ28QTExhY9gfEEYGmntYXjCaCyFU8gtDZKa2M8gdwAahudl9kwgWE3D5KXbGbeN8MkZIH82OzbDcPuzmw2ewJwA14xgLlgn2T209dO6VGq9i0+LMyxnwu2D4KeZPa3lg1sEaVfpEdb4/kxgOE24LuOYVdlrtIDgB8AzwCCTd5cNWxWPYLuA2jZvKFO2FS3AL4s1gZMNrgHcCC8piPYWjYnsZTJIncUzyxsSedagKfbNj3fKC4BXHPAZcJyMrARgK7lVTAevqDMUTlsViEtKCk3g9La6WoxqnqBxeS1q5yqGFCKW1LVns3KePk9J22dZItHnakr9bLk4SXv1p1nY1r9nHrZbKKhKIzoJodTel+hAhZUDDhdpse1wMbr8ippUVi0wBq9CLYkL2uCHQm25P5EE6z0U0hdGECIW3VhYPQt2IKmeBYaYaXS22qSZ8MmeVbdAhOlEZbLtZ0mwfowcCYP60oe1pHUlVujN+a4unJr9McZfMy6kkbYM86gEfaQM/gwcCUP60oe1pU8bEH9Ngn2kzP4MHAlD+tKHraguPvZWCMs1xE11wh7xBk0wu5xBr/AXMnDFhTbWtUk2IkPgwISGyi1wUodderKreRZdeVW8uxUG2xbsKmD5Tyb9H1pgg2EHJv8RaoJNhJsySyEJtiuYFMVBqEQr7G2MOgLtnG6owE2ymmrXjSr1w0b0iQIp6WxFt9GbaHIAnSw2oJSxyCQgXzNATWQj6sHXY9YYcuhirWjAWXCljWucsd1zhnYIoNAUj3fVLmDQAb2OGeGsQpN6dJLvYgqisKA5mhEUFS0wDgNacVbzzJWDVto4NI1bOWjrDqGhAH8A9cXhqIu7dB8AAAAAElFTkSuQmCC"/>
+  <path id="Line_1" data-name="Line 1" class="cls-1" d="M48,5V5Z"/>
+  <rect id="Rounded_Rectangle_1" data-name="Rounded Rectangle 1" class="cls-2" x="22" y="42" width="13" height="13" rx="3" ry="3"/>
+  <rect id="Rounded_Rectangle_1_copy" data-name="Rounded Rectangle 1 copy" class="cls-2" x="22" y="65" width="13" height="13" rx="3" ry="3"/>
+  <rect id="Rounded_Rectangle_1_copy_2" data-name="Rounded Rectangle 1 copy 2" class="cls-2" x="61" y="65" width="13" height="13" rx="3" ry="3"/>
+  <rect id="Rounded_Rectangle_1_copy_3" data-name="Rounded Rectangle 1 copy 3" class="cls-2" x="61" y="42" width="13" height="13" rx="3" ry="3"/>
+  <rect id="Rounded_Rectangle_1_copy_4" data-name="Rounded Rectangle 1 copy 4" class="cls-2" x="61" y="19" width="13" height="13" rx="3" ry="3"/>
+</svg>

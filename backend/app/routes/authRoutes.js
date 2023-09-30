@@ -28,7 +28,7 @@ router.post("/signup", (req, res) => {
               contactNumber: data.contactNumber,
               bio: data.bio,
             })
-          : new JobApplicant({
+          : new JobApplicants({
               userId: user._id,
               name: data.name,
               education: data.education,

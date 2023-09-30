@@ -162,7 +162,7 @@ router.get("/jobs", jwtAuth, (req, res) => {
   let arr = [
     {
       $lookup: {
-        from: "recruiterinfos",
+        from: "recruiters",
         localField: "userId",
         foreignField: "userId",
         as: "recruiter",
@@ -176,7 +176,7 @@ router.get("/jobs", jwtAuth, (req, res) => {
     arr = [
       {
         $lookup: {
-          from: "recruiterinfos",
+          from: "recruiters",
           localField: "userId",
           foreignField: "userId",
           as: "recruiter",
@@ -604,7 +604,7 @@ router.get("/applications", jwtAuth, (req, res) => {
   Application.aggregate([
     {
       $lookup: {
-        from: "jobapplicantinfos",
+        from: "jobapplicants",
         localField: "userId",
         foreignField: "userId",
         as: "jobApplicant",
@@ -622,7 +622,7 @@ router.get("/applications", jwtAuth, (req, res) => {
     { $unwind: "$job" },
     {
       $lookup: {
-        from: "recruiterinfos",
+        from: "recruiters",
         localField: "recruiterId",
         foreignField: "userId",
         as: "recruiter",
@@ -894,7 +894,7 @@ router.get("/applicants", jwtAuth, (req, res) => {
     Application.aggregate([
       {
         $lookup: {
-          from: "jobapplicantinfos",
+          from: "jobapplicants",
           localField: "userId",
           foreignField: "userId",
           as: "jobApplicant",

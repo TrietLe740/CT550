@@ -1,0 +1,7 @@
+body::-webkit-scrollbar {
+  display: none;
+}
+
+.logo {
+  width: 80px;
+}

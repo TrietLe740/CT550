@@ -50,9 +50,9 @@ let schema = new mongoose.Schema(
         msg: "Invalid rating",
       },
     },
-    resume: {
-      type: String,
-    },
+    // resume: {
+    //   type: String,
+    // },
     profile: {
       type: String,
     },
@@ -60,4 +60,4 @@ let schema = new mongoose.Schema(
   { collation: { locale: "en" } }
 );
 
-module.exports = mongoose.model("JobApplicantInfo", schema);
+module.exports = mongoose.model("JobApplicants", schema);

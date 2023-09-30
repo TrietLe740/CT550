@@ -3,6 +3,9 @@ const morgan = require("morgan");
 const cors = require("cors");
 const apiRouter = require("./app/routes/apiRoutes");
 const authRouter = require("./app/routes/authRoutes");
+const passportConfig = require("./app/lib/passportConfig");
+const uploadRouter = require("./app/routes/uploadRoutes");
+const downloadRouter = require("./app/routes/downloadRoutes");
 
 const app = express();
 
@@ -12,7 +15,9 @@ app.use(express.json());
 app.use(morgan("combined"));
 app.use("/api", apiRouter);
 app.use("/auth", authRouter);
-// app.use(passportConfig.initialize());
+app.use("/upload", uploadRouter);
+app.use("/download", downloadRouter);
+app.use(passportConfig.initialize());
 
 app.get("/", (req, res) => {
   res.json({ msg: "Welcome to my app." });
