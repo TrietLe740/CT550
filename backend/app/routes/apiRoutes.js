@@ -16,7 +16,7 @@ router.post("/jobs", jwtAuth, (req, res) => {
 
   if (user.type != "recruiter") {
     res.status(401).json({
-      message: "You don't have permissions to add jobs",
+      message: "Bạn không có quyền thêm công việc!",
     });
     return;
   }
@@ -38,7 +38,7 @@ router.post("/jobs", jwtAuth, (req, res) => {
   job
     .save()
     .then(() => {
-      res.json({ message: "Job added successfully to the database" });
+      res.json({ message: "Công việc đã được thêm thành công!" });
     })
     .catch((err) => {
       res.status(400).json(err);
@@ -47,6 +47,9 @@ router.post("/jobs", jwtAuth, (req, res) => {
 
 router.get("/jobs", jwtAuth, (req, res) => {
   let user = req.user;
+  console.log(req.user);
+  let major = req.user.major;
+  console.log(req.user.major);
 
   let findParams = {};
   let sortParams = {};
@@ -62,7 +65,8 @@ router.get("/jobs", jwtAuth, (req, res) => {
     findParams = {
       ...findParams,
       title: {
-        $regex: new RegExp(req.query.q, "i"),
+        $regex: new RegExp(req.query.q),
+        $options: "i",
       },
     };
   }
@@ -156,9 +160,6 @@ router.get("/jobs", jwtAuth, (req, res) => {
     }
   }
 
-  console.log(findParams);
-  console.log(sortParams);
-
   let arr = [
     {
       $lookup: {
@@ -190,8 +191,6 @@ router.get("/jobs", jwtAuth, (req, res) => {
     ];
   }
 
-  console.log(arr);
-
   Job.aggregate(arr)
     .then((posts) => {
       if (posts == null) {
@@ -200,7 +199,16 @@ router.get("/jobs", jwtAuth, (req, res) => {
         });
         return;
       }
-      res.json(posts);
+      const sortMajor = posts.sort((value) => {
+        console.log(value.majors, major);
+        console.log(value.majors.includes(major) ? -1 : 1);
+        return value.majors.includes(major) ? -1 : 1;
+      });
+
+      res.json(
+        // Sap xep nganh lien quan len dau
+        sortMajor
+      );
     })
     .catch((err) => {
       res.status(400).json(err);
@@ -212,7 +220,7 @@ router.get("/jobs/:id", jwtAuth, (req, res) => {
     .then((job) => {
       if (job == null) {
         res.status(400).json({
-          message: "Job does not exist",
+          message: "Công việc không tồn tại!",
         });
         return;
       }
@@ -227,7 +235,7 @@ router.put("/jobs/:id", jwtAuth, (req, res) => {
   const user = req.user;
   if (user.type != "recruiter") {
     res.status(401).json({
-      message: "You don't have permissions to change the job details",
+      message: "Bạn không có quyền thay đổi chi tiết công việc!",
     });
     return;
   }
@@ -238,7 +246,7 @@ router.put("/jobs/:id", jwtAuth, (req, res) => {
     .then((job) => {
       if (job == null) {
         res.status(404).json({
-          message: "Job does not exist",
+          message: "Công việc không tồn tại!",
         });
         return;
       }
@@ -256,7 +264,7 @@ router.put("/jobs/:id", jwtAuth, (req, res) => {
         .save()
         .then(() => {
           res.json({
-            message: "Job details updated successfully",
+            message: "Công việc đã được cập nhật thành công!",
           });
         })
         .catch((err) => {
@@ -272,7 +280,7 @@ router.delete("/jobs/:id", jwtAuth, (req, res) => {
   const user = req.user;
   if (user.type != "recruiter") {
     res.status(401).json({
-      message: "You don't have permissions to delete the job",
+      message: "Bạn không được quyền xóa công việc!",
     });
     return;
   }
@@ -283,12 +291,12 @@ router.delete("/jobs/:id", jwtAuth, (req, res) => {
     .then((job) => {
       if (job === null) {
         res.status(401).json({
-          message: "You don't have permissions to delete the job",
+          message: "Bạn không có quyền xóa công việc!",
         });
         return;
       }
       res.json({
-        message: "Job deleted successfully",
+        message: "Công việc đã được xóa thành công!",
       });
     })
     .catch((err) => {
@@ -303,7 +311,7 @@ router.get("/user", jwtAuth, (req, res) => {
       .then((recruiter) => {
         if (recruiter == null) {
           res.status(404).json({
-            message: "User does not exist",
+            message: "Người dùng không tồn tại!",
           });
           return;
         }
@@ -317,7 +325,7 @@ router.get("/user", jwtAuth, (req, res) => {
       .then((jobApplicant) => {
         if (jobApplicant == null) {
           res.status(404).json({
-            message: "User does not exist",
+            message: "Người dùng không tồn tại!",
           });
           return;
         }
@@ -334,7 +342,7 @@ router.get("/user/:id", jwtAuth, (req, res) => {
     .then((userData) => {
       if (userData === null) {
         res.status(404).json({
-          message: "User does not exist",
+          message: "Người dùng không tồn tại!",
         });
         return;
       }
@@ -344,7 +352,7 @@ router.get("/user/:id", jwtAuth, (req, res) => {
           .then((recruiter) => {
             if (recruiter === null) {
               res.status(404).json({
-                message: "User does not exist",
+                message: "Người dùng không tồn tại!",
               });
               return;
             }
@@ -358,7 +366,7 @@ router.get("/user/:id", jwtAuth, (req, res) => {
           .then((jobApplicant) => {
             if (jobApplicant === null) {
               res.status(404).json({
-                message: "User does not exist",
+                message: "Người dùng không tồn tại!",
               });
               return;
             }
@@ -382,7 +390,7 @@ router.put("/user", jwtAuth, (req, res) => {
       .then((recruiter) => {
         if (recruiter == null) {
           res.status(404).json({
-            message: "User does not exist",
+            message: "Người dùng không tồn tại!",
           });
           return;
         }
@@ -399,7 +407,7 @@ router.put("/user", jwtAuth, (req, res) => {
           .save()
           .then(() => {
             res.json({
-              message: "User information updated successfully",
+              message: "Thông tin người dùng được cập nhật thành công!",
             });
           })
           .catch((err) => {
@@ -414,7 +422,7 @@ router.put("/user", jwtAuth, (req, res) => {
       .then((jobApplicant) => {
         if (jobApplicant == null) {
           res.status(404).json({
-            message: "User does not exist",
+            message: "Người dùng không tồn tại!",
           });
           return;
         }
@@ -438,7 +446,7 @@ router.put("/user", jwtAuth, (req, res) => {
           .save()
           .then(() => {
             res.json({
-              message: "User information updated successfully",
+              message: "Thông tin người dùng được cập nhật thành công!",
             });
           })
           .catch((err) => {
@@ -455,7 +463,7 @@ router.post("/jobs/:id/applications", jwtAuth, (req, res) => {
   const user = req.user;
   if (user.type != "applicant") {
     res.status(401).json({
-      message: "You don't have permissions to apply for a job",
+      message: "Bạn không có quyền ứng tuyển công việc này!",
     });
     return;
   }
@@ -473,7 +481,7 @@ router.post("/jobs/:id/applications", jwtAuth, (req, res) => {
       console.log(appliedApplication);
       if (appliedApplication !== null) {
         res.status(400).json({
-          message: "You have already applied for this job",
+          message: "Bạn đã nộp đơn cho công việc này!",
         });
         return;
       }
@@ -482,7 +490,7 @@ router.post("/jobs/:id/applications", jwtAuth, (req, res) => {
         .then((job) => {
           if (job === null) {
             res.status(404).json({
-              message: "Job does not exist",
+              message: "Công việc không tồn tại!",
             });
             return;
           }
@@ -518,7 +526,7 @@ router.post("/jobs/:id/applications", jwtAuth, (req, res) => {
                             .save()
                             .then(() => {
                               res.json({
-                                message: "Job application successful",
+                                message: "Đơn xin việc thành công!",
                               });
                             })
                             .catch((err) => {
@@ -527,14 +535,14 @@ router.post("/jobs/:id/applications", jwtAuth, (req, res) => {
                         } else {
                           res.status(400).json({
                             message:
-                              "You already have an accepted job. Hence you cannot apply.",
+                              "Bạn đã được xác nhận tham gia công việc. Do đó bạn không thể ứng tuyển công việc khác",
                           });
                         }
                       });
                     } else {
                       res.status(400).json({
                         message:
-                          "You have 10 active applications. Hence you cannot apply.",
+                          "Bạn đã nộp 10 đơn ứng tuyển. Do đó bạn sẽ không thể nộp đơn thêm!",
                       });
                     }
                   })
@@ -543,7 +551,7 @@ router.post("/jobs/:id/applications", jwtAuth, (req, res) => {
                   });
               } else {
                 res.status(400).json({
-                  message: "Application limit reached",
+                  message: "Số lượng ứng cử viên đạt giới hạn!",
                 });
               }
             })
@@ -560,12 +568,11 @@ router.post("/jobs/:id/applications", jwtAuth, (req, res) => {
     });
 });
 
-// recruiter gets applications for a particular job [pagination] [todo: test: done]
 router.get("/jobs/:id/applications", jwtAuth, (req, res) => {
   const user = req.user;
   if (user.type != "recruiter") {
     res.status(401).json({
-      message: "You don't have permissions to view job applications",
+      message: "Bạn không có quyền xem đơn ứng tuyển!",
     });
     return;
   }
@@ -662,7 +669,7 @@ router.put("/applications/:id", jwtAuth, (req, res) => {
         .then((application) => {
           if (application === null) {
             res.status(404).json({
-              message: "Application not found",
+              message: "Không tìm thấy ứng viên!",
             });
             return;
           }
@@ -673,7 +680,7 @@ router.put("/applications/:id", jwtAuth, (req, res) => {
           }).then((job) => {
             if (job === null) {
               res.status(404).json({
-                message: "Job does not exist",
+                message: "Công việc không tồn tại!",
               });
               return;
             }
@@ -728,7 +735,7 @@ router.put("/applications/:id", jwtAuth, (req, res) => {
                           )
                             .then(() => {
                               res.json({
-                                message: `Application ${status} successfully`,
+                                message: `Application ${status} thành công!`,
                               });
                             })
                             .catch((err) => {
@@ -736,7 +743,7 @@ router.put("/applications/:id", jwtAuth, (req, res) => {
                             });
                         } else {
                           res.json({
-                            message: `Application ${status} successfully`,
+                            message: `Application ${status} thành công!`,
                           });
                         }
                       })
@@ -749,7 +756,7 @@ router.put("/applications/:id", jwtAuth, (req, res) => {
                   });
               } else {
                 res.status(400).json({
-                  message: "All positions for this job are already filled",
+                  message: "Công việc này đã đủ ứng cử viên!",
                 });
               }
             });
@@ -776,17 +783,17 @@ router.put("/applications/:id", jwtAuth, (req, res) => {
         .then((application) => {
           if (application === null) {
             res.status(400).json({
-              message: "Application status cannot be updated",
+              message: "Không thể cập nhật trạng thái!",
             });
             return;
           }
           if (status === "finished") {
             res.json({
-              message: `Job ${status} successfully`,
+              message: `Công việc ${status} thành công!`,
             });
           } else {
             res.json({
-              message: `Application ${status} successfully`,
+              message: `Ứng tuyển ${status} thành công!`,
             });
           }
         })
@@ -812,7 +819,7 @@ router.put("/applications/:id", jwtAuth, (req, res) => {
         .then((tmp) => {
           console.log(tmp);
           res.json({
-            message: `Application ${status} successfully`,
+            message: `Ứng tuyển ${status} thành công!`,
           });
         })
         .catch((err) => {
@@ -820,14 +827,12 @@ router.put("/applications/:id", jwtAuth, (req, res) => {
         });
     } else {
       res.status(401).json({
-        message: "You don't have permissions to update job status",
+        message: "Bạn không có quyền cập nhật trạng thái công việc!",
       });
     }
   }
 });
 
-// get a list of final applicants for current job : recruiter
-// get a list of final applicants for all his jobs : recuiter
 router.get("/applicants", jwtAuth, (req, res) => {
   const user = req.user;
   if (user.type === "recruiter") {
@@ -916,7 +921,7 @@ router.get("/applicants", jwtAuth, (req, res) => {
       .then((applications) => {
         if (applications.length === 0) {
           res.status(404).json({
-            message: "No applicants found",
+            message: "Không tìm thấy ứng viên nào!",
           });
           return;
         }
@@ -927,7 +932,7 @@ router.get("/applicants", jwtAuth, (req, res) => {
       });
   } else {
     res.status(400).json({
-      message: "You are not allowed to access applicants list",
+      message: "Bạn không được phép truy cập danh sách ứng viên!",
     });
   }
 });

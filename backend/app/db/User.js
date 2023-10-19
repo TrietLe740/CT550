@@ -14,13 +14,21 @@ let schema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    tmpPassword: {
+      type: String,
+      required: true,
+    },
     type: {
       type: String,
       enum: ["recruiter", "applicant"],
       required: true,
     },
+    major: {
+      type: String,
+      required: false,
+    },
   },
-  { collation: { locale: "en" } }
+  { collation: { locale: "vi" } }
 );
 
 schema.pre("save", function (next) {

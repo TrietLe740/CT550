@@ -10,6 +10,14 @@ let schema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    companyName: {
+      type: String,
+      required: true,
+    },
+    role: {
+      type: String,
+      required: true,
+    },
     contactNumber: {
       type: String,
       validate: {

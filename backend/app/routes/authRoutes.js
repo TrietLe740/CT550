@@ -25,6 +25,8 @@ router.post("/signup", (req, res) => {
           ? new Recruiter({
               userId: user._id,
               name: data.name,
+              companyName: data.companyName,
+              role: data.role,
               contactNumber: data.contactNumber,
               bio: data.bio,
             })
@@ -34,7 +36,7 @@ router.post("/signup", (req, res) => {
               education: data.education,
               skills: data.skills,
               rating: data.rating,
-              resume: data.resume,
+              // resume: data.resume,
               profile: data.profile,
             });
 

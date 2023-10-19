@@ -87,7 +87,6 @@ let schema = new mongoose.Schema(
         },
       ],
     },
-    skillsets: [String],
     salary: {
       type: Number,
       validate: [
@@ -103,8 +102,9 @@ let schema = new mongoose.Schema(
         },
       ],
     },
+    majors: [String],
   },
-  { collation: { locale: "en" } }
+  { collation: { locale: "vi" } }
 );
 
 module.exports = mongoose.model("jobs", schema);
