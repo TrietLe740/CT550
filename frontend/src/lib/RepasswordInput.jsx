@@ -10,7 +10,7 @@ import {
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
-const PasswordInput = (props) => {
+const RepasswordInput = (props) => {
   const [showPassword, setShowPassword] = useState(false);
 
   const handleShowPassword = () => {
@@ -24,12 +24,11 @@ const PasswordInput = (props) => {
   return (
     <>
       <FormControl variant="outlined" error={props.error ? props.error : null}>
-        <InputLabel htmlFor="outlined-adornment-password">
+        <InputLabel htmlFor="outlined-adornment-repassword">
           {props.label}
         </InputLabel>
         <OutlinedInput
-          sx={{ width: "300px" }}
-          id="outlined-adornment-password"
+          id="outlined-adornment-repassword"
           type={showPassword ? "text" : "password"}
           endAdornment={
             <InputAdornment position="end">
@@ -57,4 +56,4 @@ const PasswordInput = (props) => {
   );
 };
 
-export default PasswordInput;
+export default RepasswordInput;

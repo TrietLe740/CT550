@@ -1,27 +1,12 @@
 import { useState, useContext } from "react";
-import {
-  Grid,
-  Button,
-  TextField,
-  makeStyles,
-  LinearProgress,
-} from "@material-ui/core";
-import { CloudUpload } from "@material-ui/icons";
+import { Grid, Button, TextField, LinearProgress } from "@mui/material";
+// import makeStyles from '@mui/styles/makeStyles';
+import { CloudUpload } from "@mui/icons-material";
 import Axios from "axios";
 
 import { SetPopupContext } from "../App";
 
-const useStyles = makeStyles((theme) => ({
-  button: {
-    width: "400px",
-    color: "white",
-    backgroundColor: "#48884A",
-  },
-}));
-
 const FileUploadInput = (props) => {
-  const classes = useStyles();
-
   const setPopup = useContext(SetPopupContext);
 
   const { uploadTo, identifier, handleInput } = props;
@@ -70,7 +55,6 @@ const FileUploadInput = (props) => {
         <Grid item xs={3}>
           <Button
             variant="contained"
-            className={classes.button}
             component="label"
             style={{ width: "100%", height: "100%" }}
           >
@@ -100,7 +84,6 @@ const FileUploadInput = (props) => {
         <Grid item xs={3}>
           <Button
             variant="contained"
-            color="secondary"
             style={{ width: "100%", height: "100%" }}
             onClick={() => handleUpload()}
             disabled={file ? false : true}

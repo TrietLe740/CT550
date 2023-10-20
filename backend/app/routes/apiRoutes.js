@@ -200,9 +200,7 @@ router.get("/jobs", jwtAuth, (req, res) => {
         return;
       }
       const sortMajor = posts.sort((value) => {
-        console.log(value.majors, major);
-        console.log(value.majors.includes(major) ? -1 : 1);
-        return value.majors.includes(major) ? -1 : 1;
+        return value?.majors?.includes(major) ? -1 : 1;
       });
 
       res.json(

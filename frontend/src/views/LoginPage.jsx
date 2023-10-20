@@ -1,15 +1,7 @@
 import { useContext, useState } from "react";
 import { useHistory } from "react-router-dom";
 
-import {
-  Grid,
-  // TextField,
-  Button,
-  Typography,
-  makeStyles,
-  Paper,
-} from "@material-ui/core";
-import ArrowBackIosNewRoundedIcon from "@mui/icons-material/ArrowBackIosNewRounded";
+import { Grid, Button, Typography, Paper } from "@mui/material";
 
 import axios from "axios";
 import { Redirect } from "react-router-dom";
@@ -23,25 +15,7 @@ import isAuth from "../lib/isAuth";
 
 import LOGO from "../assets/logo_Hitern.png";
 
-const useStyles = makeStyles((theme) => ({
-  body: {
-    padding: "60px 60px",
-  },
-  inputBox: {
-    width: "300px",
-  },
-  submitButton: {
-    width: "300px",
-    color: "white",
-    backgroundColor: "#48884A",
-  },
-  heading: {
-    fontWeight: "bold",
-  },
-}));
-
 const Login = (props) => {
-  const classes = useStyles();
   const setPopup = useContext(SetPopupContext);
 
   const [loggedin, setLoggedin] = useState(isAuth());
@@ -99,7 +73,7 @@ const Login = (props) => {
           setPopup({
             open: true,
             severity: "success",
-            message: "Logged in successfully",
+            message: "Đăng nhập thành công",
           });
           console.log(response);
         })
@@ -115,7 +89,7 @@ const Login = (props) => {
       setPopup({
         open: true,
         severity: "error",
-        message: "Incorrect Input",
+        message: "Xin vui lòng cung cấp thông tin đúng yêu cầu",
       });
     }
   };
@@ -123,22 +97,17 @@ const Login = (props) => {
   return loggedin ? (
     <Redirect to="/" />
   ) : (
-    <Paper elevation={3} className={classes.body}>
+    <Paper
+      sx={{
+        padding: "60px",
+      }}
+    >
       <Grid container direction="column" spacing={4} alignItems="center">
-        <Grid item>
-          <Button
-            color="black"
-            onClick={() => handleClick("/")}
-            startIcon={<ArrowBackIosNewRoundedIcon />}
-          >
-            Trang chủ
-          </Button>
-        </Grid>
         <Grid item>
           <img src={LOGO} alt="" width={300} />
         </Grid>
         <Grid item>
-          <Typography className={classes.heading} variant="h6" component="h6">
+          <Typography variant="h6" component="h6">
             Đăng nhập tài khoản của bạn
           </Typography>
         </Grid>
@@ -149,7 +118,6 @@ const Login = (props) => {
             onChange={(event) => handleInput("email", event.target.value)}
             inputErrorHandler={inputErrorHandler}
             handleInputError={handleInputError}
-            className={classes.inputBox}
           />
         </Grid>
         <Grid item>
@@ -157,15 +125,10 @@ const Login = (props) => {
             label="Mật khẩu"
             value={loginDetails.password}
             onChange={(event) => handleInput("password", event.target.value)}
-            className={classes.inputBox}
           />
         </Grid>
         <Grid item>
-          <Button
-            variant="contained"
-            onClick={() => handleLogin()}
-            className={classes.submitButton}
-          >
+          <Button variant="contained" onClick={() => handleLogin()}>
             Đăng nhập
           </Button>
         </Grid>

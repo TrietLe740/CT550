@@ -1,4 +1,4 @@
-import { TextField } from "@material-ui/core";
+import TextField from "@mui/material/TextField";
 
 const EmailInput = (props) => {
   const {
@@ -13,6 +13,7 @@ const EmailInput = (props) => {
 
   return (
     <TextField
+      sx={{ width: "300px" }}
       label={label}
       variant="outlined"
       value={value}
@@ -26,7 +27,8 @@ const EmailInput = (props) => {
             handleInputError("email", false, "");
           }
         } else {
-          const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+          const re =
+            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
           if (re.test(String(event.target.value).toLowerCase())) {
             handleInputError("email", false, "");
           } else {

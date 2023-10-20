@@ -4,55 +4,32 @@ import {
   Chip,
   Grid,
   IconButton,
-  InputAdornment,
-  makeStyles,
   Paper,
   TextField,
   Typography,
   Modal,
   Slider,
   FormControlLabel,
-  // FormGroup,
   MenuItem,
   Checkbox,
-} from "@material-ui/core";
-import Rating from "@material-ui/lab/Rating";
-// import Pagination from "@material-ui/lab/Pagination";
+  Pagination,
+  Rating,
+  Input,
+} from "@mui/material";
 import axios from "axios";
-import SearchIcon from "@material-ui/icons/Search";
-import FilterListIcon from "@material-ui/icons/FilterList";
-import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
-import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
+import FilterListIcon from "@mui/icons-material/FilterList";
+import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
+import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
+import SearchIcon from "@mui/icons-material/Search";
 
 import { SetPopupContext } from "../App";
 
 import apiList from "../lib/apiList";
 import { userType } from "../lib/isAuth";
-
-const useStyles = makeStyles((theme) => ({
-  body: {
-    height: "inherit",
-  },
-  button: {
-    width: "100%",
-    height: "100%",
-  },
-  jobTileOuter: {
-    padding: "30px",
-    margin: "20px 0",
-    boxSizing: "border-box",
-    width: "100%",
-  },
-  popupDialog: {
-    height: "100%",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-}));
+import { useHistory } from "react-router-dom";
 
 const JobTile = (props) => {
-  const classes = useStyles();
+  // const classes = useStyles();
   const { job } = props;
   const setPopup = useContext(SetPopupContext);
 
@@ -101,7 +78,10 @@ const JobTile = (props) => {
   const deadline = new Date(job.deadline).toLocaleDateString();
 
   return (
-    <Paper className={classes.jobTileOuter} elevation={3}>
+    <Paper
+      elevation={3}
+      sx={{ margin: "10px", padding: "20px", width: "500px" }}
+    >
       <Grid container>
         <Grid container item xs={9} spacing={1} direction="column">
           <Grid item>
@@ -110,14 +90,18 @@ const JobTile = (props) => {
           <Grid item>
             <Rating value={job.rating !== -1 ? job.rating : null} readOnly />
           </Grid>
-          <Grid item>Role : {job.jobType}</Grid>
-          <Grid item>Salary : &#8377; {job.salary} per month</Grid>
+          <Grid item>Loại: {job.jobType}</Grid>
           <Grid item>
-            Duration :{" "}
-            {job.duration !== 0 ? `${job.duration} month` : `Flexible`}
+            Trợ phí: {job.salary > 0 ? `${job.salary} VNĐ/Tháng` : `Không`}
           </Grid>
-          <Grid item>Posted By : {job.recruiter.name}</Grid>
-          <Grid item>Application Deadline : {deadline}</Grid>
+          <Grid item>
+            Số tháng thực tập:{" "}
+            {job.duration > 0 ? `${job.duration} Tháng` : `Linh hoạt`}
+          </Grid>
+
+          <Grid item>Đăng bởi: {job.recruiter.name}</Grid>
+          <Grid item>Hạn chót: {deadline}</Grid>
+          <Grid item>Ngành nghề liên quan: {job?.majors?.join("; ")}</Grid>
 
           <Grid item>
             {job.skillsets.map((skill) => (
@@ -128,18 +112,20 @@ const JobTile = (props) => {
         <Grid item xs={3}>
           <Button
             variant="contained"
-            color="primary"
-            className={classes.button}
             onClick={() => {
               setOpen(true);
             }}
             disabled={userType() === "recruiter"}
           >
-            Apply
+            Ứng tuyển
           </Button>
         </Grid>
       </Grid>
-      <Modal open={open} onClose={handleClose} className={classes.popupDialog}>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        // className={classes.popupDialog}
+      >
         <Paper
           style={{
             padding: "20px",
@@ -170,7 +156,6 @@ const JobTile = (props) => {
           />
           <Button
             variant="contained"
-            color="primary"
             style={{ padding: "10px 50px" }}
             onClick={() => handleApply()}
           >
@@ -183,10 +168,14 @@ const JobTile = (props) => {
 };
 
 const FilterPopup = (props) => {
-  const classes = useStyles();
+  // const classes = useStyles();
   const { open, handleClose, searchOptions, setSearchOptions, getData } = props;
   return (
-    <Modal open={open} onClose={handleClose} className={classes.popupDialog}>
+    <Modal
+      open={open}
+      onClose={handleClose}
+      // className={classes.popupDialog}
+    >
       <Paper
         style={{
           padding: "50px",
@@ -203,7 +192,7 @@ const FilterPopup = (props) => {
               container
               item
               xs={9}
-              justify="space-around"
+              justifyContent="space-around"
               // alignItems="center"
             >
               <Grid item>
@@ -330,7 +319,7 @@ const FilterPopup = (props) => {
                 item
                 container
                 xs={4}
-                justify="space-around"
+                justifyContent="space-around"
                 alignItems="center"
                 style={{ border: "1px solid #D1D1D1", borderRadius: "5px" }}
               >
@@ -373,6 +362,7 @@ const FilterPopup = (props) => {
                         },
                       });
                     }}
+                    size="large"
                   >
                     {searchOptions.sort.salary.desc ? (
                       <ArrowDownwardIcon />
@@ -386,7 +376,7 @@ const FilterPopup = (props) => {
                 item
                 container
                 xs={4}
-                justify="space-around"
+                justifyContent="space-around"
                 alignItems="center"
                 style={{ border: "1px solid #D1D1D1", borderRadius: "5px" }}
               >
@@ -429,6 +419,7 @@ const FilterPopup = (props) => {
                         },
                       });
                     }}
+                    size="large"
                   >
                     {searchOptions.sort.duration.desc ? (
                       <ArrowDownwardIcon />
@@ -442,7 +433,7 @@ const FilterPopup = (props) => {
                 item
                 container
                 xs={4}
-                justify="space-around"
+                justifyContent="space-around"
                 alignItems="center"
                 style={{ border: "1px solid #D1D1D1", borderRadius: "5px" }}
               >
@@ -485,6 +476,7 @@ const FilterPopup = (props) => {
                         },
                       });
                     }}
+                    size="large"
                   >
                     {searchOptions.sort.rating.desc ? (
                       <ArrowDownwardIcon />
@@ -500,7 +492,6 @@ const FilterPopup = (props) => {
           <Grid item>
             <Button
               variant="contained"
-              color="primary"
               style={{ padding: "10px 50px" }}
               onClick={() => getData()}
             >
@@ -514,6 +505,8 @@ const FilterPopup = (props) => {
 };
 
 const Home = (props) => {
+  let history = useHistory();
+  const [searchInput, setSearchInput] = useState("");
   const [jobs, setJobs] = useState([]);
   const [filterOpen, setFilterOpen] = useState(false);
   const [searchOptions, setSearchOptions] = useState({
@@ -615,7 +608,7 @@ const Home = (props) => {
         );
       })
       .catch((err) => {
-        console.log(err.response.data);
+        console.log(err);
         setPopup({
           open: true,
           severity: "error",
@@ -628,77 +621,159 @@ const Home = (props) => {
     <>
       <Grid
         container
-        item
         direction="column"
         alignItems="center"
-        style={{ padding: "30px", minHeight: "93vh" }}
+        style={{ padding: "80px", minHeight: "93vh" }}
       >
         <Grid
           item
           container
           direction="column"
-          justify="center"
+          justifyContent="center"
           alignItems="center"
+          sx={{
+            padding: "100px",
+            backgroundColor: "primary.main",
+            borderRadius: "20px",
+          }}
         >
-          <Grid item xs>
-            <Typography variant="h2">Jobs</Typography>
-          </Grid>
-          <Grid item xs>
-            <TextField
-              label="Search Jobs"
-              value={searchOptions.query}
-              onChange={(event) =>
-                setSearchOptions({
-                  ...searchOptions,
-                  query: event.target.value,
-                })
-              }
-              onKeyPress={(ev) => {
-                if (ev.key === "Enter") {
-                  getData();
-                }
-              }}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment>
-                    <IconButton onClick={() => getData()}>
-                      <SearchIcon />
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-              style={{ width: "500px" }}
-              variant="outlined"
-            />
-          </Grid>
           <Grid item>
-            <IconButton onClick={() => setFilterOpen(true)}>
+            <Typography
+              variant="h2"
+              align="center"
+              sx={{ fontWeight: "900", color: "common.white" }}
+            >
+              TÌM CÔNG VIỆC THỰC TẬP MỚI NHẤT
+            </Typography>
+            <br />
+            <Typography
+              variant="h5"
+              align="center"
+              sx={{ fontWeight: "500", color: "common.white" }}
+            >
+              Lorem ipsum dolor sit amet consectetur adipisicing elit.
+            </Typography>
+            {/* Thanh tim kiem */}
+            <Grid
+              item
+              fullWidth
+              sx={{
+                margin: "20px auto 0 auto",
+                border: "2px solid #36593C",
+                borderRadius: "20px",
+                padding: "0 0 0 20px",
+                backgroundColor: "common.white",
+              }}
+            >
+              <IconButton
+                onClick={() =>
+                  history.push({
+                    pathname: "/tim-kiem",
+                    search: `?search=${searchInput}`,
+                  })
+                }
+              >
+                <SearchIcon
+                  sx={{
+                    color: "common.black",
+                  }}
+                />
+              </IconButton>
+              <Input
+                sx={{ width: "80%", height: "50px" }}
+                placeholder="Tìm kiếm công việc, công ty,..."
+                value={searchInput}
+                onChange={(event) => setSearchInput(event.target.value)}
+                onKeyPress={(ev) => {
+                  if (ev.key === "Enter") {
+                    history.push({
+                      pathname: "/tim-kiem",
+                      search: `?search=${searchInput}`,
+                    });
+                  }
+                }}
+              />
+              <Button
+                sx={{ marginLeft: "30px" }}
+                variant="contained"
+                onClick={() =>
+                  history.push({
+                    pathname: "/tim-kiem",
+                    search: `?search=${searchInput}`,
+                  })
+                }
+              >
+                Tìm kiếm
+              </Button>
+            </Grid>
+          </Grid>
+
+          {/* <Grid item>
+            <IconButton
+              sx={{ color: "common.white" }}
+              onClick={() => setFilterOpen(true)}
+              size="large"
+            >
               <FilterListIcon />
             </IconButton>
-          </Grid>
+          </Grid> */}
+        </Grid>
+
+        <Grid
+          container
+          sx={{
+            backgroundColor: "primary.main",
+            height: "200px",
+            marginTop: "50px",
+            marginBottom: "50px",
+            borderRadius: "20px",
+          }}
+        >
+          <Typography
+            align="center"
+            variant="p"
+            sx={{
+              padding: "50px",
+              color: "common.white",
+            }}
+          >
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa
+            ratione eius recusandae ducimus ipsam voluptatibus pariatur facilis
+            repudiandae aut a, fuga necessitatibus. Placeat maiores temporibus,
+            qui quod nesciunt perspiciatis quae.
+          </Typography>
         </Grid>
 
         <Grid
           container
           item
-          xs
-          direction="column"
           alignItems="stretch"
-          justify="center"
+          justifyContent="center"
+          direction="column"
+          sx={{}}
         >
-          {jobs.length > 0 ? (
-            jobs.map((job) => {
-              return <JobTile job={job} />;
-            })
-          ) : (
-            <Typography variant="h5" style={{ textAlign: "center" }}>
-              No jobs found
-            </Typography>
-          )}
+          <Typography
+            variant="h4"
+            align="center"
+            sx={{ fontWeight: "500", marginBottom: "30px" }}
+          >
+            TIN THỰC TẬP TỐT NHẤT VIỆT NAM
+          </Typography>
+          <Grid container alignItems="stretch" justifyContent="center">
+            {jobs.length > 0 ? (
+              jobs.map((job) => {
+                return <JobTile job={job} />;
+              })
+            ) : (
+              <Typography variant="h5" style={{ textAlign: "center" }}>
+                Không tìm thấy việc làm phù hợp
+              </Typography>
+            )}
+          </Grid>
         </Grid>
-        {/* <Grid item>
-          <Pagination count={10} color="primary" />
-        </Grid> */}
+        <Grid item>
+          <Pagination count={jobs.length / 10 > 1 ? jobs.length / 10 : 1} />
+        </Grid>
       </Grid>
       <FilterPopup
         open={filterOpen}

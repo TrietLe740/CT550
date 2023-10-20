@@ -1,127 +1,163 @@
 import { createContext, useState } from "react";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 
-import { Grid, makeStyles } from "@material-ui/core";
-
-import Welcome, { ErrorPage } from "./component/Welcome.jsx";
+import Welcome, { ErrorPage } from "./views/WelcomePage.jsx";
 
 import Navbar from "./component/Navbar.jsx";
 
-import Login from "./component/Login.jsx";
+import LoginPage from "./views/LoginPage.jsx";
 import Logout from "./component/Logout.jsx";
-import Signup from "./component/Signup.jsx";
+import SignupPage from "./views/SignupPage.jsx";
 
-import Home from "./component/Home.jsx";
-import Applications from "./component/Applications.jsx";
-import Profile from "./component/Profile.jsx";
-import CreateJobs from "./component/recruiter/CreateJobs.jsx";
-import MyJobs from "./component/recruiter/MyJobs.jsx";
-import JobApplications from "./component/recruiter/JobApplications.jsx";
-import AcceptedApplicants from "./component/recruiter/AcceptedApplicants.jsx";
-import RecruiterProfile from "./component/recruiter/Profile.jsx";
+import HomePage from "./views/HomePage.jsx";
+import ApplicationsPage from "./views/ApplicationsPage.jsx";
+import ProfilePage from "./views/ProfilePage.jsx";
+import CreateJobs from "./views/recruiter/CreateJobs.jsx";
+import MyJobs from "./views/recruiter/MyJobs.jsx";
+import JobApplications from "./views/recruiter/JobApplications.jsx";
+import AcceptedApplicants from "./views/recruiter/AcceptedApplicants.jsx";
+import RecruiterProfile from "./views/recruiter/Profile.jsx";
+
+import SearchPage from "./views/SearchPage.jsx";
 
 import MessagePopup from "./lib/MessagePopup.jsx";
 // eslint-disable-next-line no-unused-vars
 import isAuth, { userType } from "./lib/isAuth.jsx";
-
-const useStyles = makeStyles((theme) => ({
-  body: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    minHeight: "98vh",
-    paddingTop: "64px",
-    boxSizing: "border-box",
-    width: "100%",
-  },
-  popupDialog: {
-    height: "100%",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    // padding: "30px",
-  },
-  btn: {
-    backgroundColor: "#48884A",
-    color: "white",
-  },
-}));
+import { CssBaseline, Grid, ThemeProvider, createTheme } from "@mui/material";
 
 export const SetPopupContext = createContext();
 
 function App() {
-  const classes = useStyles();
+  const theme = createTheme({
+    palette: {
+      mode: "light",
+      common: {
+        black: "#000",
+        white: "#fff",
+      },
+      primary: {
+        main: "#48884A",
+        light: "#E0EBB5",
+        dark: "#36593C",
+        contrastText: "#fff",
+      },
+    },
+    typoraphy: {
+      fontFamily: "Inter",
+      fontWeightLight: 300,
+      fontWeightRegular: 400,
+      fontWeightMedium: 700,
+      fontWeightBold: 900,
+      h1: {
+        fontWeight: 900,
+      },
+      h2: {
+        fontWeight: 700,
+      },
+      h3: {
+        fontWeight: 400,
+      },
+      h5: {
+        fontWeight: 300,
+      },
+      button: {
+        fontWeight: 700,
+        width: "300px",
+      },
+    },
+    components: {
+      TextField: {
+        variant: [
+          {
+            props: "outlined",
+            style: {
+              width: "300px",
+              marginLeft: "auto",
+              marginRight: "auto",
+              paddingBottom: 0,
+              marginTop: 0,
+            },
+          },
+        ],
+      },
+    },
+  });
   const [popup, setPopup] = useState({
     open: false,
     severity: "",
     message: "",
   });
   return (
-    <BrowserRouter>
-      <SetPopupContext.Provider value={setPopup}>
-        <Grid container direction="column">
-          <Grid item xs>
-            <Navbar />
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <BrowserRouter>
+        <SetPopupContext.Provider value={setPopup}>
+          <Grid container direction="column">
+            <Grid item xs>
+              <Navbar />
+            </Grid>
+            <Grid item>
+              <Switch>
+                <Route exact path="/">
+                  <Welcome />
+                </Route>
+                <Route exact path="/dang-nhap">
+                  <LoginPage />
+                </Route>
+                <Route exact path="/dang-ky">
+                  <SignupPage />
+                </Route>
+                <Route exact path="/dang-xuat">
+                  <Logout />
+                </Route>
+                <Route exact path="/viec-lam">
+                  <HomePage />
+                </Route>
+                <Route exact path="/ung-vien">
+                  <ApplicationsPage />
+                </Route>
+                <Route exact path="/tim-kiem">
+                  <SearchPage />
+                </Route>
+                <Route exact path="/ho-so">
+                  {userType() === "recruiter" ? (
+                    <RecruiterProfile />
+                  ) : (
+                    <ProfilePage />
+                  )}
+                </Route>
+                <Route exact path="/dang-tin">
+                  <CreateJobs />
+                </Route>
+                <Route exact path="/cong-viec">
+                  <MyJobs />
+                </Route>
+                <Route exact path="/cong-viec/ung-vien/:jobId">
+                  <JobApplications />
+                </Route>
+                <Route exact path="/ds-dang-thuc-tap">
+                  <AcceptedApplicants />
+                </Route>
+                <Route>
+                  <ErrorPage />
+                </Route>
+              </Switch>
+            </Grid>
           </Grid>
-          <Grid item className={classes.body}>
-            <Switch>
-              <Route exact path="/">
-                <Welcome />
-              </Route>
-              <Route exact path="/dang-nhap">
-                <Login />
-              </Route>
-              <Route exact path="/dang-ky">
-                <Signup />
-              </Route>
-              <Route exact path="/dang-xuat">
-                <Logout />
-              </Route>
-              <Route exact path="/viec-lam">
-                <Home />
-              </Route>
-              <Route exact path="/ung-vien">
-                <Applications />
-              </Route>
-              <Route exact path="/ho-so">
-                {userType() === "recruiter" ? (
-                  <RecruiterProfile />
-                ) : (
-                  <Profile />
-                )}
-              </Route>
-              <Route exact path="/dang-tin">
-                <CreateJobs />
-              </Route>
-              <Route exact path="/cong-viec">
-                <MyJobs />
-              </Route>
-              <Route exact path="/cong-viec/ung-vien/:jobId">
-                <JobApplications />
-              </Route>
-              <Route exact path="/ds-dang-thuc-tap">
-                <AcceptedApplicants />
-              </Route>
-              <Route>
-                <ErrorPage />
-              </Route>
-            </Switch>
-          </Grid>
-        </Grid>
-        <MessagePopup
-          open={popup.open}
-          setOpen={(status) =>
-            setPopup({
-              ...popup,
-              open: status,
-            })
-          }
-          severity={popup.severity}
-          message={popup.message}
-        />
-      </SetPopupContext.Provider>
-    </BrowserRouter>
+          <MessagePopup
+            open={popup.open}
+            setOpen={(status) =>
+              setPopup({
+                ...popup,
+                open: status,
+              })
+            }
+            severity={popup.severity}
+            message={popup.message}
+          />
+        </SetPopupContext.Provider>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }
 

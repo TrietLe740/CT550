@@ -1,12 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import {
-  Button,
-  Grid,
-  Typography,
-  Paper,
-  makeStyles,
-  TextField,
-} from "@material-ui/core";
+import { Button, Grid, Typography, Paper, TextField } from "@mui/material";
 import axios from "axios";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/material.css";
@@ -15,24 +8,7 @@ import { SetPopupContext } from "../../App";
 
 import apiList from "../../lib/apiList";
 
-const useStyles = makeStyles((theme) => ({
-  body: {
-    height: "inherit",
-  },
-  popupDialog: {
-    height: "100%",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    // padding: "30px",
-  },
-  btn: {
-    backgroundColor: "",
-  },
-}));
-
 const Profile = (props) => {
-  const classes = useStyles();
   const setPopup = useContext(SetPopupContext);
 
   const [profileDetails, setProfileDetails] = useState({
@@ -147,7 +123,7 @@ const Profile = (props) => {
                   label="Tên doanh nghiệp"
                   value={profileDetails.name}
                   onChange={(event) => handleInput("name", event.target.value)}
-                  className={classes.inputBox}
+                  // className={classes.inputBox}
                   variant="outlined"
                   fullWidth
                   style={{ width: "100%" }}
@@ -190,7 +166,6 @@ const Profile = (props) => {
             </Grid>
             <Button
               variant="contained"
-              color="primary"
               style={{ padding: "10px 50px", marginTop: "30px" }}
               onClick={() => handleUpdate()}
             >

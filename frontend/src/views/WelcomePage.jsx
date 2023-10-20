@@ -1,4 +1,4 @@
-import { Grid, Typography, Button } from "@material-ui/core";
+import { Grid, Typography, Button } from "@mui/material";
 import LOGO from "../assets/logo_Hitern.png";
 
 const Welcome = (props) => {
@@ -8,7 +8,7 @@ const Welcome = (props) => {
       item
       direction="column"
       alignItems="center"
-      justify="center"
+      justifyContent="center"
       style={{ padding: "30px", minHeight: "93vh" }}
     >
       <Grid item xs={12}>
@@ -26,7 +26,7 @@ const Welcome = (props) => {
       </Grid>
       <Grid item xs={8}>
         <br />
-        <Button color="black" href="/dang-nhap">
+        <Button variant="contained" href="/dang-nhap">
           Tham gia ngay!
         </Button>
       </Grid>
@@ -41,7 +41,7 @@ export const ErrorPage = (props) => {
       item
       direction="column"
       alignItems="center"
-      justify="center"
+      justifyContent="center"
       style={{ padding: "30px", minHeight: "93vh" }}
     >
       <Grid item>

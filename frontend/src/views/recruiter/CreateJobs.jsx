@@ -3,34 +3,17 @@ import {
   Button,
   Grid,
   Typography,
-  // Modal,
   Paper,
-  makeStyles,
   TextField,
   MenuItem,
-} from "@material-ui/core";
+} from "@mui/material";
 import axios from "axios";
-import ChipInput from "material-ui-chip-input";
 
 import { SetPopupContext } from "../../App";
 
 import apiList from "../../lib/apiList";
 
-const useStyles = makeStyles((theme) => ({
-  body: {
-    height: "inherit",
-  },
-  popupDialog: {
-    height: "100%",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    // padding: "30px",
-  },
-}));
-
 const CreateJobs = (props) => {
-  const classes = useStyles();
   const setPopup = useContext(SetPopupContext);
 
   const [jobDetails, setJobDetails] = useState({
@@ -102,7 +85,7 @@ const CreateJobs = (props) => {
         <Grid item>
           <Typography variant="h2">Đăng tin</Typography>
         </Grid>
-        <Grid item container xs direction="column" justify="center">
+        <Grid item container xs direction="column" justifyContent="center">
           <Grid item>
             <Paper
               style={{
@@ -131,9 +114,9 @@ const CreateJobs = (props) => {
                     fullWidth
                   />
                 </Grid>
-                <Grid item>
+                {/* <Grid item>
                   <ChipInput
-                    className={classes.inputBox}
+                    // className={classes.inputBox}
                     label="Skills"
                     variant="outlined"
                     helperText="Press enter to add skills"
@@ -154,7 +137,7 @@ const CreateJobs = (props) => {
                     }}
                     fullWidth
                   />
-                </Grid>
+                </Grid> */}
                 <Grid item>
                   <TextField
                     select
@@ -245,10 +228,38 @@ const CreateJobs = (props) => {
                     fullWidth
                   />
                 </Grid>
+                <Grid item>
+                  {/* <InputLabel id="demo-multiple-chip-label">Chip</InputLabel> */}
+                  {/* <Select
+          labelId="demo-multiple-chip-label"
+          id="demo-multiple-chip"
+          multiple
+          value={personName}
+          onChange={handleChange}
+          input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
+          renderValue={(selected) => (
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+              {selected.map((value) => (
+                <Chip key={value} label={value} />
+              ))}
+            </Box>
+          )}
+          MenuProps={MenuProps}
+        >
+          {names.map((name) => (
+            <MenuItem
+              key={name}
+              value={name}
+              style={getStyles(name, personName, theme)}
+            >
+              {name}
+            </MenuItem>
+          ))}
+        </Select> */}
+                </Grid>
               </Grid>
               <Button
                 variant="contained"
-                color="primary"
                 style={{ padding: "10px 50px", marginTop: "30px" }}
                 onClick={() => handleUpdate()}
               >

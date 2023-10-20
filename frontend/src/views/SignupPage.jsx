@@ -4,19 +4,17 @@ import {
   TextField,
   Button,
   Typography,
-  makeStyles,
   Paper,
   MenuItem,
   Select,
   InputLabel,
+  Box,
   // Input,
-} from "@material-ui/core";
-
-import AllInboxIcon from "@material-ui/icons/AllInbox";
+} from "@mui/material";
+import AllInboxIcon from "@mui/icons-material/AllInbox";
 
 import axios from "axios";
 import { Redirect } from "react-router-dom";
-import ChipInput from "material-ui-chip-input";
 import PhoneInput from "react-phone-input-2";
 
 import PasswordInput from "../lib/PasswordInput";
@@ -27,100 +25,7 @@ import { SetPopupContext } from "../App";
 import apiList from "../lib/apiList";
 import isAuth from "../lib/isAuth";
 
-const useStyles = makeStyles((theme) => ({
-  body: {
-    padding: "60px 60px",
-  },
-  inputBox: {
-    width: "400px",
-  },
-  submitButton: {
-    width: "400px",
-    color: "white",
-    backgroundColor: "#48884A",
-  },
-}));
-
-const MultifieldInput = (props) => {
-  const classes = useStyles();
-  const { education, setEducation } = props;
-
-  return (
-    <>
-      {education.map((obj, key) => (
-        <Grid
-          item
-          container
-          className={classes.inputBox}
-          key={key}
-          style={{ paddingLeft: 0, paddingRight: 0 }}
-        >
-          {/* Trường */}
-          <Grid item xs={6}>
-            <TextField
-              label={`Tên trường đại học`}
-              value={education[key].institutionName}
-              onChange={(event) => {
-                const newEdu = [...education];
-                newEdu[key].institutionName = event.target.value;
-                setEducation(newEdu);
-              }}
-              variant="outlined"
-            />
-          </Grid>
-          <Grid item xs={3}>
-            <TextField
-              label="Bắt đầu"
-              value={obj.startYear}
-              variant="outlined"
-              type="number"
-              onChange={(event) => {
-                const newEdu = [...education];
-                newEdu[key].startYear = event.target.value;
-                setEducation(newEdu);
-              }}
-            />
-          </Grid>
-          <Grid item xs={3}>
-            <TextField
-              label="Kết thúc"
-              value={obj.endYear}
-              variant="outlined"
-              type="number"
-              onChange={(event) => {
-                const newEdu = [...education];
-                newEdu[key].endYear = event.target.value;
-                setEducation(newEdu);
-              }}
-            />
-          </Grid>
-        </Grid>
-      ))}
-      {/* <Grid item>
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={() =>
-            setEducation([
-              ...education,
-              {
-                institutionName: "",
-                startYear: "",
-                endYear: "",
-              },
-            ])
-          }
-          className={classes.inputBox}
-        >
-          Thêm thông tin tổ chức khác
-        </Button>
-      </Grid> */}
-    </>
-  );
-};
-
 const Login = (props) => {
-  const classes = useStyles();
   const setPopup = useContext(SetPopupContext);
 
   const [loggedin, setLoggedin] = useState(isAuth());
@@ -131,8 +36,11 @@ const Login = (props) => {
     password: "",
     tmpPassword: "",
     name: "",
-    major: "-Ngành-",
-    education: [],
+    companyName: "",
+    major: "",
+    role: "",
+    // education: [],
+    education: "",
     skills: [],
     profile: "",
     bio: "",
@@ -150,36 +58,67 @@ const Login = (props) => {
   ]);
 
   const [inputErrorHandler, setInputErrorHandler] = useState({
+    type: {
+      value: "applicant",
+      rules: [{ type: "required", message: "" }],
+      error: false,
+      message: "",
+    },
     email: {
-      untouched: true,
-      required: true,
+      value: "",
+      // untouched: true,
+      rules: [{ type: "required", message: "Email là bắt buộc" }],
       error: false,
       message: "",
     },
     password: {
-      untouched: true,
-      required: true,
+      value: "",
+      // untouched: true,
+      rules: [{ type: "required", message: "Mật khẩu là bắt buộc" }],
+      // required: true,
       error: false,
       message: "",
     },
     tmpPassword: {
-      untouched: true,
-      required: true,
+      value: "",
+      // untouched: true,
+      // required: true,
+      rules: [{ type: "required", message: "Nhập lại mật khẩu là bắt buộc" }],
       error: false,
       message: "",
     },
     name: {
-      untouched: true,
-      required: true,
+      value: "",
+      // untouched: true,
+      rules: [{ type: "required", message: "Họ tên là bắt buộc" }],
+      // required: true,
+      error: false,
+      message: "",
+    },
+    companyName: {
+      value: "",
+      // untouched: true,
+      rules: [{ type: "required", message: "Tên công ty là bắt buộc" }],
+      // required: true,
       error: false,
       message: "",
     },
   });
 
+  const getFieldValue = (key) => {
+    return inputErrorHandler[key]?.value || undefined;
+  };
   const handleInput = (key, value) => {
-    setSignupDetails({
-      ...signupDetails,
-      [key]: value,
+    setInputErrorHandler((o) => {
+      return {
+        ...o,
+        [key]: {
+          value,
+          error: false,
+          message: "",
+          rules: o[key].rules,
+        },
+      };
     });
   };
 
@@ -194,7 +133,48 @@ const Login = (props) => {
       },
     });
   };
-
+  const validatorForm = (form) => {
+    const formValidate = {};
+    Object.entries(form).forEach(([key, field]) => {
+      if (field.rules) {
+        let isInvalid = false;
+        field.rules.forEach((rule) => {
+          if (isInvalid) return;
+          formValidate[key] = { ...field, error: false, message: "" };
+          if (
+            rule.type === "required" &&
+            ["", null, undefined].includes(field.value)
+          ) {
+            isInvalid = true;
+            formValidate[key] = {
+              ...field,
+              error: true,
+              message: rule.message,
+            };
+          } else if (key === "password" || key === "tmpPassword") {
+            console.log(field);
+            if (field.value.length < 6) {
+              isInvalid = true;
+              formValidate[key] = {
+                ...field,
+                error: true,
+                message: "Mật khẩu phải có ít nhất 6 ký tự",
+              };
+            } else if (form["tmpPassword"]?.value !== form["password"]?.value) {
+              isInvalid = true;
+              formValidate[key] = {
+                ...field,
+                error: true,
+                message: "Mật khẩu không khớp",
+              };
+            }
+          }
+        });
+      }
+    });
+    setInputErrorHandler(formValidate);
+    console.log(formValidate);
+  };
   const handleLogin = () => {
     const tmpErrorHandler = {};
     Object.keys(inputErrorHandler).forEach((obj) => {
@@ -210,27 +190,27 @@ const Login = (props) => {
       }
     });
 
-    console.log(education);
-
-    let updatedDetails = {
-      ...signupDetails,
-      education: education
-        .filter((obj) => obj.institutionName.trim() !== "")
-        .map((obj) => {
-          if (obj["endYear"] === "") {
-            delete obj["endYear"];
-          }
-          return obj;
-        }),
-    };
+    const isValid = validatorForm(inputErrorHandler);
 
     setSignupDetails(updatedDetails);
 
     const verified = !Object.keys(tmpErrorHandler).some((obj) => {
       return tmpErrorHandler[obj].error;
     });
+    const value = false;
+    if (value) {
+      let updatedDetails = {
+        ...signupDetails,
+        education: education
+          .filter((obj) => obj.institutionName.trim() !== "")
+          .map((obj) => {
+            if (obj["endYear"] === "") {
+              delete obj["endYear"];
+            }
+            return obj;
+          }),
+      };
 
-    if (verified) {
       axios
         .post(apiList.signup, updatedDetails)
         .then((response) => {
@@ -240,7 +220,7 @@ const Login = (props) => {
           setPopup({
             open: true,
             severity: "success",
-            message: "Logged in successfully",
+            message: "Đã đăng xuất tài khoản",
           });
           console.log(response);
         })
@@ -253,11 +233,11 @@ const Login = (props) => {
           console.log(err.response);
         });
     } else {
-      setInputErrorHandler(tmpErrorHandler);
+      // setInputErrorHandler(tmpErrorHandler);
       setPopup({
         open: true,
         severity: "error",
-        message: "Incorrect Input",
+        message: "Xin vui lòng cung cấp thông tin đúng yêu cầu",
       });
     }
   };
@@ -270,7 +250,7 @@ const Login = (props) => {
           required: true,
           untouched: false,
           error: true,
-          message: `${obj[0].toUpperCase() + obj.substr(1)} is required`,
+          message: `${obj[0].toUpperCase() + obj.substr(1)} là bắt buộc`,
         };
       } else {
         tmpErrorHandler[obj] = inputErrorHandler[obj];
@@ -292,7 +272,7 @@ const Login = (props) => {
       };
     }
 
-    setSignupDetails(updatedDetails);
+    // setSignupDetails(updatedDetails);
 
     const verified = !Object.keys(tmpErrorHandler).some((obj) => {
       return tmpErrorHandler[obj].error;
@@ -310,7 +290,7 @@ const Login = (props) => {
           setPopup({
             open: true,
             severity: "success",
-            message: "Logged in successfully",
+            message: "Đăng nhập thành công",
           });
           console.log(response);
         })
@@ -327,7 +307,7 @@ const Login = (props) => {
       setPopup({
         open: true,
         severity: "error",
-        message: "Incorrect Input",
+        message: "Xin vui lòng cung cấp thông tin đúng yêu cầu",
       });
     }
   };
@@ -335,7 +315,7 @@ const Login = (props) => {
   return loggedin ? (
     <Redirect to="/" />
   ) : (
-    <Paper elevation={3} className={classes.body}>
+    <Paper elevation={3} sx={{ marginTop: "70px" }}>
       <Grid container direction="column" spacing={4} alignItems="center">
         <Grid item>
           <Typography variant="h3" component="h2">
@@ -344,11 +324,11 @@ const Login = (props) => {
         </Grid>
         <Grid item>
           <TextField
+            sx={{ width: "300px" }}
             select
             label="Đăng ký với vai trò"
             variant="outlined"
-            className={classes.inputBox}
-            value={signupDetails.type}
+            value={getFieldValue("type")}
             onChange={(event) => {
               handleInput("type", event.target.value);
             }}
@@ -359,30 +339,24 @@ const Login = (props) => {
         </Grid>
         <Grid item>
           <TextField
+            sx={{ width: "300px" }}
             label="Họ và tên"
-            value={signupDetails.name}
+            value={getFieldValue("name")}
             onChange={(event) => handleInput("name", event.target.value)}
-            className={classes.inputBox}
             error={inputErrorHandler.name.error}
-            helperText={inputErrorHandler.name.message}
-            onBlur={(event) => {
-              if (event.target.value === "") {
-                handleInputError("name", true, "Name is required");
-              } else {
-                handleInputError("name", false, "");
-              }
-            }}
             variant="outlined"
           />
         </Grid>
         <Grid item>
           <EmailInput
             label="Email"
-            value={signupDetails.email}
-            onChange={(event) => handleInput("email", event.target.value)}
+            value={getFieldValue("email")}
+            onChange={(event) => {
+              console.log(event.target.value);
+              handleInput("email", event.target.value);
+            }}
             inputErrorHandler={inputErrorHandler}
             handleInputError={handleInputError}
-            className={classes.inputBox}
             required={true}
           />
         </Grid>
@@ -391,58 +365,40 @@ const Login = (props) => {
         <Grid item>
           <PasswordInput
             label="Mật khẩu"
-            value={signupDetails.password}
+            value={getFieldValue("password")}
             onChange={(event) => handleInput("password", event.target.value)}
-            className={classes.inputBox}
-            error={inputErrorHandler.password.error}
-            helperText={inputErrorHandler.password.message}
-            onBlur={(event) => {
-              if (event.target.value === "") {
-                handleInputError("password", true, "Mật khẩu không để trống");
-              } else {
-                handleInputError("password", false, "");
-              }
-            }}
+            error={inputErrorHandler?.password?.error}
           />
         </Grid>
         {/* Nhập lại mật khẩu */}
         <Grid item>
           <PasswordInput
             label="Nhập lại mật khẩu"
-            value={signupDetails.tmpPassword}
+            value={getFieldValue("tmpPassword")}
             onChange={(event) => handleInput("tmpPassword", event.target.value)}
-            className={classes.inputBox}
-            labelWidth={140}
-            helperText={inputErrorHandler.tmpPassword.message}
             error={inputErrorHandler.tmpPassword.error}
-            onBlur={(event) => {
-              if (event.target.value !== signupDetails.password) {
-                handleInputError(
-                  "tmpPassword",
-                  true,
-                  "Nhập lại mật khẩu chưa chính xác"
-                );
-              }
-            }}
           />
         </Grid>
 
         {/* Câu hỏi thêm */}
-        {signupDetails.type === "applicant" ? (
+        {getFieldValue("type") === "applicant" ? (
           <>
-            <MultifieldInput
-              education={education}
-              setEducation={setEducation}
-            />
+            {/* Trường */}
+            <Grid item>
+              <TextField
+                sx={{ width: "300px" }}
+                label={`Tên trường đại học`}
+                variant="outlined"
+              />
+            </Grid>
 
             {/* Ngành */}
             <Grid item>
               <InputLabel id="major-label">Ngành học</InputLabel>
               <Select
-                className={classes.inputBox}
+                sx={{ width: "300px" }}
                 labelId="major-label"
                 id="demo-simple-select-standard"
-                // value={age}
                 onChange={(event) => handleInput("major", event.target.value)}
                 label="Major"
               >
@@ -453,31 +409,11 @@ const Login = (props) => {
               </Select>
             </Grid>
 
-            <Grid item>
-              <ChipInput
-                className={classes.inputBox}
-                label="Kỹ năng"
-                variant="outlined"
-                helperText="Nhấn Enter để thêm từ khóa mô tả kỹ năng về bạn"
-                onChange={(chips) =>
-                  setSignupDetails({ ...signupDetails, skills: chips })
-                }
-              />
-            </Grid>
-
-            {/* Hình đại diện */}
+            {/* Chân dung */}
             <Grid item>
               <FileUploadInput
-                className={classes.inputBox}
                 label="Chân dung (.jpg/.png)"
                 icon={<AllInboxIcon />}
-                // value={files.profileImage}
-                // onChange={(event) =>
-                //   setFiles({
-                //     ...files,
-                //     profileImage: event.target.files[0],
-                //   })
-                // }
                 uploadTo={apiList.uploadProfileImage}
                 handleInput={handleInput}
                 identifier={"profile"}
@@ -485,15 +421,53 @@ const Login = (props) => {
             </Grid>
           </>
         ) : (
-          <>
-            <Grid item style={{ width: "100%" }}>
+          <Grid>
+            {/* Tên công ty */}
+            <Grid item>
+              <TextField
+                sx={{ width: "300px" }}
+                label="Tên công ty"
+                value={getFieldValue("companyName")}
+                onChange={(event) =>
+                  handleInput("companyName", event.target.value)
+                }
+                error={inputErrorHandler.companyName.error}
+                variant="outlined"
+              />
+            </Grid>
+
+            {/* Vị trí công tác */}
+            <Grid item>
+              <InputLabel id="role-label">Vị trí công tác</InputLabel>
+              <Select
+                sx={{ width: "300px" }}
+                labelId="role-label"
+                id="demo-simple-select-standard"
+                value={0}
+                onChange={(event) => handleInput("role", event.target.value)}
+                label="Role"
+              >
+                <MenuItem value={0}>
+                  <em>-Chọn vị trí công tác-</em>
+                </MenuItem>
+                <MenuItem value={1}>Nhân viên</MenuItem>
+                <MenuItem value={2}>Trưởng nhóm</MenuItem>
+                <MenuItem value={3}>Phó phòng</MenuItem>
+                <MenuItem value={4}>Trưởng phòng</MenuItem>
+                <MenuItem value={5}>Phó giám đốc</MenuItem>
+                <MenuItem value={6}>Giám đốc</MenuItem>
+                <MenuItem value={7}>Tổng giám đốc</MenuItem>
+              </Select>
+            </Grid>
+
+            <Grid item sx={{ width: "300px" }}>
               <TextField
                 label="Thông tin mô tả (Tối đa 250 từ)"
                 multiline
                 rows={8}
                 style={{ width: "100%" }}
                 variant="outlined"
-                value={signupDetails.bio}
+                value={getFieldValue("bio")}
                 onChange={(event) => {
                   if (
                     event.target.value.split(" ").filter(function (n) {
@@ -512,7 +486,7 @@ const Login = (props) => {
                 onChange={(phone) => setPhone(phone)}
               />
             </Grid>
-          </>
+          </Grid>
         )}
 
         {/* Đăng ký */}
@@ -520,11 +494,10 @@ const Login = (props) => {
           <Button
             variant="contained"
             onClick={() => {
-              signupDetails.type === "applicant"
+              getFieldValue("type") === "applicant"
                 ? handleLogin()
                 : handleLoginRecruiter();
             }}
-            className={classes.submitButton}
           >
             Đăng ký
           </Button>
