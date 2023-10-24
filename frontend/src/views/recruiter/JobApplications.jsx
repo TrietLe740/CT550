@@ -53,21 +53,10 @@ import apiList, { server } from "../../lib/apiList";
 // }));
 
 const FilterPopup = (props) => {
-  // const classes = useStyles();
   const { open, handleClose, searchOptions, setSearchOptions, getData } = props;
   return (
-    <Modal
-      open={open}
-      onClose={handleClose}
-      // className={classes.popupDialog}
-    >
-      <Paper
-        style={{
-          padding: "50px",
-          outline: "none",
-          minWidth: "50%",
-        }}
-      >
+    <Modal open={open} onClose={handleClose}>
+      <Paper>
         <Grid container direction="column" alignItems="center" spacing={3}>
           <Grid container item alignItems="center">
             <Grid item xs={3}>

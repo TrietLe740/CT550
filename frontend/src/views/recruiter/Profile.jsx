@@ -96,11 +96,11 @@ const Profile = (props) => {
   return (
     <>
       <Grid
+        sx={{ padding: "100px" }}
         container
         item
         direction="column"
         alignItems="center"
-        style={{ padding: "30px", minHeight: "93vh" }}
       >
         <Grid item>
           <Typography variant="h2">Thông tin doanh nghiệp</Typography>

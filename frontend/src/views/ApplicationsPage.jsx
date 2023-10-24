@@ -121,24 +121,29 @@ const ApplicationTile = (props) => {
           <Grid item>
             <Typography variant="h5">{application.job.title}</Typography>
           </Grid>
-          <Grid item>Posted By: {application.recruiter.name}</Grid>
-          <Grid item>Role : {application.job.jobType}</Grid>
-          <Grid item>Salary : &#8377; {application.job.salary} per month</Grid>
+          <Grid item>Đăng bởi: {application.recruiter.name}</Grid>
+          <Grid item>Loại: {application.job.jobType}</Grid>
           <Grid item>
-            Duration :{" "}
-            {application.job.duration !== 0
-              ? `${application.job.duration} month`
-              : `Flexible`}
+            Trợ phí:{" "}
+            {application.job.salary > 0
+              ? `${application.job.salary}/Tháng`
+              : `Không có`}
+          </Grid>
+          <Grid item>
+            Thời gian thực tập :{" "}
+            {application.job.duration > 0
+              ? `${application.job.duration} Tháng`
+              : `Linh hoạt`}
           </Grid>
           <Grid item>
             {application.job.skillsets.map((skill) => (
               <Chip label={skill} style={{ marginRight: "2px" }} />
             ))}
           </Grid>
-          <Grid item>Applied On: {appliedOn.toLocaleDateString()}</Grid>
+          <Grid item>Ứng tuyển vào ngày: {appliedOn.toLocaleDateString()}</Grid>
           {application.status === "accepted" ||
           application.status === "finished" ? (
-            <Grid item>Joined On: {joinedOn.toLocaleDateString()}</Grid>
+            <Grid item>Tham gia vào ngày: {joinedOn.toLocaleDateString()}</Grid>
           ) : null}
         </Grid>
         <Grid item container direction="column" xs={3}>
@@ -165,7 +170,7 @@ const ApplicationTile = (props) => {
                   setOpen(true);
                 }}
               >
-                Rate Job
+                Đánh giá công việc
               </Button>
             </Grid>
           ) : null}
@@ -243,8 +248,8 @@ const Applications = (props) => {
       alignItems="center"
       style={{ padding: "30px", minHeight: "93vh" }}
     >
-      <Grid item>
-        <Typography variant="h2">Applications</Typography>
+      <Grid item sx={{ marginTop: "100px" }}>
+        <Typography variant="h2">CÔNG VIỆC ĐANG ỨNG TUYỂN</Typography>
       </Grid>
       <Grid
         container
@@ -263,7 +268,7 @@ const Applications = (props) => {
           ))
         ) : (
           <Typography variant="h5" style={{ textAlign: "center" }}>
-            No Applications Found
+            Chưa có công việc ứng tuyển
           </Typography>
         )}
       </Grid>

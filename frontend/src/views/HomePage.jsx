@@ -101,11 +101,12 @@ const JobTile = (props) => {
 
           <Grid item>Đăng bởi: {job.recruiter.name}</Grid>
           <Grid item>Hạn chót: {deadline}</Grid>
-          <Grid item>Ngành nghề liên quan: {job?.majors?.join("; ")}</Grid>
 
           <Grid item>
-            {job.skillsets.map((skill) => (
-              <Chip label={skill} style={{ marginRight: "2px" }} />
+            Ngành nghề liên quan:
+            <br />
+            {job.majors.map((m) => (
+              <Chip label={m} style={{ marginRight: "5px" }} />
             ))}
           </Grid>
         </Grid>

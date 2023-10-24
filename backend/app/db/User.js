@@ -23,6 +23,10 @@ let schema = new mongoose.Schema(
       enum: ["recruiter", "applicant"],
       required: true,
     },
+    education: {
+      type: String,
+      required: false,
+    },
     major: {
       type: String,
       required: false,

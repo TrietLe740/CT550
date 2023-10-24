@@ -24,14 +24,14 @@ let schema = new mongoose.Schema(
         validator: function (v) {
           return v !== "" ? /\+\d{1,3}\d{10}/.test(v) : true;
         },
-        msg: "Phone number is invalid!",
+        msg: "Số điện thoại không hợp lệ!",
       },
     },
     bio: {
       type: String,
     },
   },
-  { collation: { locale: "en" } }
+  { collation: { locale: "vi" } }
 );
 
 module.exports = mongoose.model("Recruiters", schema);

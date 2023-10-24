@@ -117,10 +117,10 @@ const Profile = (props) => {
         item
         direction="column"
         alignItems="center"
-        style={{ padding: "30px", minHeight: "93vh" }}
+        sx={{ padding: "100px", minHeight: "93vh" }}
       >
         <Grid item>
-          <Typography variant="h2">Thông tin doanh nghiệp</Typography>
+          <Typography variant="h2">THÔNG TIN</Typography>
         </Grid>
         <Grid item xs style={{ width: "100%" }}>
           <Paper
@@ -137,7 +137,7 @@ const Profile = (props) => {
             <Grid container direction="column" alignItems="stretch" spacing={3}>
               <Grid item>
                 <TextField
-                  label="Tên doanh nghiệp"
+                  label="Tên"
                   value={profileDetails.name}
                   onChange={(event) => handleInput("name", event.target.value)}
                   className={classes.inputBox}
@@ -146,6 +146,7 @@ const Profile = (props) => {
                   style={{ width: "100%" }}
                 />
               </Grid>
+
               <Grid item>
                 <TextField
                   label="Thông tin mô tả)"

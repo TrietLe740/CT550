@@ -80,7 +80,7 @@ const CreateJobs = (props) => {
         item
         direction="column"
         alignItems="center"
-        style={{ padding: "30px", minHeight: "93vh", width: "" }}
+        sx={{ padding: "160px" }}
       >
         <Grid item>
           <Typography variant="h2">Đăng tin</Typography>
@@ -105,7 +105,7 @@ const CreateJobs = (props) => {
               >
                 <Grid item>
                   <TextField
-                    label="Title"
+                    label="Tên công việc"
                     value={jobDetails.title}
                     onChange={(event) =>
                       handleInput("title", event.target.value)
@@ -141,7 +141,7 @@ const CreateJobs = (props) => {
                 <Grid item>
                   <TextField
                     select
-                    label="Job Type"
+                    label="Loại công việc"
                     variant="outlined"
                     value={jobDetails.jobType}
                     onChange={(event) => {
@@ -157,7 +157,7 @@ const CreateJobs = (props) => {
                 <Grid item>
                   <TextField
                     select
-                    label="Duration"
+                    label="Thời gian thực tập"
                     variant="outlined"
                     value={jobDetails.duration}
                     onChange={(event) => {
@@ -165,13 +165,10 @@ const CreateJobs = (props) => {
                     }}
                     fullWidth
                   >
-                    <MenuItem value={0}>Flexible</MenuItem>
-                    <MenuItem value={1}>1 Month</MenuItem>
-                    <MenuItem value={2}>2 Months</MenuItem>
-                    <MenuItem value={3}>3 Months</MenuItem>
-                    <MenuItem value={4}>4 Months</MenuItem>
-                    <MenuItem value={5}>5 Months</MenuItem>
-                    <MenuItem value={6}>6 Months</MenuItem>
+                    <MenuItem value={1}>1 Tháng</MenuItem>
+                    <MenuItem value={3}>3 Tháng</MenuItem>
+                    <MenuItem value={6}>6 Tháng</MenuItem>
+                    <MenuItem value={7}>Hơn 6 Tháng</MenuItem>
                   </TextField>
                 </Grid>
                 <Grid item>
@@ -189,7 +186,7 @@ const CreateJobs = (props) => {
                 </Grid>
                 <Grid item>
                   <TextField
-                    label="Application Deadline"
+                    label="Hạn chót"
                     type="datetime-local"
                     value={jobDetails.deadline}
                     onChange={(event) => {
@@ -204,7 +201,7 @@ const CreateJobs = (props) => {
                 </Grid>
                 <Grid item>
                   <TextField
-                    label="Maximum Number Of Applicants"
+                    label="Số lượng tối đa"
                     type="number"
                     variant="outlined"
                     value={jobDetails.maxApplicants}
@@ -217,7 +214,7 @@ const CreateJobs = (props) => {
                 </Grid>
                 <Grid item>
                   <TextField
-                    label="Positions Available"
+                    label="Số vị trí còn lại"
                     type="number"
                     variant="outlined"
                     value={jobDetails.maxPositions}
@@ -263,7 +260,7 @@ const CreateJobs = (props) => {
                 style={{ padding: "10px 50px", marginTop: "30px" }}
                 onClick={() => handleUpdate()}
               >
-                Create Job
+                Tạo công việc
               </Button>
             </Paper>
           </Grid>

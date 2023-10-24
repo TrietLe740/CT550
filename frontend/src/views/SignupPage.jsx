@@ -12,6 +12,7 @@ import {
   // Input,
 } from "@mui/material";
 import AllInboxIcon from "@mui/icons-material/AllInbox";
+import PersonIcon from "@mui/icons-material/Person";
 
 import axios from "axios";
 import { Redirect } from "react-router-dom";
@@ -24,6 +25,8 @@ import { SetPopupContext } from "../App";
 
 import apiList from "../lib/apiList";
 import isAuth from "../lib/isAuth";
+
+import LOGO from "../assets/logo_Hitern.png";
 
 const Login = (props) => {
   const setPopup = useContext(SetPopupContext);
@@ -315,11 +318,14 @@ const Login = (props) => {
   return loggedin ? (
     <Redirect to="/" />
   ) : (
-    <Paper elevation={3} sx={{ marginTop: "70px" }}>
+    <Paper elevation={3} sx={{ padding: "160px" }}>
       <Grid container direction="column" spacing={4} alignItems="center">
         <Grid item>
-          <Typography variant="h3" component="h2">
-            Đăng ký
+          <img src={LOGO} alt="" width={300} />
+        </Grid>
+        <Grid item>
+          <Typography variant="h6" component="h6">
+            Chào mừng đến với HIntern!
           </Typography>
         </Grid>
         <Grid item>
@@ -421,7 +427,7 @@ const Login = (props) => {
             </Grid>
           </>
         ) : (
-          <Grid>
+          <>
             {/* Tên công ty */}
             <Grid item>
               <TextField
@@ -486,7 +492,7 @@ const Login = (props) => {
                 onChange={(phone) => setPhone(phone)}
               />
             </Grid>
-          </Grid>
+          </>
         )}
 
         {/* Đăng ký */}

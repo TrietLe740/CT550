@@ -78,7 +78,7 @@ const JobTile = (props) => {
 
   return (
     <Paper elevation={3}>
-      <Grid container>
+      <Grid container sx={{ padding: "50px" }}>
         <Grid container item xs={9} spacing={1} direction="column">
           <Grid item>
             <Typography variant="h5">{job.title}</Typography>
@@ -86,18 +86,22 @@ const JobTile = (props) => {
           <Grid item>
             <Rating value={job.rating !== -1 ? job.rating : null} readOnly />
           </Grid>
-          <Grid item>Role : {job.jobType}</Grid>
-          <Grid item>Salary : &#8377; {job.salary} per month</Grid>
+          <Grid item>Loại công việc: {job.jobType}</Grid>
           <Grid item>
-            Duration :{" "}
-            {job.duration !== 0 ? `${job.duration} month` : `Flexible`}
+            Trợ phí: {job.salary > 0 ? `${job.salary}/Tháng` : "Không có"}
           </Grid>
-          <Grid item>Posted By : {job.recruiter.name}</Grid>
-          <Grid item>Application Deadline : {deadline}</Grid>
+          <Grid item>
+            Thời gian thực tập:{" "}
+            {job.duration > 0 ? `${job.duration} Tháng` : `Linh hoạt`}
+          </Grid>
+          <Grid item>Đăng bởi: {job.recruiter.name}</Grid>
+          <Grid item>Hạn chót: {deadline}</Grid>
 
           <Grid item>
-            {job.skillsets.map((skill) => (
-              <Chip label={skill} style={{ marginRight: "2px" }} />
+            Ngành nghề liên quan:
+            <br />
+            {job.majors.map((m) => (
+              <Chip label={m} style={{ marginRight: "2px" }} />
             ))}
           </Grid>
         </Grid>
@@ -109,7 +113,7 @@ const JobTile = (props) => {
             }}
             disabled={userType() === "recruiter"}
           >
-            Apply
+            Ứng tuyển
           </Button>
         </Grid>
       </Grid>
@@ -163,11 +167,7 @@ const FilterPopup = (props) => {
   // const classes = useStyles();
   const { open, handleClose, searchOptions, setSearchOptions, getData } = props;
   return (
-    <Modal
-      open={open}
-      onClose={handleClose}
-      // className={classes.popupDialog}
-    >
+    <Modal open={open} onClose={handleClose}>
       <Paper
         style={{
           padding: "50px",
@@ -630,7 +630,7 @@ export default function SearchPage() {
         item
         direction="column"
         alignItems="center"
-        style={{ padding: "30px", minHeight: "93vh" }}
+        sx={{ padding: "100px", minHeight: "93vh" }}
       >
         <Grid
           item
@@ -640,7 +640,7 @@ export default function SearchPage() {
           alignItems="center"
         >
           <Grid item xs>
-            <Typography variant="h2">Tìm kiếm</Typography>
+            <Typography variant="h2">TÌM KIẾM</Typography>
           </Grid>
 
           <Grid item>
@@ -668,7 +668,7 @@ export default function SearchPage() {
             </Typography>
           )}
         </Grid>
-        <Grid item>
+        <Grid sx={{ marginTop: "20px" }} item>
           <Pagination count={jobs.length / 10 > 1 ? jobs.length / 10 : 1} />
         </Grid>
       </Grid>

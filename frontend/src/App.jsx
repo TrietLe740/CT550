@@ -19,6 +19,8 @@ import AcceptedApplicants from "./views/recruiter/AcceptedApplicants.jsx";
 import RecruiterProfile from "./views/recruiter/Profile.jsx";
 
 import SearchPage from "./views/SearchPage.jsx";
+import NewsPage from "./views/NewsPage.jsx";
+import CompaniesPage from "./views/CompaniesPage.jsx";
 
 import MessagePopup from "./lib/MessagePopup.jsx";
 // eslint-disable-next-line no-unused-vars
@@ -62,23 +64,24 @@ function App() {
       },
       button: {
         fontWeight: 700,
-        width: "300px",
       },
     },
     components: {
+      MuiButton: {
+        styleOverrides: {
+          root: {},
+        },
+      },
       TextField: {
-        variant: [
-          {
-            props: "outlined",
-            style: {
-              width: "300px",
-              marginLeft: "auto",
-              marginRight: "auto",
-              paddingBottom: 0,
-              marginTop: 0,
-            },
+        styleOverrides: {
+          root: {
+            width: "300px",
+            marginLeft: "auto",
+            marginRight: "auto",
+            paddingBottom: 0,
+            marginTop: 0,
           },
-        ],
+        },
       },
     },
   });
@@ -137,6 +140,12 @@ function App() {
                 </Route>
                 <Route exact path="/ds-dang-thuc-tap">
                   <AcceptedApplicants />
+                </Route>
+                <Route exact path="/tin-tuc">
+                  <NewsPage />
+                </Route>
+                <Route exact path="/cong-ty">
+                  <CompaniesPage />
                 </Route>
                 <Route>
                   <ErrorPage />

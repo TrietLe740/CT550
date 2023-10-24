@@ -99,7 +99,7 @@ const Login = (props) => {
   ) : (
     <Paper
       sx={{
-        padding: "60px",
+        padding: "160px",
       }}
     >
       <Grid container direction="column" spacing={4} alignItems="center">

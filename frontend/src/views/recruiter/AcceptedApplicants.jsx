@@ -57,13 +57,7 @@ const FilterPopup = (props) => {
   const { open, handleClose, searchOptions, setSearchOptions, getData } = props;
   return (
     <Modal open={open} onClose={handleClose} className={classes.popupDialog}>
-      <Paper
-        style={{
-          padding: "50px",
-          outline: "none",
-          minWidth: "50%",
-        }}
-      >
+      <Paper>
         <Grid container direction="column" alignItems="center" spacing={3}>
           {/* <Grid container item alignItems="center">
             <Grid item xs={3}>
@@ -517,12 +511,12 @@ const ApplicationTile = (props) => {
   };
 
   return (
-    <Paper className={classes.jobTileOuter} elevation={3}>
+    <Paper elevation={3} sx={{ padding: "20px", width: "100%" }}>
       <Grid container>
         <Grid
           item
           xs={2}
-          style={{
+          sx={{
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
@@ -549,11 +543,11 @@ const ApplicationTile = (props) => {
               readOnly
             />
           </Grid>
-          <Grid item>Job Title: {application.job.title}</Grid>
-          <Grid item>Role: {application.job.jobType}</Grid>
-          <Grid item>Applied On: {appliedOn.toLocaleDateString()}</Grid>
+          <Grid item>Công việc: {application.job.title}</Grid>
+          <Grid item>Loại: {application.job.jobType}</Grid>
+          <Grid item>Ứng tuyển vào: {appliedOn.toLocaleDateString()}</Grid>
           <Grid item>
-            SOP: {application.sop !== "" ? application.sop : "Not Submitted"}
+            Mô tả khác: {application.sop !== "" ? application.sop : "Không có"}
           </Grid>
           <Grid item>
             {application.jobApplicant.skills.map((skill) => (
@@ -562,7 +556,7 @@ const ApplicationTile = (props) => {
           </Grid>
         </Grid>
         <Grid item container direction="column" xs={3}>
-          <Grid item>
+          {/* <Grid item>
             <Button
               variant="contained"
               className={classes.statusBlock}
@@ -571,7 +565,7 @@ const ApplicationTile = (props) => {
             >
               Download Resume
             </Button>
-          </Grid>
+          </Grid> */}
           <Grid item container xs>
             {/* {buttonSet[application.status]} */}
             <Button
@@ -585,7 +579,7 @@ const ApplicationTile = (props) => {
                 setOpenEndJob(true);
               }}
             >
-              End Job
+              KẾT THÚC
             </Button>
           </Grid>
           <Grid item>
@@ -597,7 +591,7 @@ const ApplicationTile = (props) => {
                 setOpen(true);
               }}
             >
-              Rate Applicant
+              ĐÁNH GIÁ
             </Button>
           </Grid>
         </Grid>
@@ -649,29 +643,29 @@ const ApplicationTile = (props) => {
           }}
         >
           <Typography variant="h4" style={{ marginBottom: "10px" }}>
-            Are you sure?
+            Chắc chắn?
           </Typography>
           <Grid container justify="center" spacing={5}>
             <Grid item>
               <Button
                 variant="contained"
                 color="secondary"
-                style={{ padding: "10px 50px" }}
+                sx={{ padding: "10px 50px" }}
                 onClick={() => {
                   updateStatus("finished");
                 }}
               >
-                Yes
+                Xác nhận
               </Button>
             </Grid>
             <Grid item>
               <Button
                 variant="contained"
                 color="primary"
-                style={{ padding: "10px 50px" }}
+                sx={{ padding: "10px 50px" }}
                 onClick={() => handleCloseEndJob()}
               >
-                Cancel
+                Hủy
               </Button>
             </Grid>
           </Grid>
@@ -763,14 +757,14 @@ const AcceptedApplicants = (props) => {
   return (
     <>
       <Grid
+        sx={{ padding: "160px" }}
         container
         item
         direction="column"
         alignItems="center"
-        style={{ padding: "30px", minHeight: "93vh" }}
       >
         <Grid item>
-          <Typography variant="h2">Employees</Typography>
+          <Typography variant="h2">DANH SÁCH ỨNG VIÊN</Typography>
         </Grid>
         <Grid item>
           <IconButton onClick={() => setFilterOpen(true)}>
@@ -782,14 +776,12 @@ const AcceptedApplicants = (props) => {
           item
           xs
           direction="column"
-          style={{ width: "100%" }}
           alignItems="stretch"
           justify="center"
         >
           {applications.length > 0 ? (
             applications.map((obj) => (
               <Grid item>
-                {/* {console.log(obj)} */}
                 <ApplicationTile application={obj} getData={getData} />
               </Grid>
             ))

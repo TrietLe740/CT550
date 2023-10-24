@@ -152,7 +152,7 @@ const JobTile = (props) => {
       // className={classes.jobTileOuter}
       elevation={3}
     >
-      <Grid container>
+      <Grid container sx={{ padding: "30px" }}>
         <Grid container item xs={9} spacing={1} direction="column">
           <Grid item>
             <Typography variant="h5">{job.title}</Typography>
@@ -160,21 +160,22 @@ const JobTile = (props) => {
           <Grid item>
             <Rating value={job.rating !== -1 ? job.rating : null} readOnly />
           </Grid>
-          <Grid item>Role : {job.jobType}</Grid>
-          <Grid item>Salary : &#8377; {job.salary} per month</Grid>
+          <Grid item>Loại: {job.jobType}</Grid>
+          <Grid item>Phí hỗ trợ: &#8377; {job.salary} per month</Grid>
           <Grid item>
-            Duration :{" "}
-            {job.duration !== 0 ? `${job.duration} month` : `Flexible`}
+            Thời gian thực tập:{" "}
+            {job.duration > 0 ? `${job.duration} tháng` : `Linh động`}
           </Grid>
-          <Grid item>Date Of Posting: {postedOn.toLocaleDateString()}</Grid>
-          <Grid item>Number of Applicants: {job.maxApplicants}</Grid>
+          <Grid item>Ngày đăng tuyển: {postedOn.toLocaleDateString()}</Grid>
+          <Grid item>Số lượng tối đa: {job.maxApplicants}</Grid>
           <Grid item>
-            Remaining Number of Positions:{" "}
-            {job.maxPositions - job.acceptedCandidates}
+            Số chỗ còn lại: {job.maxPositions - job.acceptedCandidates}
           </Grid>
           <Grid item>
-            {job.skillsets.map((skill) => (
-              <Chip label={skill} style={{ marginRight: "2px" }} />
+            Ngành nghề liên quan:
+            <br />
+            {job.majors.map((m) => (
+              <Chip label={m} style={{ marginRight: "2px" }} />
             ))}
           </Grid>
         </Grid>
@@ -369,7 +370,7 @@ const FilterPopup = (props) => {
         <Grid container direction="column" alignItems="center" spacing={3}>
           <Grid container item alignItems="center">
             <Grid item xs={3}>
-              Job Type
+              Loại công việc
             </Grid>
             <Grid
               container
@@ -442,7 +443,7 @@ const FilterPopup = (props) => {
           </Grid>
           <Grid container item alignItems="center">
             <Grid item xs={3}>
-              Salary
+              Trợ phí
             </Grid>
             <Grid item xs={9}>
               <Slider
@@ -466,12 +467,12 @@ const FilterPopup = (props) => {
           </Grid>
           <Grid container item alignItems="center">
             <Grid item xs={3}>
-              Duration
+              Thời gian thực tập
             </Grid>
             <Grid item xs={9}>
               <TextField
                 select
-                label="Duration"
+                label="Thời gian thực tập"
                 variant="outlined"
                 fullWidth
                 value={searchOptions.duration}
@@ -482,20 +483,17 @@ const FilterPopup = (props) => {
                   })
                 }
               >
-                <MenuItem value="0">All</MenuItem>
-                <MenuItem value="1">1</MenuItem>
-                <MenuItem value="2">2</MenuItem>
-                <MenuItem value="3">3</MenuItem>
-                <MenuItem value="4">4</MenuItem>
-                <MenuItem value="5">5</MenuItem>
-                <MenuItem value="6">6</MenuItem>
-                <MenuItem value="7">7</MenuItem>
+                <MenuItem value="0">Tất cả</MenuItem>
+                <MenuItem value="1">1 Tháng</MenuItem>
+                <MenuItem value="3">3 Tháng</MenuItem>
+                <MenuItem value="6">6 Tháng</MenuItem>
+                <MenuItem value="7">Hơn 6 Tháng</MenuItem>
               </TextField>
             </Grid>
           </Grid>
           <Grid container item alignItems="center">
             <Grid item xs={3}>
-              Sort
+              Sắp xếp
             </Grid>
             <Grid item container direction="row" xs={9}>
               <Grid
@@ -527,7 +525,7 @@ const FilterPopup = (props) => {
                 </Grid>
                 <Grid item>
                   <label for="salary">
-                    <Typography>Salary</Typography>
+                    <Typography>Trợ phí</Typography>
                   </label>
                 </Grid>
                 <Grid item>
@@ -584,7 +582,7 @@ const FilterPopup = (props) => {
                 </Grid>
                 <Grid item>
                   <label for="duration">
-                    <Typography>Duration</Typography>
+                    <Typography>Thời gian thực tập</Typography>
                   </label>
                 </Grid>
                 <Grid item>
@@ -641,7 +639,7 @@ const FilterPopup = (props) => {
                 </Grid>
                 <Grid item>
                   <label for="rating">
-                    <Typography>Rating</Typography>
+                    <Typography>Đánh giá</Typography>
                   </label>
                 </Grid>
                 <Grid item>
@@ -678,7 +676,7 @@ const FilterPopup = (props) => {
               style={{ padding: "10px 50px" }}
               onClick={() => getData()}
             >
-              Apply
+              TÌM KIẾM
             </Button>
           </Grid>
         </Grid>
@@ -800,7 +798,7 @@ const MyJobs = (props) => {
         item
         direction="column"
         alignItems="center"
-        style={{ padding: "30px", minHeight: "93vh" }}
+        sx={{ padding: "160px" }}
       >
         <Grid
           item
@@ -810,7 +808,7 @@ const MyJobs = (props) => {
           alignItems="center"
         >
           <Grid item xs>
-            <Typography variant="h2">Công việc đăng tuyển</Typography>
+            <Typography variant="h2">CÔNG VIỆC ĐĂNG TUYỂN</Typography>
           </Grid>
           <Grid item xs>
             <TextField
@@ -861,7 +859,7 @@ const MyJobs = (props) => {
             })
           ) : (
             <Typography variant="h5" style={{ textAlign: "center" }}>
-              No jobs found
+              Không tìm thấy công việc phù hợp
             </Typography>
           )}
         </Grid>
