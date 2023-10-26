@@ -123,7 +123,6 @@ const Profile = (props) => {
                   label="Tên doanh nghiệp"
                   value={profileDetails.name}
                   onChange={(event) => handleInput("name", event.target.value)}
-                  // className={classes.inputBox}
                   variant="outlined"
                   fullWidth
                   style={{ width: "100%" }}

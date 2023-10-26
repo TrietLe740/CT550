@@ -22,36 +22,6 @@ import { SetPopupContext } from "../../App";
 
 import apiList, { server } from "../../lib/apiList";
 
-// const useStyles = makeStyles((theme) => ({
-//   body: {
-//     height: "inherit",
-//   },
-//   statusBlock: {
-//     width: "100%",
-//     height: "100%",
-//     display: "flex",
-//     alignItems: "center",
-//     justifyContent: "center",
-//     textTransform: "uppercase",
-//   },
-//   jobTileOuter: {
-//     padding: "30px",
-//     margin: "20px 0",
-//     boxSizing: "border-box",
-//     width: "100%",
-//   },
-//   popupDialog: {
-//     height: "100%",
-//     display: "flex",
-//     alignItems: "center",
-//     justifyContent: "center",
-//   },
-//   avatar: {
-//     // width: theme.spacing(17),
-//     // height: theme.spacing(17),
-//   },
-// }));
-
 const FilterPopup = (props) => {
   const { open, handleClose, searchOptions, setSearchOptions, getData } = props;
   return (
@@ -545,10 +515,7 @@ const ApplicationTile = (props) => {
             alignItems: "center",
           }}
         >
-          <Avatar
-            src={`${server}${application.jobApplicant.profile}`}
-            // className={classes.avatar}
-          />
+          <Avatar src={`${server}${application.jobApplicant.profile}`} />
         </Grid>
         <Grid container item xs={7} spacing={1} direction="column">
           <Grid item>

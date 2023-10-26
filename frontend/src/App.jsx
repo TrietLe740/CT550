@@ -1,5 +1,6 @@
 import { createContext, useState } from "react";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
+import { Grid, ThemeProvider, createTheme, CssBaseline } from "@mui/material";
 
 import Welcome, { ErrorPage } from "./views/WelcomePage.jsx";
 
@@ -25,7 +26,7 @@ import CompaniesPage from "./views/CompaniesPage.jsx";
 import MessagePopup from "./lib/MessagePopup.jsx";
 // eslint-disable-next-line no-unused-vars
 import isAuth, { userType } from "./lib/isAuth.jsx";
-import { CssBaseline, Grid, ThemeProvider, createTheme } from "@mui/material";
+import JobDetailPage from "./views/JobDetailPage.jsx";
 
 export const SetPopupContext = createContext();
 
@@ -42,6 +43,9 @@ function App() {
         light: "#E0EBB5",
         dark: "#36593C",
         contrastText: "#fff",
+      },
+      secondary: {
+        main: "#48884A",
       },
     },
     typoraphy: {
@@ -115,6 +119,9 @@ function App() {
                 </Route>
                 <Route exact path="/viec-lam">
                   <HomePage />
+                </Route>
+                <Route exact path="/viec-lam/:id">
+                  <JobDetailPage />
                 </Route>
                 <Route exact path="/ung-vien">
                   <ApplicationsPage />
