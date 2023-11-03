@@ -14,22 +14,10 @@ let schema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    tmpPassword: {
-      type: String,
-      required: true,
-    },
     type: {
       type: String,
       enum: ["recruiter", "applicant"],
       required: true,
-    },
-    education: {
-      type: String,
-      required: false,
-    },
-    major: {
-      type: String,
-      required: false,
     },
   },
   { collation: { locale: "vi" } }

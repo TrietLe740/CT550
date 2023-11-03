@@ -8,6 +8,8 @@ import { userType } from "../lib/isAuth";
 import JobsService from "../services/jobs.service";
 import SwipeableViews from "react-swipeable-views";
 import PropTypes from "prop-types";
+import UsersService from "../services/user.service";
+import JobCard from "../component/JobCard";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -44,6 +46,7 @@ function a11yProps(index) {
 
 export default function JobDetailPage() {
   const jobServ = new JobsService();
+  const userServ = new UsersService();
 
   let location = useLocation();
   let jobId = location.pathname.slice(10);
@@ -57,6 +60,16 @@ export default function JobDetailPage() {
 
   useEffect(() => {
     getJob();
+  }, []);
+
+  const [user, setUser] = useState();
+  useEffect(() => {
+    async function getUser() {
+      var us = await userServ.getOne(job.userId);
+      console.log(job.userId);
+      setUser(us);
+    }
+    getUser();
   }, []);
 
   const dayPost = new Date(job?.dateOfPosting).toLocaleDateString();
@@ -73,7 +86,12 @@ export default function JobDetailPage() {
   };
 
   // Apply button
-  const handleApply = () => {
+  const handleApply = async (id) => {
+    try {
+      await jobServ.apply(id);
+    } catch (error) {
+      console.log(error);
+    }
     // axios
     //   .post(
     //     `${apiList.jobs}/${job._id}/applications`,
@@ -170,7 +188,8 @@ export default function JobDetailPage() {
               </Typography>
               <br />
             </Grid>
-            <Grid item>Địa điểm thực tập: {job?.place}</Grid>
+            <Grid item>Địa điểm: {job?.place}</Grid>
+            <Grid item>Làm việc: {job?.jobType}</Grid>
             <Grid item>
               Thời hạn thực tập:{" "}
               {job?.duration > 0 ? `${job?.duration} Tháng` : `Linh hoạt`}
@@ -182,7 +201,7 @@ export default function JobDetailPage() {
               <Button
                 variant="contained"
                 onClick={() => {
-                  handleApply();
+                  handleApply(job._id);
                 }}
                 disabled={userType() === "recruiter"}
               >
@@ -206,7 +225,7 @@ export default function JobDetailPage() {
           >
             <Tab label="THÔNG TIN CHI TIẾT" {...a11yProps(0)} />
             <Tab label="THÔNG TIN CÔNG TY" {...a11yProps(1)} />
-            <Tab label="VIỆC LÀM KHÁC TỪ CÔNG TY" {...a11yProps(2)} />
+            <Tab label="DS VIỆC LÀM CỦA CÔNG TY" {...a11yProps(2)} />
           </Tabs>
 
           <Grid
@@ -282,7 +301,7 @@ export default function JobDetailPage() {
                       <Button
                         variant="contained"
                         onClick={() => {
-                          handleApply();
+                          handleApply(job._id);
                         }}
                         disabled={userType() === "recruiter"}
                       >
@@ -319,12 +338,35 @@ export default function JobDetailPage() {
                 </Grid>
               </TabPanel>
               <TabPanel value={value} index={1} dir={theme.direction}>
-                Item Two
+                <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+                  {user?.nameCompany}
+                </Typography>
+                <br />
+                <Typography variant="p" sx={{ fontWeight: "bold" }}>
+                  Thông tin liên hệ: <br />
+                </Typography>
+                <Typography variant="p">{user?.contactNumber}</Typography>
+                <br />
+                <Typography variant="p" sx={{ fontWeight: "bold" }}>
+                  Mô tả: <br />
+                </Typography>
+                <Typography variant="p">{user?.bio}</Typography>
               </TabPanel>
               <TabPanel value={value} index={2} dir={theme.direction}>
-                Item Three
+                {/* {job?.map((job) => {
+                  return <JobCard sx={{ width: "100%" }} job={job} />;
+                })} */}
               </TabPanel>
             </SwipeableViews>
+          </Grid>
+          <Grid item xs={12}>
+            <Typography
+              textAlign="center"
+              variant="h5"
+              sx={{ fontWeight: "bold", marginTop: "30px" }}
+            >
+              VIỆC LÀM LIÊN QUAN <br />
+            </Typography>
           </Grid>
         </Grid>
       </Grid>

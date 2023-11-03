@@ -1,13 +1,18 @@
 import createApiClient from "./api.service";
 
-export default class JobsService {
-  constructor(baseUrl = "http://localhost:3001/api/jobs") {
+export default class UsersService {
+  constructor(baseUrl = "http://localhost:3001/api/user") {
     this.api = createApiClient(baseUrl);
   }
 
   async getAll() {
     return (await this.api.get("/")).data;
   }
+
+  async get(id) {
+    return (await this.api.get(`/${id}`)).data;
+  }
+
   async create(data) {
     return (await this.api.post("/", data)).data;
   }
@@ -16,12 +21,8 @@ export default class JobsService {
     return (await this.api.delete("/")).data;
   }
 
-  async get(id) {
-    return (await this.api.get(`/${id}`)).data;
-  }
-
-  async update(id, data) {
-    return (await this.api.put(`/${id}`, data)).data;
+  async update(data) {
+    return (await this.api.put("/", data)).data;
   }
 
   async delete(id) {

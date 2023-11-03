@@ -68,7 +68,6 @@ const JobCard = (props) => {
 
   return (
     <Paper
-      elevation={3}
       sx={{
         margin: "10px",
         padding: "20px",
@@ -89,7 +88,7 @@ const JobCard = (props) => {
               component="img"
               sx={{
                 width: "100%",
-                padding: "10px"
+                padding: "10px",
               }}
               alt="avt_company"
               src="https://png.pngtree.com/template/20190317/ourlarge/pngtree-businessmanavataremployeesales-man-purple-business-logo-image_78692.jpg"
@@ -97,7 +96,14 @@ const JobCard = (props) => {
           </Grid>
 
           {/* Phần thông tin */}
-          <Grid container item spacing={1} xs={9} direction="column" sx={{width: "100%", padding: "10px"}}>
+          <Grid
+            container
+            item
+            spacing={1}
+            xs={9}
+            direction="column"
+            sx={{ padding: "10px" }}
+          >
             <Grid item>
               <Typography variant="h5" sx={{ fontWeight: "bold" }}>
                 {job.title}
@@ -115,10 +121,7 @@ const JobCard = (props) => {
               <Chip label={job.place} style={{ marginRight: "5px" }} />
               <br />
               {job.majors.map((m) => (
-                <Chip
-                  label={m}
-                  style={{ marginRight: "5px", marginTop: "5px" }}
-                />
+                <Chip label={m} sx={{ marginRight: "5px", marginTop: "5px" }} />
               ))}
             </Grid>
           </Grid>
@@ -134,18 +137,8 @@ const JobCard = (props) => {
             </Button>
           </Grid> */}
         </Grid>
-        <Modal open={open} onClose={handleClose}>
-          <Paper
-            style={{
-              padding: "20px",
-              outline: "none",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              minWidth: "50%",
-              alignItems: "center",
-            }}
-          >
+        {/* <Modal open={open} onClose={handleClose}>
+          <Paper>
             <TextField
               label="Write SOP (upto 250 words)"
               multiline
@@ -165,13 +158,13 @@ const JobCard = (props) => {
             />
             <Button
               variant="contained"
-              style={{ padding: "10px 50px" }}
+              sx={{ padding: "10px 50px" }}
               onClick={() => handleApply()}
             >
               Submit
             </Button>
           </Paper>
-        </Modal>
+        </Modal> */}
       </Link>
     </Paper>
   );

@@ -6,9 +6,8 @@ const EmailInput = (props) => {
     value,
     onChange,
     inputErrorHandler,
-    handleInputError,
     required,
-    className,
+    handleInputError,
   } = props;
 
   return (
@@ -18,7 +17,7 @@ const EmailInput = (props) => {
       variant="outlined"
       value={value}
       onChange={onChange}
-      helperText={inputErrorHandler.email.message}
+      // helperText={inputErrorHandler.email?.message}
       onBlur={(event) => {
         if (event.target.value === "") {
           if (required) {
@@ -36,8 +35,7 @@ const EmailInput = (props) => {
           }
         }
       }}
-      error={inputErrorHandler.email.error}
-      className={className}
+      error={inputErrorHandler.email?.error}
     />
   );
 };

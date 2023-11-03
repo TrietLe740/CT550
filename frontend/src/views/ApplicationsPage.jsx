@@ -1,41 +1,13 @@
 import { useState, useEffect, useContext } from "react";
 import { Button, Chip, Grid, Paper, Typography, Modal } from "@mui/material";
 import Rating from "@mui/material/Rating";
-import { makeStyles } from "@mui/styles";
 import axios from "axios";
 
 import { SetPopupContext } from "../App";
 
 import apiList from "../lib/apiList";
 
-const useStyles = makeStyles((theme) => ({
-  body: {
-    height: "inherit",
-  },
-  statusBlock: {
-    width: "100%",
-    height: "100%",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    textTransform: "uppercase",
-  },
-  jobTileOuter: {
-    padding: "30px",
-    margin: "20px 0",
-    boxSizing: "border-box",
-    width: "100%",
-  },
-  popupDialog: {
-    height: "100%",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-}));
-
 const ApplicationTile = (props) => {
-  const classes = useStyles();
   const { application } = props;
   const setPopup = useContext(SetPopupContext);
   const [open, setOpen] = useState(false);
@@ -115,13 +87,15 @@ const ApplicationTile = (props) => {
   };
 
   return (
-    <Paper className={classes.jobTileOuter} elevation={3}>
-      <Grid container>
+    <Paper elevation={3}>
+      <Grid container sx={{ padding: "30px 50px", borderRadius: "30px" }}>
         <Grid container item xs={9} spacing={1} direction="column">
           <Grid item>
-            <Typography variant="h5">{application.job.title}</Typography>
+            <Typography variant="h5" fontWeight="bold">
+              {application.job.title}
+            </Typography>
           </Grid>
-          <Grid item>Đăng bởi: {application.recruiter.name}</Grid>
+          <Grid item>Đăng bởi: {application.recruiter.nameCompany}</Grid>
           <Grid item>Loại: {application.job.jobType}</Grid>
           <Grid item>
             Trợ phí:{" "}
@@ -136,7 +110,7 @@ const ApplicationTile = (props) => {
               : `Linh hoạt`}
           </Grid>
           <Grid item>
-            {application.job.skillsets.map((skill) => (
+            {application.job.skillsets?.map((skill) => (
               <Chip label={skill} style={{ marginRight: "2px" }} />
             ))}
           </Grid>
@@ -149,10 +123,12 @@ const ApplicationTile = (props) => {
         <Grid item container direction="column" xs={3}>
           <Grid item xs>
             <Paper
-              className={classes.statusBlock}
-              style={{
+              sx={{
                 background: colorSet[application.status],
                 color: "#ffffff",
+                width: "100%",
+                height: "100%",
+                textAlign: "center",
               }}
             >
               {application.status}
@@ -162,9 +138,9 @@ const ApplicationTile = (props) => {
           application.status === "finished" ? (
             <Grid item>
               <Button
+                sx={{ width: "100%" }}
                 variant="contained"
                 color="primary"
-                className={classes.statusBlock}
                 onClick={() => {
                   fetchRating();
                   setOpen(true);
@@ -176,7 +152,7 @@ const ApplicationTile = (props) => {
           ) : null}
         </Grid>
       </Grid>
-      <Modal open={open} onClose={handleClose} className={classes.popupDialog}>
+      <Modal open={open} onClose={handleClose}>
         <Paper
           style={{
             padding: "20px",
@@ -248,8 +224,10 @@ const Applications = (props) => {
       alignItems="center"
       style={{ padding: "30px", minHeight: "93vh" }}
     >
-      <Grid item sx={{ marginTop: "100px" }}>
-        <Typography variant="h2">CÔNG VIỆC ĐANG ỨNG TUYỂN</Typography>
+      <Grid item sx={{ marginTop: "100px", marginBottom: "50px" }}>
+        <Typography variant="h3" sx={{ fontWeight: "bold" }}>
+          CÔNG VIỆC BẠN ĐANG ỨNG TUYỂN
+        </Typography>
       </Grid>
       <Grid
         container
@@ -261,7 +239,7 @@ const Applications = (props) => {
         justify="center"
       >
         {applications.length > 0 ? (
-          applications.map((obj) => (
+          applications?.map((obj) => (
             <Grid item>
               <ApplicationTile application={obj} />
             </Grid>

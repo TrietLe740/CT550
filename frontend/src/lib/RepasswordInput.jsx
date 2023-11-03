@@ -28,7 +28,6 @@ const RepasswordInput = (props) => {
           {props.label}
         </InputLabel>
         <OutlinedInput
-          id="outlined-adornment-repassword"
           type={showPassword ? "text" : "password"}
           endAdornment={
             <InputAdornment position="end">

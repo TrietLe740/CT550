@@ -7,6 +7,7 @@ const JobApplicant = require("../db/JobApplicant");
 const Recruiter = require("../db/Recruiter");
 const Job = require("../db/Job");
 const Application = require("../db/Application");
+const Major = require("../db/Major");
 
 const router = express.Router();
 
@@ -398,9 +399,6 @@ router.put("/user", jwtAuth, (req, res) => {
         if (data.contactNumber) {
           recruiter.contactNumber = data.contactNumber;
         }
-        if (data.bio) {
-          recruiter.bio = data.bio;
-        }
         recruiter
           .save()
           .then(() => {
@@ -430,14 +428,41 @@ router.put("/user", jwtAuth, (req, res) => {
         if (data.education) {
           jobApplicant.education = data.education;
         }
+        if (data.major) {
+          jobApplicant.major = data.major;
+        }
         if (data.skills) {
           jobApplicant.skills = data.skills;
         }
-        if (data.resume) {
-          jobApplicant.resume = data.resume;
+        if (data.avatar) {
+          jobApplicant.avatar = data.avatar;
         }
-        if (data.profile) {
-          jobApplicant.profile = data.profile;
+        if (data.avatar) {
+          jobApplicant.avatar = data.avatar;
+        }
+        if (data.contactNumber) {
+          jobApplicant.contactNumber = data.contactNumber;
+        }
+        if (data.socialLink) {
+          jobApplicant.socialLink = data.socialLink;
+        }
+        if (data.activities) {
+          jobApplicant.activities = data.activities;
+        }
+        if (data.certificates) {
+          jobApplicant.certificates = data.certificates;
+        }
+        if (data.awards) {
+          jobApplicant.awards = data.awards;
+        }
+        if (data.targer) {
+          jobApplicant.targer = data.targer;
+        }
+        if (data.exp) {
+          jobApplicant.exp = data.exp;
+        }
+        if (data.interest) {
+          jobApplicant.interest = data.interest;
         }
         console.log(jobApplicant);
         jobApplicant
@@ -933,6 +958,13 @@ router.get("/applicants", jwtAuth, (req, res) => {
       message: "Bạn không được phép truy cập danh sách ứng viên!",
     });
   }
+});
+
+router.get("/majors", jwtAuth, (req, res) => {
+  const majors = Major.find().then((majors) => {
+    console.log(majors);
+    res.json(majors);
+  });
 });
 
 module.exports = router;

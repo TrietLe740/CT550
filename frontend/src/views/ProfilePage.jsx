@@ -1,31 +1,13 @@
 import { useContext, useEffect, useState } from "react";
-import { Button, Grid, Typography, Paper, TextField } from "@mui/material";
-import { makeStyles } from "@mui/styles";
-import axios from "axios";
-import PhoneInput from "react-phone-input-2";
+import { Grid, Typography, Paper, Avatar, IconButton } from "@mui/material";
 
 import { SetPopupContext } from "../App";
 
-import apiList from "../lib/apiList";
-
-const useStyles = makeStyles((theme) => ({
-  body: {
-    height: "inherit",
-  },
-  popupDialog: {
-    height: "100%",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    // padding: "30px",
-  },
-  btn: {
-    backgroundColor: "",
-  },
-}));
+import AuthService from "../services/auth.service";
+import EditIcon from "@mui/icons-material/Edit";
+import { Link } from "react-router-dom";
 
 const Profile = (props) => {
-  const classes = useStyles();
   const setPopup = useContext(SetPopupContext);
 
   const [profileDetails, setProfileDetails] = useState({
@@ -33,166 +15,154 @@ const Profile = (props) => {
     bio: "",
     contactNumber: "",
   });
-
-  const [phone, setPhone] = useState("");
-
-  const handleInput = (key, value) => {
-    setProfileDetails({
-      ...profileDetails,
-      [key]: value,
-    });
-  };
+  const authServ = new AuthService();
 
   useEffect(() => {
-    getData();
+    async function getUser() {
+      const user = await authServ.get();
+      console.log(user);
+      setProfileDetails(user);
+    }
+    getUser();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const getData = () => {
-    axios
-      .get(apiList.user, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      })
-      .then((response) => {
-        console.log(response.data);
-        setProfileDetails(response.data);
-        setPhone(response.data.contactNumber);
-      })
-      .catch((err) => {
-        console.log(err.response.data);
-        setPopup({
-          open: true,
-          severity: "error",
-          message: "Error",
-        });
-      });
-  };
-
-  const handleUpdate = () => {
-    let updatedDetails = {
-      ...profileDetails,
-    };
-    if (phone !== "") {
-      updatedDetails = {
-        ...profileDetails,
-        contactNumber: `+${phone}`,
-      };
-    } else {
-      updatedDetails = {
-        ...profileDetails,
-        contactNumber: "",
-      };
-    }
-
-    axios
-      .put(apiList.user, updatedDetails, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      })
-      .then((response) => {
-        setPopup({
-          open: true,
-          severity: "success",
-          message: response.data.message,
-        });
-        getData();
-      })
-      .catch((err) => {
-        setPopup({
-          open: true,
-          severity: "error",
-          message: err.response.data.message,
-        });
-        console.log(err.response);
-      });
-  };
-
   return (
-    <>
+    <Paper sx={{ padding: "100px" }}>
       <Grid
         container
-        item
         direction="column"
-        alignItems="center"
-        sx={{ padding: "100px", minHeight: "93vh" }}
+        sx={{
+          boxShadow:
+            "0px 3px 3px -2px rgba(0,0,0,0.2), 0px 3px 4px 0px rgba(0,0,0,0.14), 0px 1px 8px 0px rgba(0,0,0,0.12)",
+          borderRadius: "30px",
+          margin: "0 auto",
+          maxWidth: "1312px",
+          minHeight: "1538px",
+        }}
       >
-        <Grid item>
-          <Typography variant="h2">THÔNG TIN</Typography>
-        </Grid>
-        <Grid item xs style={{ width: "100%" }}>
-          <Paper
-            style={{
-              padding: "20px",
-              outline: "none",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              //   width: "60%",
-            }}
-          >
-            <Grid container direction="column" alignItems="stretch" spacing={3}>
-              <Grid item>
-                <TextField
-                  label="Tên"
-                  value={profileDetails.name}
-                  onChange={(event) => handleInput("name", event.target.value)}
-                  className={classes.inputBox}
-                  variant="outlined"
-                  fullWidth
-                  style={{ width: "100%" }}
-                />
-              </Grid>
-
-              <Grid item>
-                <TextField
-                  label="Thông tin mô tả)"
-                  multiline
-                  rows={8}
-                  style={{ width: "100%" }}
-                  variant="outlined"
-                  value={profileDetails.bio}
-                  onChange={(event) => {
-                    if (
-                      event.target.value.split(" ").filter(function (n) {
-                        // eslint-disable-next-line eqeqeq
-                        return n != "";
-                      }).length <= 250
-                    ) {
-                      handleInput("bio", event.target.value);
-                    }
-                  }}
-                />
-              </Grid>
-              <Grid
-                item
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
+        <Grid
+          item
+          container
+          sx={{
+            backgroundColor: "primary.main",
+            width: "100%",
+            borderRadius: "30px 30px 0 0",
+            color: "common.white",
+          }}
+        >
+          <Grid item xs={3} sx={{ padding: "20px 0 20px 50px" }}>
+            <Avatar
+              sx={{ width: "200px", height: "200px", border: "3px solid" }}
+              src={profileDetails?.avatar}
+            />
+          </Grid>
+          <Grid item xs={8} sx={{ padding: "20px 0 0 0" }}>
+            <Typography variant="h3" sx={{ fontWeight: "bold" }}>
+              {profileDetails?.name}
+            </Typography>
+            <p>Ngành: {profileDetails?.major}</p>
+            <p>Số điện thoại: {profileDetails?.contactNumber}</p>
+          </Grid>
+          <Grid item xs={1}>
+            <Link to={`/ho-so/chinh-sua/${profileDetails.userId}`}>
+              <IconButton
+                variant="contained"
+                sx={{
+                  marginTop: "20px",
+                  marginRight: "50px",
+                  color: "common.white",
                 }}
               >
-                <PhoneInput
-                  country={"vn"}
-                  value={phone}
-                  onChange={(phone) => setPhone(phone)}
-                  style={{ width: "auto" }}
-                />
-              </Grid>
-            </Grid>
-            <Button
-              variant="contained"
-              style={{ padding: "10px 50px", marginTop: "30px" }}
-              onClick={() => handleUpdate()}
-            >
-              Cập nhật thông tin
-            </Button>
-          </Paper>
+                <EditIcon />
+              </IconButton>
+            </Link>
+          </Grid>
+        </Grid>
+        <Grid
+          item
+          container
+          sx={{
+            width: "100%",
+            borderRadius: "0 0 30px 30px",
+            color: "common.black",
+          }}
+        >
+          <Grid item xs={3} sx={{ padding: "20px 0 20px 50px" }}>
+            <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+              HỌC VẤN
+            </Typography>
+            <p>
+              {profileDetails?.education?.map((value) => {
+                {
+                  `Trường ${value.institutionName}`;
+                }
+                {
+                  `Khóa ${value.startYear} - ${value.endYear}`;
+                }
+                <br />;
+              })}
+            </p>
+            <br />
+            <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+              HOẠT ĐỘNG
+            </Typography>
+            <p>
+              {profileDetails?.activities?.map((value) => {
+                {
+                  value;
+                }
+                <br />;
+              })}
+            </p>
+            <br />
+            <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+              CHỨNG CHỈ
+            </Typography>
+            <p>
+              {profileDetails?.certificates?.map((value) => {
+                {
+                  value;
+                }
+                <br />;
+              })}
+            </p>
+            <br />
+            <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+              GIẢI THƯỞNG
+            </Typography>
+            <p>
+              {profileDetails?.awards?.map((value) => {
+                {
+                  value;
+                }
+                <br />;
+              })}
+            </p>
+          </Grid>
+          <Grid item xs={9} sx={{ padding: "20px 0 0 0" }}>
+            <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+              MỤC TIÊU NGHỀ NGHIỆP
+            </Typography>
+            <p>{profileDetails?.target}</p>
+            <br />
+            <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+              SỞ THÍCH
+            </Typography>
+            <p>{profileDetails?.interest}</p>
+            <br />
+            <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+              KINH NGHIỆM LÀM VIỆC/SẢN PHẨM THỰC HIỆN
+            </Typography>
+            <p>{profileDetails?.exp}</p>
+            <br />
+            <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+              LỊCH SỬ THỰC TẬP
+            </Typography>
+          </Grid>
         </Grid>
       </Grid>
-    </>
+    </Paper>
   );
 };
 

@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import {
   Grid,
   TextField,
@@ -6,11 +6,7 @@ import {
   Typography,
   Paper,
   MenuItem,
-  Select,
-  InputLabel,
 } from "@mui/material";
-import AllInboxIcon from "@mui/icons-material/AllInbox";
-import PersonIcon from "@mui/icons-material/Person";
 
 import axios from "axios";
 import { Redirect } from "react-router-dom";
@@ -18,7 +14,6 @@ import PhoneInput from "react-phone-input-2";
 
 import PasswordInput from "../lib/PasswordInput";
 import EmailInput from "../lib/EmailInput";
-import FileUploadInput from "../lib/FileUploadInput";
 import { SetPopupContext } from "../App";
 
 import apiList from "../lib/apiList";
@@ -26,7 +21,7 @@ import isAuth from "../lib/isAuth";
 
 import LOGO from "../assets/logo_Hitern.png";
 
-const Login = (props) => {
+const SignupPage = (props) => {
   const setPopup = useContext(SetPopupContext);
 
   const [loggedin, setLoggedin] = useState(isAuth());
@@ -35,91 +30,127 @@ const Login = (props) => {
     type: "applicant",
     email: "",
     password: "",
-    tmpPassword: "",
     name: "",
     companyName: "",
-    major: "",
     role: "",
-    // education: [],
-    education: "",
-    skills: [],
-    profile: "",
-    bio: "",
     contactNumber: "",
+    workplace: "",
+    level: "0",
+    tmpPassword: "",
   });
+
+  useEffect(() => {
+    console.log(signupDetails);
+  }, []);
 
   const [phone, setPhone] = useState("");
 
-  const [education, setEducation] = useState([
-    {
-      institutionName: "",
-      startYear: "",
-      endYear: "",
-    },
-  ]);
+  // const [inputErrorHandler, setInputErrorHandler] = useState({
+  //   type: {
+  //     value: "applicant",
+  //     rules: [{ type: "required", message: "" }],
+  //     error: false,
+  //     message: "",
+  //   },
+  //   email: {
+  //     value: "",
+  //     rules: [{ type: "required", message: "Email là bắt buộc" }],
+  //     error: false,
+  //     message: "",
+  //   },
+  //   password: {
+  //     value: "",
+  //     rules: [{ type: "required", message: "Mật khẩu là bắt buộc" }],
+  //     error: false,
+  //     message: "",
+  //   },
+  //   tmpPassword: {
+  //     value: "",
+  //     rules: [{ type: "required", message: "Nhập lại mật khẩu là bắt buộc" }],
+  //     error: false,
+  //     message: "",
+  //   },
+  //   name: {
+  //     value: "",
+  //     rules: [{ type: "required", message: "Họ tên là bắt buộc" }],
+  //     error: false,
+  //     message: "",
+  //   },
+  //   companyName: {
+  //     value: "",
+  //     rules: [{ type: "required", message: "Tên công ty là bắt buộc" }],
+  //     error: false,
+  //     message: "",
+  //   },
+  //   workplace: {
+  //     value: "Chọn vị trí",
+  //     rules: [{ type: "required", message: "Vị trí là bắt buộc" }],
+  //     error: false,
+  //     message: "",
+  //   },
+  // });
 
   const [inputErrorHandler, setInputErrorHandler] = useState({
-    type: {
-      value: "applicant",
-      rules: [{ type: "required", message: "" }],
-      error: false,
-      message: "",
-    },
     email: {
-      value: "",
-      // untouched: true,
-      rules: [{ type: "required", message: "Email là bắt buộc" }],
+      untouched: true,
+      required: true,
       error: false,
       message: "",
     },
     password: {
-      value: "",
-      // untouched: true,
-      rules: [{ type: "required", message: "Mật khẩu là bắt buộc" }],
-      // required: true,
+      untouched: true,
+      required: true,
       error: false,
       message: "",
     },
-    tmpPassword: {
-      value: "",
-      // untouched: true,
-      // required: true,
-      rules: [{ type: "required", message: "Nhập lại mật khẩu là bắt buộc" }],
-      error: false,
-      message: "",
-    },
+    // tmpPassword: {
+    //   untouched: true,
+    //   required: true,
+    //   error: false,
+    //   message: "",
+    // },
     name: {
-      value: "",
-      // untouched: true,
-      rules: [{ type: "required", message: "Họ tên là bắt buộc" }],
-      // required: true,
+      untouched: true,
+      required: true,
       error: false,
       message: "",
     },
-    companyName: {
-      value: "",
-      // untouched: true,
-      rules: [{ type: "required", message: "Tên công ty là bắt buộc" }],
-      // required: true,
-      error: false,
-      message: "",
-    },
+    // companyName: {
+    //   untouched: true,
+    //   required: true,
+    //   error: false,
+    //   message: "",
+    // },
+    // workplace: {
+    //   untouched: true,
+    //   required: true,
+    //   error: false,
+    //   message: "",
+    // },
   });
 
-  const getFieldValue = (key) => {
-    return inputErrorHandler[key]?.value || undefined;
-  };
+  // const getFieldValue = (key) => {
+  //   return inputErrorHandler[key]?.value || undefined;
+  // };
+
+  // const handleInput = (key, value) => {
+  //   setInputErrorHandler((o) => {
+  //     return {
+  //       ...o,
+  //       [key]: {
+  //         value,
+  //         error: false,
+  //         message: "",
+  //         rules: o[key].rules,
+  //       },
+  //     };
+  //   });
+  // };
+
   const handleInput = (key, value) => {
-    setInputErrorHandler((o) => {
-      return {
-        ...o,
-        [key]: {
-          value,
-          error: false,
-          message: "",
-          rules: o[key].rules,
-        },
-      };
+    setSignupDetails({
+      ...signupDetails,
+      [key]: value,
     });
   };
 
@@ -134,48 +165,50 @@ const Login = (props) => {
       },
     });
   };
-  const validatorForm = (form) => {
-    const formValidate = {};
-    Object.entries(form).forEach(([key, field]) => {
-      if (field.rules) {
-        let isInvalid = false;
-        field.rules.forEach((rule) => {
-          if (isInvalid) return;
-          formValidate[key] = { ...field, error: false, message: "" };
-          if (
-            rule.type === "required" &&
-            ["", null, undefined].includes(field.value)
-          ) {
-            isInvalid = true;
-            formValidate[key] = {
-              ...field,
-              error: true,
-              message: rule.message,
-            };
-          } else if (key === "password" || key === "tmpPassword") {
-            console.log(field);
-            if (field.value.length < 6) {
-              isInvalid = true;
-              formValidate[key] = {
-                ...field,
-                error: true,
-                message: "Mật khẩu phải có ít nhất 6 ký tự",
-              };
-            } else if (form["tmpPassword"]?.value !== form["password"]?.value) {
-              isInvalid = true;
-              formValidate[key] = {
-                ...field,
-                error: true,
-                message: "Mật khẩu không khớp",
-              };
-            }
-          }
-        });
-      }
-    });
-    setInputErrorHandler(formValidate);
-    console.log(formValidate);
-  };
+
+  // const validatorForm = (form) => {
+  //   const formValidate = {};
+  //   Object.entries(form).forEach(([key, field]) => {
+  //     if (field.rules) {
+  //       let isInvalid = false;
+  //       field.rules.forEach((rule) => {
+  //         if (isInvalid) return;
+  //         formValidate[key] = { ...field, error: false, message: "" };
+  //         if (
+  //           rule.type === "required" &&
+  //           ["", null, undefined].includes(field.value)
+  //         ) {
+  //           isInvalid = true;
+  //           formValidate[key] = {
+  //             ...field,
+  //             error: true,
+  //             message: rule.message,
+  //           };
+  //         } else if (key === "password" || key === "tmpPassword") {
+  //           // console.log(field);
+  //           if (field.value.length < 6) {
+  //             isInvalid = true;
+  //             formValidate[key] = {
+  //               ...field,
+  //               error: true,
+  //               message: "Mật khẩu phải có ít nhất 6 ký tự",
+  //             };
+  //           } else if (form["tmpPassword"]?.value !== form["password"]?.value) {
+  //             isInvalid = true;
+  //             formValidate[key] = {
+  //               ...field,
+  //               error: true,
+  //               message: "Mật khẩu không khớp",
+  //             };
+  //           }
+  //         }
+  //       });
+  //     }
+  //   });
+  //   setInputErrorHandler(formValidate);
+  //   // console.log(formValidate);
+  // };
+
   const handleLogin = () => {
     const tmpErrorHandler = {};
     Object.keys(inputErrorHandler).forEach((obj) => {
@@ -184,33 +217,45 @@ const Login = (props) => {
           required: true,
           untouched: false,
           error: true,
-          message: `${obj[0].toUpperCase() + obj.substr(1)} is required`,
+          message: `${obj[0].toUpperCase() + obj.substr(1)} là bắt buộc`,
         };
       } else {
         tmpErrorHandler[obj] = inputErrorHandler[obj];
       }
     });
 
-    const isValid = validatorForm(inputErrorHandler);
+    let updatedDetails = {
+      ...signupDetails,
+      // education: education
+      //   .filter((obj) => obj.institutionName.trim() !== "")
+      //   .map((obj) => {
+      //     if (obj["endYear"] === "") {
+      //       delete obj["endYear"];
+      //     }
+      //     return obj;
+      //   }),
+    };
+
+    // const isValid = validatorForm(inputErrorHandler);
 
     setSignupDetails(updatedDetails);
 
     const verified = !Object.keys(tmpErrorHandler).some((obj) => {
       return tmpErrorHandler[obj].error;
     });
-    const value = false;
-    if (value) {
-      let updatedDetails = {
-        ...signupDetails,
-        education: education
-          .filter((obj) => obj.institutionName.trim() !== "")
-          .map((obj) => {
-            if (obj["endYear"] === "") {
-              delete obj["endYear"];
-            }
-            return obj;
-          }),
-      };
+    // const value = false;
+    if (verified) {
+      // let updatedDetails = {
+      //   ...signupDetails,
+      //   // education: education
+      //   //   .filter((obj) => obj.institutionName.trim() !== "")
+      //   //   .map((obj) => {
+      //   //     if (obj["endYear"] === "") {
+      //   //       delete obj["endYear"];
+      //   //     }
+      //   //     return obj;
+      //   //   }),
+      // };
 
       axios
         .post(apiList.signup, updatedDetails)
@@ -234,7 +279,7 @@ const Login = (props) => {
           console.log(err.response);
         });
     } else {
-      // setInputErrorHandler(tmpErrorHandler);
+      setInputErrorHandler(tmpErrorHandler);
       setPopup({
         open: true,
         severity: "error",
@@ -332,7 +377,8 @@ const Login = (props) => {
             select
             label="Đăng ký với vai trò"
             variant="outlined"
-            value={getFieldValue("type")}
+            // value={getFieldValue("type")}
+            value={signupDetails.type}
             onChange={(event) => {
               handleInput("type", event.target.value);
             }}
@@ -345,23 +391,37 @@ const Login = (props) => {
           <TextField
             sx={{ width: "300px" }}
             label="Họ và tên"
-            value={getFieldValue("name")}
+            // value={getFieldValue("name")}
+            value={signupDetails.name}
             onChange={(event) => handleInput("name", event.target.value)}
             error={inputErrorHandler.name.error}
             variant="outlined"
+            helperText={inputErrorHandler.name.message}
+            onBlur={(event) => {
+              if (event.target.value === "") {
+                handleInputError("name", true, "Họ Tên là bắt buộc");
+              } else {
+                handleInputError("name", false, "");
+              }
+            }}
+            // inputErrorHandler={inputErrorHandler}
+            // handleInputError={handleInputError}
+            // required={true}
           />
         </Grid>
         <Grid item>
           <EmailInput
             label="Email"
-            value={getFieldValue("email")}
+            // value={getFieldValue("email")}
+            value={signupDetails.email}
             onChange={(event) => {
-              console.log(event.target.value);
               handleInput("email", event.target.value);
             }}
+            error={inputErrorHandler.email.error}
             inputErrorHandler={inputErrorHandler}
             handleInputError={handleInputError}
             required={true}
+            helperText={inputErrorHandler.email.message}
           />
         </Grid>
 
@@ -369,35 +429,62 @@ const Login = (props) => {
         <Grid item>
           <PasswordInput
             label="Mật khẩu"
-            value={getFieldValue("password")}
+            // value={getFieldValue("password")}
+            value={signupDetails.password}
             onChange={(event) => handleInput("password", event.target.value)}
-            error={inputErrorHandler?.password?.error}
+            error={inputErrorHandler.password.error}
+            inputErrorHandler={inputErrorHandler}
+            handleInputError={handleInputError}
+            required={true}
+            helperText={inputErrorHandler.password.message}
+            onBlur={(event) => {
+              if (event.target.value === "") {
+                handleInputError("password", true, "Mật khẩu là bắt buộc");
+              } else {
+                handleInputError("password", false, "");
+              }
+            }}
           />
         </Grid>
         {/* Nhập lại mật khẩu */}
         <Grid item>
           <PasswordInput
             label="Nhập lại mật khẩu"
-            value={getFieldValue("tmpPassword")}
+            value={signupDetails.tmpPassword}
+            // value={getFieldValue("tmpPassword")}
             onChange={(event) => handleInput("tmpPassword", event.target.value)}
-            error={inputErrorHandler.tmpPassword.error}
+            // error={inputErrorHandler.tmpPassword.error}
+            inputErrorHandler={inputErrorHandler}
+            handleInputError={handleInputError}
+            required={true}
+            // helperText={inputErrorHandler.tmpPassword.message}
+            onBlur={(event) => {
+              if (event.target.value !== signupDetails.password) {
+                handleInputError(
+                  "tmpPassword",
+                  true,
+                  "Nhập lại mật khẩu chưa đúng"
+                );
+              }
+            }}
           />
         </Grid>
 
         {/* Câu hỏi thêm */}
-        {getFieldValue("type") === "applicant" ? (
+        {/* getFieldValue("type") */}
+        {signupDetails.type === "applicant" ? (
           <>
             {/* Trường */}
-            <Grid item>
+            {/* <Grid item>
               <TextField
                 sx={{ width: "300px" }}
                 label={`Tên trường đại học`}
                 variant="outlined"
               />
-            </Grid>
+            </Grid> */}
 
             {/* Ngành */}
-            <Grid item>
+            {/* <Grid item>
               <InputLabel id="major-label">Ngành học</InputLabel>
               <Select
                 sx={{ width: "300px" }}
@@ -411,10 +498,10 @@ const Login = (props) => {
                 </MenuItem>
                 <MenuItem value={10}>Công nghệ thông tin</MenuItem>
               </Select>
-            </Grid>
+            </Grid> */}
 
             {/* Chân dung */}
-            <Grid item>
+            {/* <Grid item>
               <FileUploadInput
                 label="Chân dung (.jpg/.png)"
                 icon={<AllInboxIcon />}
@@ -422,7 +509,13 @@ const Login = (props) => {
                 handleInput={handleInput}
                 identifier={"profile"}
               />
-            </Grid>
+            </Grid> */}
+            {/* <Grid item sx={{ width: "300px" }}>
+              <Typography variant="p">
+                Bằng việc ấn vào nút Đăng ký, bạn đã đồng ý với Điều khoản dịch
+                vụ và Chính sách bảo mật của chúng tôi
+              </Typography>
+            </Grid> */}
           </>
         ) : (
           <>
@@ -431,40 +524,40 @@ const Login = (props) => {
               <TextField
                 sx={{ width: "300px" }}
                 label="Tên công ty"
-                value={getFieldValue("companyName")}
+                value={signupDetails.companyName}
+                // value={getFieldValue("companyName")}
                 onChange={(event) =>
                   handleInput("companyName", event.target.value)
                 }
-                error={inputErrorHandler.companyName.error}
                 variant="outlined"
               />
             </Grid>
 
             {/* Vị trí công tác */}
             <Grid item>
-              <InputLabel id="role-label">Vị trí công tác</InputLabel>
-              <Select
+              <TextField
                 sx={{ width: "300px" }}
-                labelId="role-label"
-                id="demo-simple-select-standard"
-                value={0}
-                onChange={(event) => handleInput("role", event.target.value)}
-                label="Role"
+                select
+                label="Vị trí"
+                variant="outlined"
+                value={signupDetails.workplace}
+                // value={getFieldValue("workplace")}
+                onChange={(event) => {
+                  handleInput("workplace", event.target.value);
+                }}
               >
-                <MenuItem value={0}>
-                  <em>-Chọn vị trí công tác-</em>
-                </MenuItem>
-                <MenuItem value={1}>Nhân viên</MenuItem>
-                <MenuItem value={2}>Trưởng nhóm</MenuItem>
-                <MenuItem value={3}>Phó phòng</MenuItem>
-                <MenuItem value={4}>Trưởng phòng</MenuItem>
-                <MenuItem value={5}>Phó giám đốc</MenuItem>
-                <MenuItem value={6}>Giám đốc</MenuItem>
-                <MenuItem value={7}>Tổng giám đốc</MenuItem>
-              </Select>
+                <MenuItem value="Chọn vị trí">-Chọn vị trí-</MenuItem>
+                <MenuItem value="Nhân viên">Nhân viên</MenuItem>
+                <MenuItem value="Trưởng nhóm">Trưởng nhóm</MenuItem>
+                <MenuItem value="Phó phòng">Phó phòng</MenuItem>
+                <MenuItem value="Trưởng phòng">Trưởng phòng</MenuItem>
+                <MenuItem value="Phó giám đốc">Phó giám đốc</MenuItem>
+                <MenuItem value="Giám đốc">Giám đốc</MenuItem>
+                <MenuItem value="Tổng giám đốc">Tổng giám đốc</MenuItem>
+              </TextField>
             </Grid>
 
-            <Grid item sx={{ width: "300px" }}>
+            {/* <Grid item sx={{ width: "300px" }}>
               <TextField
                 label="Thông tin mô tả (Tối đa 250 từ)"
                 multiline
@@ -482,7 +575,7 @@ const Login = (props) => {
                   }
                 }}
               />
-            </Grid>
+            </Grid> */}
             <Grid item>
               <PhoneInput
                 country={"vn"}
@@ -498,7 +591,8 @@ const Login = (props) => {
           <Button
             variant="contained"
             onClick={() => {
-              getFieldValue("type") === "applicant"
+              // getFieldValue("type")
+              signupDetails.type === "applicant"
                 ? handleLogin()
                 : handleLoginRecruiter();
             }}
@@ -511,4 +605,4 @@ const Login = (props) => {
   );
 };
 
-export default Login;
+export default SignupPage;

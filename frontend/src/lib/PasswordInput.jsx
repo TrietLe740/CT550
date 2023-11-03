@@ -29,7 +29,6 @@ const PasswordInput = (props) => {
         </InputLabel>
         <OutlinedInput
           sx={{ width: "300px" }}
-          id="outlined-adornment-password"
           type={showPassword ? "text" : "password"}
           endAdornment={
             <InputAdornment position="end">
@@ -46,7 +45,6 @@ const PasswordInput = (props) => {
           value={props.value}
           onChange={(event) => props.onChange(event)}
           // labelWidth={props.labelWidth ? props.labelWidth : 70}
-          className={props.className}
           onBlur={props.onBlur ? props.onBlur : null}
         />
         {props.helperText ? (

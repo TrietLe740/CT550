@@ -27,6 +27,9 @@ import MessagePopup from "./lib/MessagePopup.jsx";
 // eslint-disable-next-line no-unused-vars
 import isAuth, { userType } from "./lib/isAuth.jsx";
 import JobDetailPage from "./views/JobDetailPage.jsx";
+import ProfileEditPage from "./views/ProfileEditPage.jsx";
+import UpdateAccountPage from "./views/UpdateAccountPage.jsx";
+import UploadCVPage from "./views/UploadCVPage.jsx";
 
 export const SetPopupContext = createContext();
 
@@ -125,6 +128,15 @@ function App() {
                 </Route>
                 <Route exact path="/ung-vien">
                   <ApplicationsPage />
+                </Route>
+                <Route exact path="/ho-so/chinh-sua/:id">
+                  <ProfileEditPage />
+                </Route>
+                <Route exact path="/tai-khoan/nang-cap">
+                  <UpdateAccountPage />
+                </Route>
+                <Route exact path="/update-cv">
+                  <UploadCVPage />
                 </Route>
                 <Route exact path="/tim-kiem">
                   <SearchPage />

@@ -212,7 +212,7 @@ const CreateJobs = (props) => {
                     fullWidth
                   />
                 </Grid>
-                <Grid item>
+                {/* <Grid item>
                   <TextField
                     label="Số vị trí còn lại"
                     type="number"
@@ -224,36 +224,8 @@ const CreateJobs = (props) => {
                     InputProps={{ inputProps: { min: 1 } }}
                     fullWidth
                   />
-                </Grid>
-                <Grid item>
-                  {/* <InputLabel id="demo-multiple-chip-label">Chip</InputLabel> */}
-                  {/* <Select
-          labelId="demo-multiple-chip-label"
-          id="demo-multiple-chip"
-          multiple
-          value={personName}
-          onChange={handleChange}
-          input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
-          renderValue={(selected) => (
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-              {selected.map((value) => (
-                <Chip key={value} label={value} />
-              ))}
-            </Box>
-          )}
-          MenuProps={MenuProps}
-        >
-          {names.map((name) => (
-            <MenuItem
-              key={name}
-              value={name}
-              style={getStyles(name, personName, theme)}
-            >
-              {name}
-            </MenuItem>
-          ))}
-        </Select> */}
-                </Grid>
+                </Grid> */}
+                <Grid item></Grid>
               </Grid>
               <Button
                 variant="contained"

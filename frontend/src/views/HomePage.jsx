@@ -233,7 +233,7 @@ const Home = (props) => {
             </IconButton>
           </Grid> */}
         </Grid>
-        
+
         {/* Quang cao */}
         <Grid
           container
@@ -260,13 +260,7 @@ const Home = (props) => {
           </Typography>
         </Grid>
 
-        <Grid
-          container
-          item
-          alignItems="stretch"
-          justifyContent="center"
-          direction="column"
-        >
+        <Grid container item direction="column">
           <Typography
             variant="h4"
             align="center"
@@ -275,20 +269,35 @@ const Home = (props) => {
             TIN THỰC TẬP TỐT NHẤT VIỆT NAM
           </Typography>
           <Grid container item>
-          <Grid xs={4}>
-            {/* TODO */}
-          </Grid>
-          <Grid container justifyContent="center" xs={8}>
-            {jobs.length > 0 ? (
-              jobs.map((job) => {
-                return <JobCard job={job} />;
-              })
-            ) : (
-              <Typography variant="h5" style={{ textAlign: "center" }}>
-                Không tìm thấy việc làm phù hợp
+            <Grid
+              item
+              xs={4}
+              sx={{
+                boxShadow:
+                  "0px 3px 3px -2px rgba(0,0,0,0.2), 0px 3px 4px 0px rgba(0,0,0,0.14), 0px 1px 8px 0px rgba(0,0,0,0.12)",
+                borderRadius: "30px",
+                margin: "0 auto",
+                height: "500px",
+                marginTop: "10px",
+                padding: "30px",
+              }}
+            >
+              <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                Có thể bạn quan tâm
               </Typography>
-            )}
-          </Grid>
+              <Grid>Đang cập nhật</Grid>
+            </Grid>
+            <Grid item container justifyContent="center" xs={8}>
+              {jobs.length > 0 ? (
+                jobs.map((job) => {
+                  return <JobCard job={job} />;
+                })
+              ) : (
+                <Typography variant="h5" style={{ textAlign: "center" }}>
+                  Không tìm thấy việc làm phù hợp
+                </Typography>
+              )}
+            </Grid>
           </Grid>
         </Grid>
         <Grid item>

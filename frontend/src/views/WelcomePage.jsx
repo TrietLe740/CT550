@@ -18,156 +18,17 @@ import { useHistory } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
-import { useContext, useState } from "react";
-
-const JobTile = (props) => {
-  const { job } = props;
-  const setPopup = useContext(SetPopupContext);
-
-  const [open, setOpen] = useState(false);
-  const [sop, setSop] = useState("");
-
-  const handleClose = () => {
-    setOpen(false);
-    setSop("");
-  };
-
-  const handleApply = () => {
-    console.log(job._id);
-    console.log(sop);
-    axios
-      .post(
-        `${apiList.jobs}/${job._id}/applications`,
-        {
-          sop: sop,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      )
-      .then((response) => {
-        setPopup({
-          open: true,
-          severity: "success",
-          message: response.data.message,
-        });
-        handleClose();
-      })
-      .catch((err) => {
-        console.log(err.response);
-        setPopup({
-          open: true,
-          severity: "error",
-          message: err.response.data.message,
-        });
-        handleClose();
-      });
-  };
-
-  const deadline = new Date(job.deadline).toLocaleDateString();
-
-  return (
-    <Paper
-      elevation={3}
-      sx={{ margin: "10px", padding: "20px", width: "500px" }}
-    >
-      <Grid container>
-        <Grid container item xs={9} spacing={1} direction="column">
-          <Grid item>
-            <Typography variant="h5">{job.title}</Typography>
-          </Grid>
-          <Grid item>
-            <Rating value={job.rating !== -1 ? job.rating : null} readOnly />
-          </Grid>
-          <Grid item>Loại: {job.jobType}</Grid>
-          <Grid item>
-            Trợ phí: {job.salary > 0 ? `${job.salary} VNĐ/Tháng` : `Không`}
-          </Grid>
-          <Grid item>
-            Số tháng thực tập:{" "}
-            {job.duration > 0 ? `${job.duration} Tháng` : `Linh hoạt`}
-          </Grid>
-
-          <Grid item>Đăng bởi: {job.recruiter.name}</Grid>
-          <Grid item>Hạn chót: {deadline}</Grid>
-
-          <Grid item>
-            Ngành nghề liên quan:
-            <br />
-            {job.majors.map((m) => (
-              <Chip label={m} style={{ marginRight: "5px" }} />
-            ))}
-          </Grid>
-        </Grid>
-        <Grid item xs={3}>
-          <Button
-            variant="contained"
-            onClick={() => {
-              setOpen(true);
-            }}
-            disabled={userType() === "recruiter"}
-          >
-            Ứng tuyển
-          </Button>
-        </Grid>
-      </Grid>
-      <Modal
-        open={open}
-        onClose={handleClose}
-        // className={classes.popupDialog}
-      >
-        <Paper
-          style={{
-            padding: "20px",
-            outline: "none",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            minWidth: "50%",
-            alignItems: "center",
-          }}
-        >
-          <TextField
-            label="Write SOP (upto 250 words)"
-            multiline
-            rows={8}
-            style={{ width: "100%", marginBottom: "30px" }}
-            variant="outlined"
-            value={sop}
-            onChange={(event) => {
-              if (
-                event.target.value.split(" ").filter(function (n) {
-                  return n !== "";
-                }).length <= 250
-              ) {
-                setSop(event.target.value);
-              }
-            }}
-          />
-          <Button
-            variant="contained"
-            style={{ padding: "10px 50px" }}
-            onClick={() => handleApply()}
-          >
-            Submit
-          </Button>
-        </Paper>
-      </Modal>
-    </Paper>
-  );
-};
+import { useContext, useEffect, useState } from "react";
+import UsersService from "../services/user.service";
+import JobsService from "../services/jobs.service";
+import { userType } from "../lib/isAuth";
+import JobCard from "../component/JobCard";
 
 const FilterPopup = (props) => {
   // const classes = useStyles();
   const { open, handleClose, searchOptions, setSearchOptions, getData } = props;
   return (
-    <Modal
-      open={open}
-      onClose={handleClose}
-      // className={classes.popupDialog}
-    >
+    <Modal open={open} onClose={handleClose}>
       <Paper
         style={{
           padding: "50px",
@@ -497,12 +358,24 @@ const FilterPopup = (props) => {
 };
 
 const Welcome = (props) => {
+  const jobServ = new JobsService();
+  const userServ = new UsersService();
+
   let history = useHistory();
   const [searchInput, setSearchInput] = useState("");
 
   const [filterOpen, setFilterOpen] = useState(false);
 
   const [jobs, setJobs] = useState([]);
+  async function getJob() {
+    var dt = await jobServ.getAll();
+    setJobs(dt);
+  }
+
+  useEffect(() => {
+    getJob();
+  }, []);
+
   const [searchOptions, setSearchOptions] = useState({
     query: "",
     jobType: {
@@ -578,31 +451,29 @@ const Welcome = (props) => {
     if (queryString !== "") {
       address = `${address}?${queryString}`;
     }
-
-    axios
-      .get(address, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      })
-      .then((response) => {
-        console.log(response.data);
-        setJobs(
-          response.data.filter((obj) => {
-            const today = new Date();
-            const deadline = new Date(obj.deadline);
-            return deadline > today;
-          })
-        );
-      })
-      .catch((err) => {
-        console.log(err);
-        setPopup({
-          open: true,
-          severity: "error",
-          message: "Error",
-        });
-      });
+    //   .get(address, {
+    //     headers: {
+    //       Authorization: `Bearer ${localStorage.getItem("token")}`,
+    //     },
+    //   })
+    //   .then((response) => {
+    //     console.log(response.data);
+    //     setJobs(
+    //       response.data.filter((obj) => {
+    //         const today = new Date();
+    //         const deadline = new Date(obj.deadline);
+    //         return deadline > today;
+    //       })
+    //     );
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //     setPopup({
+    //       open: true,
+    //       severity: "error",
+    //       message: "Error",
+    //     });
+    //   });
   };
 
   return (
@@ -693,22 +564,22 @@ const Welcome = (props) => {
       </Grid>
       {/* 2 */}
       <Grid item container sx={{ margin: "50px auto" }} xs={12}>
-        <Grid item xs={12} textAlign="center">
+        {/* <Grid item xs={12} textAlign="center">
           <Typography variant="h4" sx={{ fontWeight: "bold" }}>
             NHÀ TUYỂN DỤNG HÀNG ĐẦU
           </Typography>
-        </Grid>
-        <Grid container alignItems="stretch" justifyContent="center">
+        </Grid> */}
+        {/* <Grid container alignItems="stretch" justifyContent="center">
           {jobs.length > 0 ? (
             jobs.map((job) => {
-              return <JobTile job={job} />;
+              return <JobCard job={job} />;
             })
           ) : (
             <Typography variant="h5" style={{ textAlign: "center" }}>
               Không tìm thấy việc làm phù hợp
             </Typography>
           )}
-        </Grid>
+        </Grid> */}
       </Grid>
       <FilterPopup
         open={filterOpen}
