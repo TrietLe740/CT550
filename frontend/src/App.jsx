@@ -129,7 +129,7 @@ function App() {
                 <Route exact path="/ung-vien">
                   <ApplicationsPage />
                 </Route>
-                <Route exact path="/ho-so/chinh-sua/:id">
+                <Route exact path="/ho-so/chinh-sua">
                   <ProfileEditPage />
                 </Route>
                 <Route exact path="/tai-khoan/nang-cap">

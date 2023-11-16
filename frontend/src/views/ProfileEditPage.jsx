@@ -1,8 +1,8 @@
 import {
   Avatar,
+  IconButton,
   Button,
   Grid,
-  MenuItem,
   Paper,
   TextField,
   Typography,
@@ -13,128 +13,14 @@ import UsersService from "../services/user.service";
 import AuthService from "../services/auth.service";
 import { Link } from "react-router-dom";
 import DescriptionIcon from "@mui/icons-material/Description";
+import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import FileUploadInput from "../component/FileUploadInput";
 import MajorsService from "../services/major.service";
-import UploadService from "../services/upload.sevice";
-// import MultifieldInput from "../component/MultifieldInput";
-
-// const MultifieldInput = (props) => {
-//   const { education, setEducation } = props;
-
-//   return (
-//     <>
-//       {/* {education.map((obj, key) => (
-//         <Grid item container key={key}>
-//           <Grid item xs={6}>
-//             <TextField
-//               sx={{ width: "100%" }}
-//               label={`Trường`}
-//               value={education[key].institutionName}
-//               onChange={(event) => {
-//                 const newEdu = [...education];
-//                 newEdu[key].institutionName = event.target.value;
-//                 setEducation(newEdu);
-//               }}
-//               variant="outlined"
-//             />
-//           </Grid>
-//           <Grid item xs={3}>
-//             <TextField
-//               label="Năm bắt đầu"
-//               value={obj.startYear}
-//               variant="outlined"
-//               type="number"
-//               onChange={(event) => {
-//                 const newEdu = [...education];
-//                 newEdu[key].startYear = event.target.value;
-//                 setEducation(newEdu);
-//               }}
-//             />
-//           </Grid>
-//           <Grid item xs={3}>
-//             <TextField
-//               label="Năm kết thúc"
-//               value={obj.endYear}
-//               variant="outlined"
-//               type="number"
-//               onChange={(event) => {
-//                 const newEdu = [...education];
-//                 newEdu[key].endYear = event.target.value;
-//                 setEducation(newEdu);
-//               }}
-//             />
-//           </Grid>
-//         </Grid>
-//       ))} */}
-//       {/* <Grid item>
-//         <Button
-//           variant="contained"
-//           color="secondary"
-//           onClick={() =>
-//             setEducation([
-//               ...education,
-//               {
-//                 institutionName: "",
-//                 startYear: "",
-//                 endYear: "",
-//               },
-//             ])
-//           }
-//         >
-//           Thêm
-//         </Button>
-//       </Grid> */}
-//     </>
-//   );
-// };
-
-// const MultifieldLink = (props) => {
-//   const { slink, setSLink } = props;
-
-//   return (
-//     <>
-//       {slink.map((obj, key) => (
-//         <Grid item container key={key}>
-//           <Grid item xs={6}>
-//             <TextField
-//               sx={{ width: "100%" }}
-//               label={`Link #${key + 1}`}
-//               value={slink[key].link}
-//               onChange={(event) => {
-//                 const newLink = [...slink];
-//                 newLink[key].link = event.target.value;
-//                 setSLink(newLink);
-//               }}
-//               variant="outlined"
-//             />
-//           </Grid>
-//         </Grid>
-//       ))}
-//       <Grid item>
-//         <Button
-//           variant="contained"
-//           color="secondary"
-//           onClick={() =>
-//             setSLink([
-//               ...slink,
-//               {
-//                 link: "",
-//               },
-//             ])
-//           }
-//         >
-//           Thêm
-//         </Button>
-//       </Grid>
-//     </>
-//   );
-// };
 
 export default function ProfileEditPage() {
   const userServ = new UsersService();
   const authServ = new AuthService();
   const majorServ = new MajorsService();
-  const uploadServ = new UploadService();
 
   const options = [
     { value: "chocolate", label: "Chocolate" },
@@ -152,6 +38,7 @@ export default function ProfileEditPage() {
     contactNumber: "",
     email: "",
     exp: "",
+    resume: [],
     interest: "",
     target: "",
     major: "",
@@ -238,6 +125,13 @@ export default function ProfileEditPage() {
           <Grid item>
             <Typography variant="p">Ngành</Typography>
             <Select
+              styles={{
+                control: (baseStyles, state) => ({
+                  ...baseStyles,
+                  height: "56px",
+                  margin: "10px 0",
+                }),
+              }}
               options={majors}
               value={{
                 value: profileDetails.major,
@@ -249,7 +143,7 @@ export default function ProfileEditPage() {
               }}
             />
           </Grid>
-          <Grid item></Grid>
+          {/* <Grid item></Grid> */}
           <Grid item>
             <TextField
               sx={{ width: "100%", margin: "15px 0" }}
@@ -304,7 +198,20 @@ export default function ProfileEditPage() {
           <Grid item container sx={{ marginTop: "30px" }}>
             <Grid item xs={12}>
               <Typography variant="h6">DS CV của bạn</Typography>
-
+              <ul>
+                {profileDetails?.resume?.map((v) => (
+                  <li>
+                    {v.originalname}{" "}
+                    <IconButton
+                      variant="contained"
+                      sx={{ marginRight: "20px" }}
+                    >
+                      <HighlightOffIcon />
+                    </IconButton>
+                  </li>
+                ))}
+              </ul>
+              <br />
               <Link to={`/update-cv`}>
                 <Button variant="contained" sx={{ marginTop: "10px" }}>
                   Upload CV

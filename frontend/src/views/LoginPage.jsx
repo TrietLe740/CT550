@@ -97,11 +97,7 @@ const Login = (props) => {
   return loggedin ? (
     <Redirect to="/" />
   ) : (
-    <Paper
-      sx={{
-        padding: "160px",
-      }}
-    >
+    <Paper sx={{ padding: "50px", minHeight: "93vh" }}>
       <Grid container direction="column" spacing={4} alignItems="center">
         <Grid item>
           <img src={LOGO} alt="" width={300} />

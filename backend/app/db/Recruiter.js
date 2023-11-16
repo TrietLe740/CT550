@@ -8,33 +8,33 @@ let schema = new mongoose.Schema(
     },
     name: {
       type: String,
-      required: true,
+      // required: true,
     },
     companyName: {
       type: String,
-      required: true,
+      // required: true,
     },
-    workplace: {
+    mailCompany: {
       type: String,
-      required: true,
     },
     role: {
       type: String,
-      required: true,
+      // required: true,
     },
     contactNumber: {
       type: String,
-      validate: {
-        validator: function (v) {
-          // return v !== "" ? /((09|03|07|08|05)+([0-9]{8})\b)/.test(v) : true;
-          return v !== "" ? /\+\d{1,3}\d{10}/.test(v) : true;
-        },
-        msg: "Số điện thoại không hợp lệ!",
-      },
+      // validate: {
+      //   validator: function (v) {
+      //     // return v !== "" ? /((09|03|07|08|05)+([0-9]{8})\b)/.test(v) : true;
+      //     return v !== "" ? /\+\d{1,3}\d{10}/.test(v) : true;
+      //   },
+      //   msg: "Số điện thoại không hợp lệ!",
+      // },
     },
     bio: {
       type: String,
     },
+    location: [Object],
     level: {
       type: Number,
     },

@@ -103,6 +103,8 @@ let schema = new mongoose.Schema(
       ],
     },
     majors: [String],
+    location: [Object],
+    detail: String,
   },
   { collation: { locale: "vi" } }
 );

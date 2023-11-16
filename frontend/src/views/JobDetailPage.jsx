@@ -72,8 +72,8 @@ export default function JobDetailPage() {
     getUser();
   }, []);
 
-  const dayPost = new Date(job?.dateOfPosting).toLocaleDateString();
-  const deadline = new Date(job?.deadline).toLocaleDateString();
+  const dayPost = new Date(job?.dateOfPosting).toLocaleDateString("en-GB");
+  const deadline = new Date(job?.deadline).toLocaleDateString("en-GB");
 
   // Tab
   const theme = useTheme();

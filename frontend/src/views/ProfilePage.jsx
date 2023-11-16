@@ -65,7 +65,7 @@ const Profile = (props) => {
             <p>Số điện thoại: {profileDetails?.contactNumber}</p>
           </Grid>
           <Grid item xs={1}>
-            <Link to={`/ho-so/chinh-sua/${profileDetails.userId}`}>
+            <Link to={`/ho-so/chinh-sua`}>
               <IconButton
                 variant="contained"
                 sx={{

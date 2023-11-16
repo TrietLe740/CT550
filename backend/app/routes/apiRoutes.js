@@ -8,6 +8,8 @@ const Recruiter = require("../db/Recruiter");
 const Job = require("../db/Job");
 const Application = require("../db/Application");
 const Major = require("../db/Major");
+const School = require("../db/Shool");
+const Location = require("../db/Location");
 
 const router = express.Router();
 
@@ -399,6 +401,24 @@ router.put("/user", jwtAuth, (req, res) => {
         if (data.contactNumber) {
           recruiter.contactNumber = data.contactNumber;
         }
+        if (data.companyName) {
+          recruiter.companyName = data.companyName;
+        }
+        if (data.mailCompany) {
+          recruiter.mailCompany = data.mailCompany;
+        }
+        if (data.role) {
+          recruiter.role = data.role;
+        }
+        if (data.contactNumber) {
+          recruiter.contactNumber = data.contactNumber;
+        }
+        if (data.bio) {
+          recruiter.bio = data.bio;
+        }
+        if (data.location) {
+          recruiter.location = data.location;
+        }
         recruiter
           .save()
           .then(() => {
@@ -437,9 +457,6 @@ router.put("/user", jwtAuth, (req, res) => {
         if (data.avatar) {
           jobApplicant.avatar = data.avatar;
         }
-        if (data.avatar) {
-          jobApplicant.avatar = data.avatar;
-        }
         if (data.contactNumber) {
           jobApplicant.contactNumber = data.contactNumber;
         }
@@ -463,6 +480,9 @@ router.put("/user", jwtAuth, (req, res) => {
         }
         if (data.interest) {
           jobApplicant.interest = data.interest;
+        }
+        if (data.resume) {
+          jobApplicant.resume = data.resume;
         }
         console.log(jobApplicant);
         jobApplicant
@@ -962,8 +982,19 @@ router.get("/applicants", jwtAuth, (req, res) => {
 
 router.get("/majors", jwtAuth, (req, res) => {
   const majors = Major.find().then((majors) => {
-    console.log(majors);
     res.json(majors);
+  });
+});
+
+router.get("/schools", jwtAuth, (req, res) => {
+  const schools = School.find().then((schools) => {
+    res.json(schools);
+  });
+});
+
+router.get("/locations", jwtAuth, (req, res) => {
+  const locations = Location.find().then((locations) => {
+    res.json(locations);
   });
 });
 

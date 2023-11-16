@@ -52,7 +52,6 @@ const Home = (props) => {
   const setPopup = useContext(SetPopupContext);
   useEffect(() => {
     getData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getData = () => {

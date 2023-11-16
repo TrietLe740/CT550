@@ -1,15 +1,15 @@
 import createApiClient from "./api.service";
 
-export default class UploadService {
-  constructor(baseUrl = "http://localhost:3001/upload") {
+export default class DownloadService {
+  constructor(baseUrl = "http://localhost:3001/download") {
     this.api = createApiClient(baseUrl);
   }
 
-  async uploadResume(file) {
+  async downloadResume(file) {
     return (await this.api.post(`/resume`, file)).data;
   }
 
-  async uploadProfile(file) {
+  async downloadProfile(file) {
     return await this.api.post(`/profile`, file);
   }
 }

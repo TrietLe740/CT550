@@ -545,7 +545,9 @@ const ApplicationTile = (props) => {
           </Grid>
           <Grid item>Công việc: {application.job.title}</Grid>
           <Grid item>Loại: {application.job.jobType}</Grid>
-          <Grid item>Ứng tuyển vào: {appliedOn.toLocaleDateString()}</Grid>
+          <Grid item>
+            Ứng tuyển vào: {appliedOn.toLocaleDateString("en-GB")}
+          </Grid>
           <Grid item>
             Mô tả khác: {application.sop !== "" ? application.sop : "Không có"}
           </Grid>
@@ -757,7 +759,7 @@ const AcceptedApplicants = (props) => {
   return (
     <>
       <Grid
-        sx={{ padding: "160px" }}
+        sx={{ padding: "50px", minHeight: "93vh" }}
         container
         item
         direction="column"

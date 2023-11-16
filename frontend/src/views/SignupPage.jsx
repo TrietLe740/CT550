@@ -37,6 +37,8 @@ const SignupPage = (props) => {
     workplace: "",
     level: "0",
     tmpPassword: "",
+    resume: "",
+    avatar: "",
   });
 
   useEffect(() => {
@@ -361,7 +363,7 @@ const SignupPage = (props) => {
   return loggedin ? (
     <Redirect to="/" />
   ) : (
-    <Paper elevation={3} sx={{ padding: "160px" }}>
+    <Paper elevation={3} sx={{ padding: "50px", minHeight: "93vh" }}>
       <Grid container direction="column" spacing={4} alignItems="center">
         <Grid item>
           <img src={LOGO} alt="" width={300} />

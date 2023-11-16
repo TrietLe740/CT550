@@ -80,6 +80,7 @@ let schema = new mongoose.Schema(
     target: String,
     exp: String,
     interest: String,
+    resume: [Object],
     level: {
       type: Number,
     },

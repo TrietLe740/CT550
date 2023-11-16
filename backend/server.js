@@ -20,6 +20,16 @@ async function startServer() {
     console.log("Can't connect to the database!", error);
     process.exit();
   }
+
+  if (!fs.existsSync("./public")) {
+    fs.mkdirSync("./public");
+  }
+  if (!fs.existsSync("./public/resume")) {
+    fs.mkdirSync("./public/resume");
+  }
+  if (!fs.existsSync("./public/profile")) {
+    fs.mkdirSync("./public/profile");
+  }
 }
 
 startServer();

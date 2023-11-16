@@ -1,57 +1,57 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { Grid, Button, TextField, LinearProgress } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import Axios from "axios";
 
 import { SetPopupContext } from "../App";
 import UploadService from "../services/upload.sevice";
+import UsersService from "../services/user.service";
 
 const FileUploadInput = (props) => {
   const uploadServ = new UploadService();
   const setPopup = useContext(SetPopupContext);
 
-  const { uploadTo, identifier, handleInput } = props;
-
   const [file, setFile] = useState("");
   const [uploadPercentage, setUploadPercentage] = useState(0);
 
-  const handleUpload = () => {
-    console.log(file);
+  const handleUpload = async () => {
     const data = new FormData();
     data.append("file", file);
 
-    Axios.post(uploadTo, data, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-      onUploadProgress: (progressEvent) => {
-        setUploadPercentage(
-          parseInt(
-            Math.round((progressEvent.loaded * 100) / progressEvent.total)
-          )
-        );
-      },
-    })
-      .then((response) => {
-        console.log(response.data);
-        handleInput(identifier, response.data.url);
-        setPopup({
-          open: true,
-          severity: "success",
-          message: response.data.message,
-        });
-      })
-      .catch((err) => {
-        console.log(err.response);
-        setPopup({
-          open: true,
-          severity: "error",
-          message: err.response.statusText,
-          //   message: err.response.data
-          //     ? err.response.data.message
-          //     : err.response.statusText,
-        });
-      });
+    try {
+      await uploadServ.uploadResume(data);
+      // console.log(uploadData);
+      alert("Upload thành công!");
+    } catch (error) {
+      console.log(error);
+    }
+    //   headers: {
+    //     "Content-Type": "multipart/form-data",
+    //   },
+    //   onUploadProgress: (progressEvent) => {
+    //     setUploadPercentage(
+    //       parseInt(
+    //         Math.round((progressEvent.loaded * 100) / progressEvent.total)
+    //       )
+    //     );
+    //   },
+    // })
+    //   .then((response) => {
+    //     console.log(response.data);
+    //     handleInput(identifier, response.data.url);
+    //     setPopup({
+    //       open: true,
+    //       severity: "success",
+    //       message: response.data.message,
+    //     });
+    //   })
+    //   .catch((err) => {
+    //     console.log(err.response);
+    //     setPopup({
+    //       open: true,
+    //       severity: "error",
+    //       message: err?.response?.data,
+    //     });
+    //   });
   };
 
   return (
@@ -66,18 +66,18 @@ const FileUploadInput = (props) => {
           >
             {props.icon}
             <input
+              accept=".pdf"
               type="file"
               style={{ display: "none" }}
               onChange={(event) => {
                 console.log(event.target.files);
-                setUploadPercentage(0);
-                setFile(event.target.files[0]);
+                if (event.target.files[0].type == "application/pdf") {
+                  setUploadPercentage(0);
+                  setFile(event.target.files[0]);
+                } else {
+                  alert("Sai định dạng");
+                }
               }}
-              //   onChange={onChange}
-              //   onChange={
-              //     (e) => {}
-              //       setSource({ ...source, place_img: e.target.files[0] })
-              //   }
             />
           </Button>
         </Grid>
@@ -104,11 +104,13 @@ const FileUploadInput = (props) => {
           </Button>
         </Grid>
       </Grid>
-      {uploadPercentage !== 0 ? (
-        <Grid item xs={12} style={{ marginTop: "10px" }}>
-          <LinearProgress variant="determinate" value={uploadPercentage} />
-        </Grid>
-      ) : null}
+      <Grid item>
+        {uploadPercentage !== 0 ? (
+          <Grid item xs={12} style={{ marginTop: "10px" }}>
+            <LinearProgress variant="determinate" value={uploadPercentage} />
+          </Grid>
+        ) : null}
+      </Grid>
     </Grid>
   );
 };

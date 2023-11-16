@@ -64,7 +64,7 @@ const JobCard = (props) => {
       });
   };
 
-  const deadline = new Date(job.deadline).toLocaleDateString();
+  const deadline = new Date(job.deadline).toLocaleDateString("en-GB");
 
   return (
     <Paper

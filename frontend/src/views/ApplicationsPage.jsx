@@ -114,10 +114,14 @@ const ApplicationTile = (props) => {
               <Chip label={skill} style={{ marginRight: "2px" }} />
             ))}
           </Grid>
-          <Grid item>Ứng tuyển vào ngày: {appliedOn.toLocaleDateString()}</Grid>
+          <Grid item>
+            Ứng tuyển vào ngày: {appliedOn.toLocaleDateString("en-GB")}
+          </Grid>
           {application.status === "accepted" ||
           application.status === "finished" ? (
-            <Grid item>Tham gia vào ngày: {joinedOn.toLocaleDateString()}</Grid>
+            <Grid item>
+              Tham gia vào ngày: {joinedOn.toLocaleDateString("en-GB")}
+            </Grid>
           ) : null}
         </Grid>
         <Grid item container direction="column" xs={3}>

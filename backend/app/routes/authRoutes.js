@@ -49,6 +49,7 @@ router.post("/signup", (req, res) => {
               target: data.target,
               exp: data.exp,
               interest: data.interest,
+              resume: data.resume,
               level: "0",
             });
 
