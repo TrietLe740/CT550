@@ -77,7 +77,7 @@ const ApplicationTile = (props) => {
   };
 
   const colorSet = {
-    applied: "#3454D1",
+    applied: { color: "#3454D1", msg: "Đã ứng tuyển" },
     shortlisted: "#DC851F",
     accepted: "#09BC8A",
     rejected: "#D1345B",
@@ -87,7 +87,7 @@ const ApplicationTile = (props) => {
   };
 
   return (
-    <Paper elevation={3}>
+    <Paper elevation={3} sx={{ margin: "0 100px", borderRadius: "30px" }}>
       <Grid container sx={{ padding: "30px 50px", borderRadius: "30px" }}>
         <Grid container item xs={9} spacing={1} direction="column">
           <Grid item>
@@ -111,7 +111,7 @@ const ApplicationTile = (props) => {
           </Grid>
           <Grid item>
             {application.job.skillsets?.map((skill) => (
-              <Chip label={skill} style={{ marginRight: "2px" }} />
+              <Chip label={skill} sx={{ marginRight: "2px" }} />
             ))}
           </Grid>
           <Grid item>
@@ -128,14 +128,15 @@ const ApplicationTile = (props) => {
           <Grid item xs>
             <Paper
               sx={{
-                background: colorSet[application.status],
+                background: colorSet[application.status.color],
                 color: "#ffffff",
                 width: "100%",
                 height: "100%",
                 textAlign: "center",
+                fontWeight: "bold",
               }}
             >
-              {application.status}
+              <Typography variant="p">{application.status.msg}</Typography>
             </Paper>
           </Grid>
           {application.status === "accepted" ||
@@ -182,7 +183,7 @@ const ApplicationTile = (props) => {
             style={{ padding: "10px 50px" }}
             onClick={() => changeRating()}
           >
-            Submit
+            Xác nhận
           </Button>
         </Paper>
       </Modal>

@@ -12,23 +12,21 @@ import Select from "react-select";
 import UsersService from "../services/user.service";
 import AuthService from "../services/auth.service";
 import { Link } from "react-router-dom";
-import DescriptionIcon from "@mui/icons-material/Description";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
-import FileUploadInput from "../component/FileUploadInput";
 import MajorsService from "../services/major.service";
+import apiList, { server } from "../lib/apiList";
+import PhoneInput from "react-phone-input-2";
+import axios from "axios";
+import UploadService from "../services/upload.sevice";
 
 export default function ProfileEditPage() {
+  const uploadServ = new UploadService();
   const userServ = new UsersService();
   const authServ = new AuthService();
   const majorServ = new MajorsService();
 
-  const options = [
-    { value: "chocolate", label: "Chocolate" },
-    { value: "strawberry", label: "Strawberry" },
-    { value: "vanilla", label: "Vanilla" },
-  ];
-
-  const [profileDetails, setProfileDetails] = useState({
+  const initValue = {
+    avatar: "",
     name: "",
     education: [],
     skills: [],
@@ -42,25 +40,13 @@ export default function ProfileEditPage() {
     interest: "",
     target: "",
     major: "",
-  });
+  };
+
+  const [phone, setPhone] = useState("");
+
+  const [profileDetails, setProfileDetails] = useState(initValue);
 
   const [majors, setMajors] = useState({});
-
-  useEffect(() => {
-    async function getUser() {
-      const auth = await authServ.get();
-      const majors = await majorServ.getAll();
-      setProfileDetails(auth);
-      setMajors(
-        majors?.[0].majors.map((item) => {
-          return { label: item, value: item };
-        }) || []
-      );
-      console.log(majors);
-      console.log(auth);
-    }
-    getUser();
-  }, []);
 
   const handleInput = (key, value) => {
     setProfileDetails({
@@ -74,6 +60,17 @@ export default function ProfileEditPage() {
       ...profileDetails,
     };
     console.log(updatedDetails);
+    if (phone !== "") {
+      updatedDetails = {
+        ...profileDetails,
+        contactNumber: `+${phone}`,
+      };
+    } else {
+      updatedDetails = {
+        ...profileDetails,
+        contactNumber: "",
+      };
+    }
     try {
       await userServ.update(updatedDetails);
       alert("Cập nhật thành công!");
@@ -81,6 +78,53 @@ export default function ProfileEditPage() {
       console.log(error);
     }
   };
+
+  const handleDeleteCV = async (cv) => {
+    try {
+      await uploadServ.deleteCV(cv);
+      alert("Xóa thành công!");
+      getUser();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getResume = (i) => {
+    const address = `${apiList.downloadResume}/${profileDetails.resume[i].filename}`;
+    console.log(address);
+    axios(address, {
+      method: "GET",
+      responseType: "blob",
+    })
+      .then((response) => {
+        const file = new Blob([response.data], { type: "application/pdf" });
+        const fileURL = URL.createObjectURL(file);
+        window.open(fileURL);
+      })
+      .catch((error) => {
+        console.log(error);
+        setPopup({
+          open: true,
+          severity: "error",
+          message: "Error",
+        });
+      });
+  };
+
+  async function getUser() {
+    const auth = await authServ.get();
+    const majors = await majorServ.getAll();
+    setProfileDetails(auth);
+    setMajors(
+      majors?.[0].majors.map((item) => {
+        return { label: item, value: item };
+      }) || []
+    );
+  }
+
+  useEffect(() => {
+    getUser();
+  }, []);
 
   return (
     <Paper sx={{ padding: "100px" }}>
@@ -100,7 +144,7 @@ export default function ProfileEditPage() {
               CÀI ĐẶT THÔNG TIN CÁ NHÂN
             </Typography>
           </Grid>
-          <Grid item>
+          <Grid item sx={{ marginTop: "20px" }}>
             <TextField
               sx={{ width: "100%", margin: "15px 0" }}
               label="Họ và tên"
@@ -111,20 +155,22 @@ export default function ProfileEditPage() {
               }}
             />
           </Grid>
-          <Grid item>
-            <TextField
-              sx={{ width: "100%", margin: "15px 0" }}
-              label="Số điện thoại"
-              variant="outlined"
-              value={profileDetails?.contactNumber}
-              onChange={(event) => {
-                handleInput("contactNumber", event.target.value);
+          <Grid item sx={{ marginTop: "20px" }}>
+            <PhoneInput
+              inputStyle={{ width: "100%" }}
+              inputProps={{
+                name: "Liên hệ",
+                required: true,
+                autoFocus: true,
               }}
+              country={"vn"}
+              value={profileDetails?.contactNumber}
+              onChange={(phone) => setPhone(phone)}
             />
           </Grid>
-          <Grid item>
-            <Typography variant="p">Ngành</Typography>
+          <Grid sx={{ marginTop: "20px" }} item>
             <Select
+              placeholder={"Ngành"}
               styles={{
                 control: (baseStyles, state) => ({
                   ...baseStyles,
@@ -134,8 +180,8 @@ export default function ProfileEditPage() {
               }}
               options={majors}
               value={{
-                value: profileDetails.major,
-                label: profileDetails.major,
+                value: profileDetails?.major,
+                label: profileDetails?.major,
               }}
               onChange={(v) => {
                 handleInput("major", v.value);
@@ -144,7 +190,7 @@ export default function ProfileEditPage() {
             />
           </Grid>
           {/* <Grid item></Grid> */}
-          <Grid item>
+          <Grid item sx={{ marginTop: "20px" }}>
             <TextField
               sx={{ width: "100%", margin: "15px 0" }}
               label="Email"
@@ -153,7 +199,6 @@ export default function ProfileEditPage() {
               disabled
             />
           </Grid>
-          <Grid item></Grid>
           <Grid item>
             <Button
               variant="contained"
@@ -199,12 +244,15 @@ export default function ProfileEditPage() {
             <Grid item xs={12}>
               <Typography variant="h6">DS CV của bạn</Typography>
               <ul>
-                {profileDetails?.resume?.map((v) => (
+                {profileDetails?.resume?.map((v, key) => (
                   <li>
-                    {v.originalname}{" "}
+                    <Link onClick={() => getResume(key)}>{v.originalname}</Link>
                     <IconButton
                       variant="contained"
                       sx={{ marginRight: "20px" }}
+                      onClick={() => {
+                        handleDeleteCV(v.filename);
+                      }}
                     >
                       <HighlightOffIcon />
                     </IconButton>

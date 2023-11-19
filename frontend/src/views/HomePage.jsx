@@ -146,9 +146,9 @@ const Home = (props) => {
           justifyContent="center"
           alignItems="center"
           sx={{
-            padding: "100px",
             backgroundColor: "primary.main",
             borderRadius: "20px",
+            padding: "100px",
           }}
         >
           <Grid item>

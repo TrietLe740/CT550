@@ -12,4 +12,8 @@ export default class UploadService {
   async uploadProfile(file) {
     return await this.api.post(`/profile`, file);
   }
+
+  async deleteCV(filename) {
+    return (await this.api.delete(`/resume/${filename}`)).data;
+  }
 }

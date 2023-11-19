@@ -6,7 +6,7 @@ import apiList from "../lib/apiList";
 
 export default function UploadCVPage() {
   const [signupDetails, setSignupDetails] = useState({
-    resume: "",
+    resume: [],
   });
 
   const handleInput = (key, value) => {

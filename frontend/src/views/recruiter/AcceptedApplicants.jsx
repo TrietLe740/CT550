@@ -10,8 +10,6 @@ import {
   Checkbox,
   Avatar,
 } from "@mui/material";
-import { makeStyles } from "@mui/styles";
-import { useParams } from "react-router-dom";
 import Rating from "@mui/material/Rating";
 import axios from "axios";
 import FilterListIcon from "@mui/icons-material/FilterList";
@@ -22,42 +20,11 @@ import { SetPopupContext } from "../../App";
 
 import apiList, { server } from "../../lib/apiList";
 
-const useStyles = makeStyles((theme) => ({
-  body: {
-    height: "inherit",
-  },
-  statusBlock: {
-    width: "100%",
-    height: "100%",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    textTransform: "uppercase",
-  },
-  jobTileOuter: {
-    padding: "30px",
-    margin: "20px 0",
-    boxSizing: "border-box",
-    width: "100%",
-  },
-  popupDialog: {
-    height: "100%",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  avatar: {
-    width: theme.spacing(17),
-    height: theme.spacing(17),
-  },
-}));
-
 const FilterPopup = (props) => {
-  const classes = useStyles();
   const { open, handleClose, searchOptions, setSearchOptions, getData } = props;
   return (
-    <Modal open={open} onClose={handleClose} className={classes.popupDialog}>
-      <Paper>
+    <Modal open={open} onClose={handleClose}>
+      <Paper sx={{ padding: "30px" }}>
         <Grid container direction="column" alignItems="center" spacing={3}>
           {/* <Grid container item alignItems="center">
             <Grid item xs={3}>
@@ -134,7 +101,7 @@ const FilterPopup = (props) => {
           </Grid> */}
           <Grid container item alignItems="center">
             <Grid item xs={3}>
-              Sort
+              Sắp xếp
             </Grid>
             <Grid item container direction="row" xs={9}>
               <Grid
@@ -166,7 +133,7 @@ const FilterPopup = (props) => {
                 </Grid>
                 <Grid item>
                   <label for="name">
-                    <Typography>Name</Typography>
+                    <Typography>Tên ứng viên</Typography>
                   </label>
                 </Grid>
                 <Grid item>
@@ -222,7 +189,7 @@ const FilterPopup = (props) => {
                 </Grid>
                 <Grid item>
                   <label for="jobTitle">
-                    <Typography>Job Title</Typography>
+                    <Typography>Tên công việc</Typography>
                   </label>
                 </Grid>
                 <Grid item>
@@ -278,7 +245,7 @@ const FilterPopup = (props) => {
                 </Grid>
                 <Grid item>
                   <label for="dateOfJoining">
-                    <Typography>Date of Joining</Typography>
+                    <Typography>Ngày tham gia</Typography>
                   </label>
                 </Grid>
                 <Grid item>
@@ -334,7 +301,7 @@ const FilterPopup = (props) => {
                 </Grid>
                 <Grid item>
                   <label for="rating">
-                    <Typography>Rating</Typography>
+                    <Typography>Đánh giá</Typography>
                   </label>
                 </Grid>
                 <Grid item>
@@ -372,7 +339,7 @@ const FilterPopup = (props) => {
               style={{ padding: "10px 50px" }}
               onClick={() => getData()}
             >
-              Apply
+              Xác nhận
             </Button>
           </Grid>
         </Grid>
@@ -382,7 +349,6 @@ const FilterPopup = (props) => {
 };
 
 const ApplicationTile = (props) => {
-  const classes = useStyles();
   const { application, getData } = props;
   const setPopup = useContext(SetPopupContext);
   const [open, setOpen] = useState(false);
@@ -407,14 +373,13 @@ const ApplicationTile = (props) => {
         setPopup({
           open: true,
           severity: "success",
-          message: "Rating updated successfully",
+          message: "Đánh giá thành công!",
         });
         // fetchRating();
         getData();
         setOpen(false);
       })
       .catch((err) => {
-        // console.log(err.response);
         console.log(err);
         setPopup({
           open: true,
@@ -450,7 +415,7 @@ const ApplicationTile = (props) => {
       application.jobApplicant.resume &&
       application.jobApplicant.resume !== ""
     ) {
-      const address = `${server}${application.jobApplicant.resume}`;
+      const address = `${apiList.downloadResume}/${application.resume.filename}`;
       console.log(address);
       axios(address, {
         method: "GET",
@@ -522,10 +487,7 @@ const ApplicationTile = (props) => {
             alignItems: "center",
           }}
         >
-          <Avatar
-            src={`${server}${application.jobApplicant.profile}`}
-            className={classes.avatar}
-          />
+          <Avatar src={`${server}${application.jobApplicant.profile}`} />
         </Grid>
         <Grid container item xs={7} spacing={1} direction="column">
           <Grid item>
@@ -558,23 +520,23 @@ const ApplicationTile = (props) => {
           </Grid>
         </Grid>
         <Grid item container direction="column" xs={3}>
-          {/* <Grid item>
+          <Grid item>
             <Button
               variant="contained"
-              className={classes.statusBlock}
               color="primary"
               onClick={() => getResume()}
+              sx={{ width: "100%" }}
             >
-              Download Resume
+              Tải CV
             </Button>
-          </Grid> */}
+          </Grid>
           <Grid item container xs>
             {/* {buttonSet[application.status]} */}
             <Button
               variant="contained"
               color="primary"
-              className={classes.statusBlock}
-              style={{
+              sx={{
+                width: "100%",
                 background: "#09BC8A",
               }}
               onClick={() => {
@@ -586,9 +548,9 @@ const ApplicationTile = (props) => {
           </Grid>
           <Grid item>
             <Button
+              sx={{ width: "100%" }}
               variant="contained"
               color="primary"
-              className={classes.statusBlock}
               onClick={() => {
                 setOpen(true);
               }}
@@ -598,18 +560,20 @@ const ApplicationTile = (props) => {
           </Grid>
         </Grid>
       </Grid>
-      <Modal open={open} onClose={handleClose} className={classes.popupDialog}>
+      <Modal open={open} onClose={handleClose}>
         <Paper
           style={{
+            margin: "45vh auto",
             padding: "20px",
             outline: "none",
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
-            minWidth: "30%",
+            maxWidth: "50%",
             alignItems: "center",
           }}
         >
+          Đánh giá thực tập sinh {application.jobApplicant?.name}
           <Rating
             name="simple-controlled"
             style={{ marginBottom: "30px" }}
@@ -624,15 +588,11 @@ const ApplicationTile = (props) => {
             style={{ padding: "10px 50px" }}
             onClick={() => changeRating()}
           >
-            Submit
+            Xác nhận
           </Button>
         </Paper>
       </Modal>
-      <Modal
-        open={openEndJob}
-        onClose={handleCloseEndJob}
-        className={classes.popupDialog}
-      >
+      <Modal open={openEndJob} onClose={handleCloseEndJob}>
         <Paper
           style={{
             padding: "20px",
@@ -745,8 +705,6 @@ const AcceptedApplicants = (props) => {
         setApplications(response.data);
       })
       .catch((err) => {
-        console.log(err.response);
-        // console.log(err.response.data);
         setApplications([]);
         setPopup({
           open: true,
@@ -759,7 +717,7 @@ const AcceptedApplicants = (props) => {
   return (
     <>
       <Grid
-        sx={{ padding: "50px", minHeight: "93vh" }}
+        sx={{ padding: "50px 160px", minHeight: "93vh" }}
         container
         item
         direction="column"
@@ -784,12 +742,16 @@ const AcceptedApplicants = (props) => {
           {applications.length > 0 ? (
             applications.map((obj) => (
               <Grid item>
-                <ApplicationTile application={obj} getData={getData} />
+                <ApplicationTile
+                  sx={{ borderRadius: "30px" }}
+                  application={obj}
+                  getData={getData}
+                />
               </Grid>
             ))
           ) : (
             <Typography variant="h5" style={{ textAlign: "center" }}>
-              No Applications Found
+              Không có ứng cử viên
             </Typography>
           )}
         </Grid>

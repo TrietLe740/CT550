@@ -22,7 +22,7 @@ const CreateJobs = (props) => {
   const locationServ = new LocationsService();
   const setPopup = useContext(SetPopupContext);
 
-  const [jobDetails, setJobDetails] = useState({
+  const initValue = {
     title: "",
     maxApplicants: 100,
     maxPositions: 30,
@@ -30,7 +30,7 @@ const CreateJobs = (props) => {
       .toISOString()
       .substr(0, 16),
     jobType: "Offline",
-    duration: 0,
+    duration: 1,
     salary: 0,
     location: {
       no: "",
@@ -39,7 +39,9 @@ const CreateJobs = (props) => {
       commune: "",
     },
     major: [],
-  });
+    detail: "",
+  };
+  const [jobDetails, setJobDetails] = useState(initValue);
 
   const [districtList, setDistrictList] = useState([]);
   const [communeList, setCommuneList] = useState([]);
@@ -84,6 +86,18 @@ const CreateJobs = (props) => {
     });
   };
 
+  const handleMajorChange = (value) => {
+    console.log(value);
+    const major = value?.map((item) => {
+      return item.value;
+    });
+    console.log(major);
+    setJobDetails({
+      ...jobDetails,
+      major,
+    });
+  };
+
   const handleLocationChange = (key, value) => {
     const location = { ...jobDetails.location, [key]: value };
     setJobDetails({
@@ -122,6 +136,8 @@ const CreateJobs = (props) => {
             district: "",
             commune: "",
           },
+          major: [],
+          detail: "",
         });
       })
       .catch((err) => {
@@ -139,7 +155,7 @@ const CreateJobs = (props) => {
       container
       direction="column"
       alignItems="center"
-      sx={{ padding: "50px", minHeight: "93vh" }}
+      sx={{ padding: "50px 200px", minHeight: "93vh" }}
     >
       <Grid item>
         <Typography variant="h2">Đăng tin</Typography>
@@ -266,6 +282,7 @@ const CreateJobs = (props) => {
                     label="Tòa nhà, ấp,..."
                     required
                     type="text"
+                    value={jobDetails?.location?.no}
                     variant="outlined"
                     onChange={(event) => {
                       handleLocationChange("no", event.target.value);
@@ -281,6 +298,7 @@ const CreateJobs = (props) => {
                     label="Tỉnh/Thành"
                     required
                     variant="outlined"
+                    value={jobDetails?.location?.province}
                     onChange={(event) => {
                       handleLocationChange("province", event.target.value);
                     }}
@@ -302,6 +320,7 @@ const CreateJobs = (props) => {
                     required
                     variant="outlined"
                     InputProps={{ inputProps: { min: 1 } }}
+                    value={jobDetails?.location?.district}
                     fullWidth
                     onChange={(event) => {
                       handleLocationChange("district", event.target.value);
@@ -323,6 +342,7 @@ const CreateJobs = (props) => {
                     variant="outlined"
                     InputProps={{ inputProps: { min: 1 } }}
                     fullWidth
+                    value={jobDetails?.location?.commune}
                     onChange={(event) => {
                       handleLocationChange("commune", event.target.value);
                     }}
@@ -345,13 +365,28 @@ const CreateJobs = (props) => {
                       margin: "10px 0",
                     }),
                   }}
+                  maxLength={5}
+                  aria-valuemax={5}
                   placeholder="Ngành nghề liên quan"
-                  defaultValue={""}
+                  // value={jobDetails?.major}
                   options={majors}
                   onChange={(v) => {
-                    handleInput("major", v.value);
-                    console.log(v);
+                    handleMajorChange(v);
                   }}
+                />
+              </Grid>
+              <Grid item>
+                <TextField
+                  multiline
+                  rows={8}
+                  label="Thông tin mô tả"
+                  value={jobDetails?.detail}
+                  required
+                  onChange={(event) =>
+                    handleInput("detail", event.target.value)
+                  }
+                  variant="outlined"
+                  fullWidth
                 />
               </Grid>
             </Grid>

@@ -10,6 +10,9 @@ let schema = new mongoose.Schema(
       type: String,
       // required: true,
     },
+    avatar: {
+      type: String,
+    },
     companyName: {
       type: String,
       // required: true,
@@ -34,7 +37,20 @@ let schema = new mongoose.Schema(
     bio: {
       type: String,
     },
-    location: [Object],
+    location: {
+      no: {
+        type: String,
+      },
+      province: {
+        type: String,
+      },
+      district: {
+        type: String,
+      },
+      commune: {
+        type: String,
+      },
+    },
     level: {
       type: Number,
     },

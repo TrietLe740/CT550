@@ -55,6 +55,7 @@ export default function JobDetailPage() {
 
   async function getJob() {
     var dt = await jobServ.get(jobId);
+    console.log(dt);
     setJob(dt);
   }
 
@@ -188,7 +189,7 @@ export default function JobDetailPage() {
               </Typography>
               <br />
             </Grid>
-            <Grid item>Địa điểm: {job?.place}</Grid>
+            <Grid item>Địa điểm: {job?.location?.province}</Grid>
             <Grid item>Làm việc: {job?.jobType}</Grid>
             <Grid item>
               Thời hạn thực tập:{" "}

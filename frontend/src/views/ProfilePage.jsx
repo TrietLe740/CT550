@@ -64,7 +64,7 @@ const Profile = (props) => {
             <p>Ngành: {profileDetails?.major}</p>
             <p>Số điện thoại: {profileDetails?.contactNumber}</p>
           </Grid>
-          <Grid item xs={1}>
+          {/* <Grid item xs={1}>
             <Link to={`/ho-so/chinh-sua`}>
               <IconButton
                 variant="contained"
@@ -77,7 +77,7 @@ const Profile = (props) => {
                 <EditIcon />
               </IconButton>
             </Link>
-          </Grid>
+          </Grid> */}
         </Grid>
         <Grid
           item

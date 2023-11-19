@@ -52,6 +52,32 @@ let schema = new mongoose.Schema(
         msg: "Statement of purpose should not be greater than 250 words",
       },
     },
+    resume: {
+      fieldname: {
+        type: String,
+      },
+      originalname: {
+        type: String,
+      },
+      encoding: {
+        type: String,
+      },
+      mimetype: {
+        type: String,
+      },
+      size: {
+        type: String,
+      },
+      path: {
+        type: String,
+      },
+      filename: {
+        type: String,
+      },
+      destination: {
+        type: String,
+      },
+    },
   },
   { collation: { locale: "en" } }
 );

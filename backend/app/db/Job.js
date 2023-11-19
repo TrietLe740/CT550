@@ -15,13 +15,13 @@ let schema = new mongoose.Schema(
       validate: [
         {
           validator: Number.isInteger,
-          msg: "maxApplicants should be an integer",
+          msg: "Số lượng ứng cử viên tối đa phải là số nguyên",
         },
         {
           validator: function (value) {
             return value > 0;
           },
-          msg: "maxApplicants should greater than 0",
+          msg: "Số lượng ứng cử viên tối đa phải lớn hơn 0",
         },
       ],
     },
@@ -30,13 +30,13 @@ let schema = new mongoose.Schema(
       validate: [
         {
           validator: Number.isInteger,
-          msg: "maxPostions should be an integer",
+          msg: "Số lượng vị trí phải là số nguyên",
         },
         {
           validator: function (value) {
             return value > 0;
           },
-          msg: "maxPositions should greater than 0",
+          msg: "Số lượng vị trí phải lớn hơn 0",
         },
       ],
     },
@@ -62,13 +62,13 @@ let schema = new mongoose.Schema(
       validate: [
         {
           validator: Number.isInteger,
-          msg: "acceptedCandidates should be an integer",
+          msg: "Số lượng ứng viên được nhận phải là số nguyên",
         },
         {
           validator: function (value) {
             return value >= 0;
           },
-          msg: "acceptedCandidates should greater than equal to 0",
+          msg: "Số lượng ứng viên được nhận phải lớn hơn 0",
         },
       ],
     },
@@ -83,7 +83,7 @@ let schema = new mongoose.Schema(
           validator: function (value) {
             return this.dateOfPosting < value;
           },
-          msg: "deadline should be greater than dateOfPosting",
+          msg: "Hạn chót phải lớn hơn ngày đăng",
         },
       ],
     },
@@ -92,19 +92,40 @@ let schema = new mongoose.Schema(
       validate: [
         {
           validator: Number.isInteger,
-          msg: "Salary should be an integer",
+          msg: "Mức trợ phí phải là số nguyên",
         },
         {
           validator: function (value) {
             return value >= 0;
           },
-          msg: "Salary should be positive",
+          msg: "Mức trợ phí không là số âm",
         },
       ],
     },
-    majors: [String],
-    location: [Object],
-    detail: String,
+    jobType: {
+      type: String,
+    },
+    majors: {
+      type: [String],
+      required: true,
+    },
+    location: {
+      no: {
+        type: String,
+      },
+      province: {
+        type: String,
+      },
+      district: {
+        type: String,
+      },
+      commune: {
+        type: String,
+      },
+    },
+    detail: {
+      type: String,
+    },
   },
   { collation: { locale: "vi" } }
 );

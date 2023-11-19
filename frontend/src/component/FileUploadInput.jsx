@@ -21,6 +21,7 @@ const FileUploadInput = (props) => {
       await uploadServ.uploadResume(data);
       // console.log(uploadData);
       alert("Upload thành công!");
+      location.href("http://localhost:3000/ho-so/chinh-sua");
     } catch (error) {
       console.log(error);
     }

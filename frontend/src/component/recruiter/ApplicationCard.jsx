@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { useState } from "react";
 import { SetPopupContext } from "../../App";
 import {
@@ -12,6 +12,7 @@ import {
   Avatar,
 } from "@mui/material";
 import apiList, { server } from "../../lib/apiList";
+import axios from "axios";
 
 const ApplicationCard = (props) => {
   const { application, getData } = props;
@@ -39,7 +40,7 @@ const ApplicationCard = (props) => {
       application.jobApplicant.resume &&
       application.jobApplicant.resume !== ""
     ) {
-      const address = `${apiList.downloadResume}/${application.jobApplicant.resume[0].filename}`;
+      const address = `${apiList.downloadResume}/${application.resume.filename}`;
       console.log(address);
       axios(address, {
         method: "GET",
@@ -97,6 +98,10 @@ const ApplicationCard = (props) => {
       });
   };
 
+  useEffect(() => {
+    getData();
+  }, []);
+
   const buttonSet = {
     applied: (
       <>
@@ -137,6 +142,7 @@ const ApplicationCard = (props) => {
               background: colorSet["accepted"],
               color: "#ffffff",
               width: "100%",
+              height: "100%",
             }}
             onClick={() => updateStatus("accepted")}
           >
@@ -150,6 +156,7 @@ const ApplicationCard = (props) => {
               background: colorSet["rejected"],
               color: "#ffffff",
               width: "100%",
+              height: "100%",
             }}
             onClick={() => updateStatus("rejected")}
           >
@@ -177,13 +184,16 @@ const ApplicationCard = (props) => {
       <>
         <Grid item xs>
           <Paper
-            // className={classes.statusBlock}
             sx={{
               background: colorSet["accepted"],
               color: "#ffffff",
+              width: "100%",
+              height: "100%",
+              textAlign: "center",
+              padding: "25% 0",
             }}
           >
-            Accepted
+            ĐÃ DUYỆT
           </Paper>
         </Grid>
       </>

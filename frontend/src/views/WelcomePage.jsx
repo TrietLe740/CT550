@@ -492,7 +492,6 @@ const Welcome = (props) => {
           backgroundColor: "primary.main",
           minHeight: "60vh",
           padding: "50px",
-          marginTop: "100px",
         }}
       >
         <Grid container item xs={6} direction="column" sx={{ padding: "50px" }}>
@@ -559,7 +558,7 @@ const Welcome = (props) => {
           </Grid>
         </Grid>
         <Grid item xs={6}>
-          <img src="/src/assets/JOB.png" />
+          <img style={{ width: "100%" }} src="/src/assets/JOB.png" />
         </Grid>
       </Grid>
       {/* 2 */}

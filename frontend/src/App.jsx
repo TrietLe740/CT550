@@ -17,7 +17,7 @@ import CreateJobs from "./views/recruiter/CreateJobs.jsx";
 import MyJobs from "./views/recruiter/MyJobs.jsx";
 import JobApplications from "./views/recruiter/JobApplications.jsx";
 import AcceptedApplicants from "./views/recruiter/AcceptedApplicants.jsx";
-import RecruiterProfile from "./views/recruiter/Profile.jsx";
+import RecruiterEditProfile from "./views/recruiter/RecruiterEditProfile.jsx";
 
 import SearchPage from "./views/SearchPage.jsx";
 import NewsPage from "./views/NewsPage.jsx";
@@ -129,8 +129,8 @@ function App() {
                 <Route exact path="/ung-vien">
                   <ApplicationsPage />
                 </Route>
-                <Route exact path="/ho-so/chinh-sua">
-                  <ProfileEditPage />
+                <Route exact path="/ho-so/thuc-tap-sinh/:id">
+                  <ProfilePage />
                 </Route>
                 <Route exact path="/tai-khoan/nang-cap">
                   <UpdateAccountPage />
@@ -141,11 +141,11 @@ function App() {
                 <Route exact path="/tim-kiem">
                   <SearchPage />
                 </Route>
-                <Route exact path="/ho-so">
+                <Route exact path="/ho-so/chinh-sua">
                   {userType() === "recruiter" ? (
-                    <RecruiterProfile />
+                    <RecruiterEditProfile />
                   ) : (
-                    <ProfilePage />
+                    <ProfileEditPage />
                   )}
                 </Route>
                 <Route exact path="/dang-tin">

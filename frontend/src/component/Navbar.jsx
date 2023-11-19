@@ -1,3 +1,5 @@
+import { useHistory, Link } from "react-router-dom";
+import { useState } from "react";
 import {
   AppBar,
   Toolbar,
@@ -11,21 +13,25 @@ import {
   MenuItem,
   Tooltip,
   Avatar,
+  Badge,
+  Button,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import MenuIcon from "@mui/icons-material/Menu";
 
-import { useHistory } from "react-router-dom";
 import isAuth, { userType } from "../lib/isAuth";
 
 import LOGO from "../assets/logo_Hitern.png";
-import { Link } from "react-router-dom/cjs/react-router-dom";
-import { Fragment, useState } from "react";
+import AuthService from "../services/auth.service";
+import { useEffect } from "react";
 
 const Navbar = (props) => {
   let history = useHistory();
   const [searchInput, setSearchInput] = useState("");
+  const authServ = new AuthService();
+
+  const [user, setUser] = useState();
 
   const handleClick = (location) => {
     console.log(location);
@@ -52,11 +58,20 @@ const Navbar = (props) => {
     setAnchorElUser(null);
   };
 
+  useEffect(() => {
+    async function getUser() {
+      const auth = await authServ.get();
+      setUser(auth);
+      console.log(auth);
+    }
+    getUser();
+  }, []);
+
   return (
     <AppBar
       position="static"
       sx={{
-        padding: "10px 0",
+        padding: "10px 20px",
         backgroundColor: "common.white",
         color: "common.black",
         width: "100%",
@@ -130,8 +145,9 @@ const Navbar = (props) => {
                       <Typography
                         textAlign="center"
                         onClick={() => handleClick("/dang-tin")}
-                      ></Typography>
-                      Thêm việc làm
+                      >
+                        Thêm việc làm
+                      </Typography>
                     </MenuItem>
                     <MenuItem onClick={handleCloseNavMenu}>
                       <Typography
@@ -165,8 +181,9 @@ const Navbar = (props) => {
                       <Typography
                         textAlign="center"
                         onClick={() => handleClick("/cong-ty")}
-                      ></Typography>
-                      Công ty
+                      >
+                        Công ty
+                      </Typography>
                     </MenuItem>
                     <MenuItem onClick={handleCloseNavMenu}>
                       <Typography
@@ -224,9 +241,50 @@ const Navbar = (props) => {
               textDecoration: "none",
             }}
           >
-            <Link to="/">
+            {/* <Link to="/">
               <img className="logo" src={LOGO} alt="logo" />
-            </Link>
+            </Link> */}
+            <Grid
+              item
+              sx={{
+                margin: "0 auto",
+                border: "1px solid #000",
+                borderRadius: "30px",
+                padding: "0 0 0 20px",
+                maxWidth: "400px",
+              }}
+            >
+              <Input
+                placeholder="Tìm kiếm"
+                value={searchInput}
+                onChange={(event) => setSearchInput(event.target.value)}
+                onKeyPress={(ev) => {
+                  if (ev.key === "Enter") {
+                    history.push({
+                      pathname: "/tim-kiem",
+                      search: `?search=${searchInput}`,
+                    });
+                  }
+                }}
+              />
+
+              <IconButton
+                sx={{
+                  borderRadius: "50%",
+                  backgroundColor: "primary.main",
+                  color: "common.white",
+                  marginLeft: "10px",
+                }}
+                onClick={() =>
+                  history.push({
+                    pathname: "/tim-kiem",
+                    search: `?search=${searchInput}`,
+                  })
+                }
+              >
+                <SearchIcon />
+              </IconButton>
+            </Grid>
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {isAuth() ? (
@@ -306,14 +364,6 @@ const Navbar = (props) => {
                       <SearchIcon />
                     </IconButton>
                   </Grid>
-                  <IconButton
-                    sx={{
-                      marginLeft: "20px",
-                      marginRight: "10px",
-                    }}
-                  >
-                    <NotificationsIcon />
-                  </IconButton>
                 </>
               ) : (
                 // Applicant
@@ -330,8 +380,9 @@ const Navbar = (props) => {
                     <Typography
                       textAlign="center"
                       onClick={() => handleClick("/cong-ty")}
-                    ></Typography>
-                    Công ty
+                    >
+                      Công ty
+                    </Typography>
                   </MenuItem>
                   <MenuItem onClick={handleCloseNavMenu}>
                     <Typography
@@ -390,14 +441,6 @@ const Navbar = (props) => {
                       <SearchIcon />
                     </IconButton>
                   </Grid>
-                  <IconButton
-                    sx={{
-                      marginLeft: "20px",
-                      marginRight: "10px",
-                    }}
-                  >
-                    <NotificationsIcon />
-                  </IconButton>
                 </>
               )
             ) : (
@@ -428,16 +471,51 @@ const Navbar = (props) => {
           {isAuth() ? (
             userType() === "recruiter" || userType() === "applicant" ? (
               <Box sx={{ flexGrow: 0 }}>
-                <Tooltip title="Open settings">
-                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                <IconButton
+                  sx={{
+                    marginLeft: "20px",
+                    marginRight: "10px",
+                  }}
+                >
+                  <Badge badgeContent={17} color="error">
+                    {/* Thong bao */}
+                    <NotificationsIcon />
+                  </Badge>
+                </IconButton>
+                <Tooltip>
+                  <IconButton
+                    onClick={handleOpenUserMenu}
+                    sx={{
+                      border: "1px solid",
+                      borderColor: "primary.main",
+                      padding: "5px 5px 5px 15px",
+                      borderRadius: "30px",
+                      backgroundColor: "primary.main",
+                    }}
+                  >
+                    <Typography
+                      variant="h8"
+                      sx={{
+                        textAlign: "left",
+                        fontWeight: "bold",
+                        fontSize: "12px",
+                        marginRight: "10px",
+                        color: "common.white",
+                      }}
+                    >
+                      Xin chào!
+                      <br />
+                      {user?.name}
+                    </Typography>
                     <Avatar
+                      sx={{ border: "1px solid", borderColor: "primary.light" }}
                       alt="Remy Sharp"
-                      src="/static/images/avatar/2.jpg"
+                      src={user?.avatar}
                     />
                   </IconButton>
                 </Tooltip>
                 <Menu
-                  sx={{ mt: "45px" }}
+                  sx={{ marginTop: "45px" }}
                   id="menu-appbar"
                   anchorEl={anchorElUser}
                   anchorOrigin={{
@@ -455,7 +533,7 @@ const Navbar = (props) => {
                   <MenuItem onClick={handleCloseUserMenu}>
                     <Typography
                       textAlign="center"
-                      onClick={() => handleClick("/ho-so")}
+                      onClick={() => handleClick("/ho-so/chinh-sua")}
                     >
                       Hồ sơ
                     </Typography>

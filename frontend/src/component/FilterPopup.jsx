@@ -16,21 +16,35 @@ import {
   Rating,
   Input,
 } from "@mui/material";
+import LocationsService from "../services/location.service";
 
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 
 const FilterPopup = (props) => {
+  const locationServ = new LocationsService();
   const { open, handleClose, searchOptions, setSearchOptions, getData } = props;
   const [filterOpen, setFilterOpen] = useState(false);
+
+  const [locations, setLocations] = useState([]);
+  useEffect(() => {
+    async function getData() {
+      const locations = await locationServ.getAll();
+      console.log(locations);
+      setLocations(locations);
+    }
+    getData();
+  }, []);
 
   return (
     <Modal open={open} onClose={handleClose}>
       <Paper
-        style={{
-          padding: "50px",
+        sx={{
+          margin: "5% auto",
+          padding: "50px 80px",
           outline: "none",
-          minWidth: "50%",
+          maxWidth: "80%",
+          borderRadius: "30px",
         }}
       >
         <Grid container direction="column" alignItems="center" spacing={3}>
@@ -109,11 +123,11 @@ const FilterPopup = (props) => {
               <Slider
                 valueLabelDisplay="auto"
                 valueLabelFormat={(value) => {
-                  return value * (2000000 / 100);
+                  return value * (10000000 / 100);
                 }}
                 marks={[
                   { value: 0, label: "0" },
-                  { value: 100, label: "2,000,000" },
+                  { value: 100, label: "10,000,000 VNĐ" },
                 ]}
                 value={searchOptions.salary}
                 onChange={(event, value) =>
@@ -329,7 +343,33 @@ const FilterPopup = (props) => {
               </Grid>
             </Grid>
           </Grid>
-
+          <Grid container item alignItems="center">
+            <Grid item xs={3}>
+              Địa điểm
+            </Grid>
+            <Grid item xs={9}>
+              <TextField
+                select
+                label="Địa điểm"
+                variant="outlined"
+                fullWidth
+                value={searchOptions.location}
+                onChange={(event) =>
+                  setSearchOptions({
+                    ...searchOptions,
+                    location: event.target.value,
+                  })
+                }
+              >
+                <MenuItem value="0">Tất cả</MenuItem>
+                {locations.map((v, index) => (
+                  <MenuItem key={index} value={v.name}>
+                    {v.name}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+          </Grid>
           <Grid item>
             <Button
               variant="contained"

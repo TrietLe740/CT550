@@ -50,13 +50,42 @@ router.post("/resume", upload.single("file"), jwtAuth, async (req, res) => {
     const UID = req.user._id;
     const { file: CV } = req;
     console.log(CV);
-    await JobApplicant.findOneAndUpdate({ userId: UID }, { resume: [CV] });
-    res.status(200).json({
-      message: "Tải lên thành công",
-    });
+    // await JobApplicant.findOneAndUpdate({ userId: UID }, { resume: [CV] });
+    const doc = await JobApplicant.findOne({ userId: UID });
+    if (doc.resume.length < 5) {
+      doc.resume.push(CV);
+      await doc.save();
+      res.status(200).json({
+        message: "Tải lên thành công",
+      });
+    } else {
+      res.status(400).json({
+        message: "DS CV của bạn đã đạt giới hạn 5",
+      });
+    }
   } catch (e) {
+    console.log(e);
     res.status(500).json({
       message: "Lỗi tải lên",
+    });
+  }
+});
+
+router.delete("/resume/:filename", jwtAuth, async (req, res) => {
+  // Mo rong: Check /public/file truoc khi xoa
+  try {
+    const UID = req.user._id;
+    const fileName = req.params.filename;
+    const doc = await JobApplicant.findOne({ userId: UID });
+    doc.resume = doc.resume.filter((i) => i.filename !== fileName);
+    await doc.save();
+    res.status(200).json({
+      message: "Xóa thành công",
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({
+      message: "Có lỗi xảy ra",
     });
   }
 });

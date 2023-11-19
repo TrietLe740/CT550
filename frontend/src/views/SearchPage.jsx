@@ -21,8 +21,11 @@ import { userType } from "../lib/isAuth";
 import FilterPopup from "../component/FilterPopup";
 import JobCard from "../component/JobCard";
 import SearchBar from "../component/SearchBar";
+import LocationsService from "../services/location.service";
 
 export default function SearchPage() {
+  // const locationServ = new LocationsService();
+  // const [location, setLocation] = useState([]);
   const search = useLocation().search;
   const searchParams = new URLSearchParams(search);
   const searchStr = searchParams.get("search");
@@ -52,12 +55,19 @@ export default function SearchPage() {
         desc: false,
       },
     },
+    location: "",
   });
 
   useEffect(() => {
+    // async function getLocation() {
+    //   const locations = await locationServ.getAll();
+    //   console.log(locations);
+    //   setLocation(locations);
+    // }
     setSearchOptions((value) => {
       return {
         ...value,
+        // ...location,
         query: searchStr,
       };
     });
@@ -210,7 +220,7 @@ export default function SearchPage() {
           justifyContent="center"
           sx={{ marginTop: "30px" }}
         >
-          <Pagination count={jobs.length / 10 > 1 ? jobs.length / 10 : 1} />
+          <Pagination count={1} />
         </Grid>
       </Grid>
       <FilterPopup

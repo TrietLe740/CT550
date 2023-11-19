@@ -45,33 +45,6 @@ const Profile = (props) => {
 
   const [phone, setPhone] = useState("");
 
-  useEffect(() => {
-    async function getUser() {
-      const locations = await locationServ.getAll();
-      setLocations(locations);
-      const auth = await authServ.get();
-      setProfileDetails(auth);
-    }
-    getUser();
-  }, []);
-
-  useEffect(() => {
-    setDistrictList([]);
-    const tmp = locations.find(
-      (i) => i.name == profileDetails.location?.province
-    );
-    setDistrictList(tmp?.districts || []);
-  }, [profileDetails]);
-
-  useEffect(() => {
-    // console.log(profileDetails.location[0].province);
-    setCommuneList([]);
-    const tmp = districtList.find(
-      (i) => i.name == profileDetails.location?.district
-    );
-    setCommuneList(tmp?.wards || []);
-  }, [profileDetails]);
-
   const handleInput = (key, value) => {
     setProfileDetails({
       ...profileDetails,
@@ -120,6 +93,33 @@ const Profile = (props) => {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    async function getUser() {
+      const locations = await locationServ.getAll();
+      setLocations(locations);
+      const auth = await authServ.get();
+      setProfileDetails(auth);
+    }
+    getUser();
+  }, []);
+
+  useEffect(() => {
+    setDistrictList([]);
+    const tmp = locations.find(
+      (i) => i.name == profileDetails.location?.province
+    );
+    setDistrictList(tmp?.districts || []);
+  }, [profileDetails]);
+
+  useEffect(() => {
+    // console.log(profileDetails.location[0].province);
+    setCommuneList([]);
+    const tmp = districtList.find(
+      (i) => i.name == profileDetails.location?.district
+    );
+    setCommuneList(tmp?.wards || []);
+  }, [profileDetails]);
 
   return (
     <Paper>
@@ -280,11 +280,10 @@ const Profile = (props) => {
                   required
                   type="text"
                   variant="outlined"
-                  value={profileDetails.location[0]?.no}
+                  value={profileDetails?.location?.no}
                   onChange={(event) => {
                     handleLocationChange("no", event.target.value);
                   }}
-                  // InputProps={{ inputProps: { min: 1 } }}
                   fullWidth
                 />
               </Grid>
@@ -295,12 +294,10 @@ const Profile = (props) => {
                   label="Tỉnh/Thành"
                   required
                   variant="outlined"
-                  // value={profileDetails.location.province}
-                  defaultValue={profileDetails?.location[0]?.province}
+                  value={profileDetails?.location?.province}
                   onChange={(event) => {
                     handleLocationChange("province", event.target.value);
                   }}
-                  InputProps={{ inputProps: { min: 1 } }}
                   fullWidth
                 >
                   {locations.map((v, index) => (
@@ -317,9 +314,8 @@ const Profile = (props) => {
                   label="Quận/Huyện"
                   required
                   variant="outlined"
-                  InputProps={{ inputProps: { min: 1 } }}
                   fullWidth
-                  value={profileDetails?.location[0]?.district}
+                  value={profileDetails?.location?.district}
                   onChange={(event) => {
                     handleLocationChange("district", event.target.value);
                   }}
@@ -340,7 +336,7 @@ const Profile = (props) => {
                   variant="outlined"
                   InputProps={{ inputProps: { min: 1 } }}
                   fullWidth
-                  option={profileDetails?.location[0]?.commune}
+                  value={profileDetails?.location?.commune}
                   onChange={(event) => {
                     handleLocationChange("commune", event.target.value);
                   }}

@@ -144,7 +144,8 @@ const JobTile = (props) => {
           </Grid>
           <Grid item>Số lượng tối đa: {job.maxApplicants}</Grid>
           <Grid item>
-            Số chỗ còn lại: {job.maxPositions - job.acceptedCandidates}
+            Số chỗ tiếp nhận còn lại:{" "}
+            {job.maxPositions - job.acceptedCandidates}
           </Grid>
           <Grid item>
             Ngành nghề liên quan:
@@ -152,6 +153,10 @@ const JobTile = (props) => {
             {job.majors.map((m) => (
               <Chip label={m} sx={{ marginRight: "2px" }} />
             ))}
+          </Grid>
+          <Grid item>
+            Địa chỉ:{" "}
+            {`${job?.location?.no}, ${job?.location?.commune}, ${job?.location?.district}, ${job?.location?.province}`}
           </Grid>
         </Grid>
         <Grid item container direction="column" xs={3}>
@@ -232,28 +237,24 @@ const JobTile = (props) => {
       <Modal open={openUpdate} onClose={handleCloseUpdate}>
         <Paper
           sx={{
-            padding: "20px",
-            outline: "none",
+            margin: "2% auto",
+            padding: "30px",
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
-            minWidth: "30%",
+            maxWidth: "80%",
             alignItems: "center",
           }}
         >
           <Typography variant="h4" sx={{ marginBottom: "10px" }}>
             Cập nhật thông tin
           </Typography>
-          <Grid
-            container
-            direction="column"
-            spacing={3}
-            sx={{ margin: "10px" }}
-          >
+          <Grid container direction="column" sx={{ margin: "10px" }}>
             <Grid item>
               <TextField
                 label="Tên công việc"
                 type="text"
+                disabled
                 value={jobDetails.title}
                 onChange={(event) => {
                   handleInput("title", event.target.value);
@@ -267,6 +268,7 @@ const JobTile = (props) => {
             </Grid>
             <Grid item>
               <TextField
+                sx={{ marginTop: "20px" }}
                 label="Hạn chót"
                 type="datetime-local"
                 value={jobDetails.deadline.substr(0, 16)}
@@ -280,31 +282,35 @@ const JobTile = (props) => {
                 fullWidth
               />
             </Grid>
-            <Grid item>
-              <TextField
-                label="Số lượng tối đa"
-                type="number"
-                variant="outlined"
-                value={jobDetails.maxApplicants}
-                onChange={(event) => {
-                  handleInput("maxApplicants", event.target.value);
-                }}
-                InputProps={{ inputProps: { min: 1 } }}
-                fullWidth
-              />
-            </Grid>
-            <Grid item>
-              <TextField
-                label="Số chỗ còn lại"
-                type="number"
-                variant="outlined"
-                value={jobDetails.maxPositions}
-                onChange={(event) => {
-                  handleInput("maxPositions", event.target.value);
-                }}
-                InputProps={{ inputProps: { min: 1 } }}
-                fullWidth
-              />
+            <Grid item container sx={{ marginTop: "20px" }}>
+              <Grid item xs={6}>
+                <TextField
+                  sx={{ paddingRight: "10px" }}
+                  label="Số lượng tối đa"
+                  type="number"
+                  variant="outlined"
+                  value={jobDetails.maxApplicants}
+                  onChange={(event) => {
+                    handleInput("maxApplicants", event.target.value);
+                  }}
+                  InputProps={{ inputProps: { min: 1 } }}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  sx={{ paddingLeft: "10px" }}
+                  label="Số chỗ tiếp nhận còn lại"
+                  type="number"
+                  variant="outlined"
+                  value={jobDetails.maxPositions}
+                  onChange={(event) => {
+                    handleInput("maxPositions", event.target.value);
+                  }}
+                  InputProps={{ inputProps: { min: 1 } }}
+                  fullWidth
+                />
+              </Grid>
             </Grid>
             <Grid item>
               <Select
@@ -312,15 +318,15 @@ const JobTile = (props) => {
                   control: (baseStyles, state) => ({
                     ...baseStyles,
                     height: "56px",
-                    margin: "10px 0",
+                    margin: "20px 0",
                   }),
                 }}
                 closeMenuOnSelect={false}
                 isMulti
                 options={majors}
                 defaultValue={{
-                  value: jobDetails.major,
-                  label: jobDetails.major,
+                  value: jobDetails?.major,
+                  label: jobDetails?.major,
                 }}
                 onChange={(v) => {
                   handleInput("major", v.value);
@@ -332,7 +338,7 @@ const JobTile = (props) => {
             <Grid item>
               <Button
                 variant="contained"
-                sx={{ padding: "10px 50px" }}
+                sx={{ padding: "10px 10px", width: "150px" }}
                 onClick={() => handleJobUpdate()}
               >
                 Cập nhật
@@ -341,7 +347,7 @@ const JobTile = (props) => {
             <Grid item>
               <Button
                 variant="contained"
-                sx={{ padding: "10px 50px" }}
+                sx={{ padding: "10px 10px", width: "150px" }}
                 onClick={() => handleCloseUpdate()}
               >
                 Thoát

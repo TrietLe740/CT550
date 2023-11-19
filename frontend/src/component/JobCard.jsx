@@ -30,39 +30,39 @@ const JobCard = (props) => {
     setSop("");
   };
 
-  const handleApply = () => {
-    console.log(job._id);
-    console.log(sop);
-    axios
-      .post(
-        `${apiList.jobs}/${job._id}/applications`,
-        {
-          sop: sop,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      )
-      .then((response) => {
-        setPopup({
-          open: true,
-          severity: "success",
-          message: response.data.message,
-        });
-        handleClose();
-      })
-      .catch((err) => {
-        console.log(err.response);
-        setPopup({
-          open: true,
-          severity: "error",
-          message: err.response.data.message,
-        });
-        handleClose();
-      });
-  };
+  // const handleApply = () => {
+  //   console.log(job._id);
+  //   console.log(sop);
+  //   axios
+  //     .post(
+  //       `${apiList.jobs}/${job._id}/applications`,
+  //       {
+  //         sop: sop,
+  //       },
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //         },
+  //       }
+  //     )
+  //     .then((response) => {
+  //       setPopup({
+  //         open: true,
+  //         severity: "success",
+  //         message: response.data.message,
+  //       });
+  //       handleClose();
+  //     })
+  //     .catch((err) => {
+  //       console.log(err.response);
+  //       setPopup({
+  //         open: true,
+  //         severity: "error",
+  //         message: err.response.data.message,
+  //       });
+  //       handleClose();
+  //     });
+  // };
 
   const deadline = new Date(job.deadline).toLocaleDateString("en-GB");
 
@@ -118,9 +118,12 @@ const JobCard = (props) => {
               {job.duration > 0 ? `${job.duration} Tháng` : `Linh hoạt`}
             </Grid>
             <Grid item>
-              <Chip label={job.place} style={{ marginRight: "5px" }} />
+              <Chip
+                label={job?.location?.province}
+                style={{ marginRight: "5px" }}
+              />
               <br />
-              {job.majors.map((m) => (
+              {job?.majors.map((m) => (
                 <Chip label={m} sx={{ marginRight: "5px", marginTop: "5px" }} />
               ))}
             </Grid>
