@@ -44,7 +44,7 @@ passport.use(
           })
           .catch((err) => {
             return done(err, false, {
-              message: "Password is incorrect.",
+              message: "Mật khẩu chưa chính xác",
             });
           });
       });

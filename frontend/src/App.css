@@ -7,3 +7,7 @@ body::-webkit-scrollbar {
 .logo {
   max-width: 150px;
 }
+
+.logo_footer {
+  max-width: 300px;
+}

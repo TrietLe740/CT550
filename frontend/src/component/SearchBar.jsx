@@ -12,56 +12,63 @@ const SearchBar = (prop) => {
       {/* Thanh tim kiem */}
       <Grid
         item
+        container
+        xs={12}
         fullWidth
         sx={{
           width: "100%",
-          margin: "20px auto 0 auto",
           border: "2px solid #36593C",
           borderRadius: "20px",
           padding: "10px 20px",
           backgroundColor: "common.white",
         }}
       >
-        <IconButton
-          onClick={() =>
-            history.push({
-              pathname: "/tim-kiem",
-              search: `?search=${searchInput}`,
-            })
-          }
-        >
-          <SearchIcon
-            sx={{
-              color: "common.black",
-            }}
-          />
-        </IconButton>
-        <Input
-          sx={{ width: "80%", height: "50px" }}
-          placeholder="Tìm kiếm công việc, công ty,..."
-          value={searchInput}
-          onChange={(event) => setSearchInput(event.target.value)}
-          onKeyPress={(ev) => {
-            if (ev.key === "Enter") {
+        <Grid item xs={1}>
+          <IconButton
+            onClick={() =>
               history.push({
                 pathname: "/tim-kiem",
                 search: `?search=${searchInput}`,
-              });
+              })
             }
-          }}
-        />
-        <Button
-          sx={{ marginLeft: "30px" }}
-          variant="contained"
-          onClick={() =>
-            history.push({
-              pathname: "/tim-kiem",
-              search: `?search=${searchInput}`,
-            })
-          }
-        >
-          Tìm kiếm
-        </Button>
+          >
+            <SearchIcon
+              sx={{
+                color: "common.black",
+              }}
+            />
+          </IconButton>
+        </Grid>
+        <Grid item xs={9} xl={10}>
+          <Input
+            disableUnderline
+            sx={{ width: "100%" }}
+            placeholder="Tìm kiếm công việc, công ty,..."
+            value={searchInput}
+            onChange={(event) => setSearchInput(event.target.value)}
+            onKeyPress={(ev) => {
+              if (ev.key === "Enter") {
+                history.push({
+                  pathname: "/tim-kiem",
+                  search: `?search=${searchInput}`,
+                });
+              }
+            }}
+          />
+        </Grid>
+        <Grid item xs={2} xl={1}>
+          <Button
+            variant="contained"
+            onClick={() =>
+              history.push({
+                pathname: "/tim-kiem",
+                search: `?search=${searchInput}`,
+              })
+            }
+          >
+            Tìm kiếm
+          </Button>
+        </Grid>
       </Grid>
     </>
   );

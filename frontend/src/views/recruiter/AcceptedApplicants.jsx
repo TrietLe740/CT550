@@ -24,7 +24,7 @@ const FilterPopup = (props) => {
   const { open, handleClose, searchOptions, setSearchOptions, getData } = props;
   return (
     <Modal open={open} onClose={handleClose}>
-      <Paper sx={{ padding: "30px" }}>
+      <Paper sx={{ width: "50%", padding: "40px", margin: "15% auto" }}>
         <Grid container direction="column" alignItems="center" spacing={3}>
           {/* <Grid container item alignItems="center">
             <Grid item xs={3}>

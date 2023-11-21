@@ -156,60 +156,56 @@ export default function SearchPage() {
   return (
     <Paper>
       <Grid container xs={12} item sx={{ padding: "100px", minHeight: "93vh" }}>
-        <Grid
-          item
-          container
-          direction="column"
-          justifyContent="center"
-          alignItems="center"
-          xs={12}
-        >
+        <Grid item xs={12} sx={{ width: "100%" }}>
           <SearchBar />
-          <Grid item>
-            <IconButton onClick={() => setFilterOpen(true)} size="large">
-              <FilterListIcon />
-            </IconButton>
+        </Grid>
+        <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
+          <IconButton onClick={() => setFilterOpen(true)} size="large">
+            <FilterListIcon />
+          </IconButton>
+        </Grid>
+
+        <Grid item container xs={12}>
+          {/* Công việc xs=8 */}
+          <Grid
+            item
+            xs={8}
+            container
+            direction="column"
+            alignItems="stretch"
+            justifyContent="center"
+            sx={{ padding: "10px 20px 0 0" }}
+          >
+            {jobs.length > 0 ? (
+              jobs.map((job) => {
+                return <JobCard sx={{ width: "100%" }} job={job} />;
+              })
+            ) : (
+              <Typography variant="h5" style={{ textAlign: "center" }}>
+                Không tìm thấy việc làm phù hợp
+              </Typography>
+            )}
           </Grid>
-        </Grid>
 
-        {/* Công việc xs=8 */}
-        <Grid
-          container
-          item
-          xs={8}
-          direction="column"
-          alignItems="stretch"
-          justifyContent="center"
-        >
-          {jobs.length > 0 ? (
-            jobs.map((job) => {
-              return <JobCard sx={{ width: "100%" }} job={job} />;
-            })
-          ) : (
-            <Typography variant="h5" style={{ textAlign: "center" }}>
-              Không tìm thấy việc làm phù hợp
+          {/* Có thể bạn quan tâm xs=4 */}
+          <Grid
+            container
+            item
+            xs={4}
+            direction="column"
+            sx={{
+              padding: "20px",
+              borderRadius: "30px",
+              margin: "30px 0 0 0",
+              boxShadow:
+                "0px 3px 3px -2px rgba(0,0,0,0.2), 0px 3px 4px 0px rgba(0,0,0,0.14), 0px 1px 8px 0px rgba(0,0,0,0.12)",
+            }}
+          >
+            <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+              Có thể bạn quan tâm
             </Typography>
-          )}
-        </Grid>
-
-        {/* Có thể bạn quan tâm xs=4 */}
-        <Grid
-          container
-          item
-          xs={4}
-          direction="column"
-          sx={{
-            padding: "20px",
-            borderRadius: "30px",
-            margin: "10px 0",
-            boxShadow:
-              "0px 3px 3px -2px rgba(0,0,0,0.2), 0px 3px 4px 0px rgba(0,0,0,0.14), 0px 1px 8px 0px rgba(0,0,0,0.12)",
-          }}
-        >
-          <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-            Có thể bạn quan tâm
-          </Typography>
-          <Grid>Đang cập nhật</Grid>
+            <Grid>Đang cập nhật</Grid>
+          </Grid>
         </Grid>
         <Grid
           xs={12}
@@ -224,6 +220,7 @@ export default function SearchPage() {
         </Grid>
       </Grid>
       <FilterPopup
+        sx={{}}
         open={filterOpen}
         searchOptions={searchOptions}
         setSearchOptions={setSearchOptions}

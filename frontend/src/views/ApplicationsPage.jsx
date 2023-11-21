@@ -77,7 +77,7 @@ const ApplicationTile = (props) => {
   };
 
   const colorSet = {
-    applied: { color: "#3454D1", msg: "Đã ứng tuyển" },
+    applied: "#3454D1",
     shortlisted: "#DC851F",
     accepted: "#09BC8A",
     rejected: "#D1345B",
@@ -95,7 +95,7 @@ const ApplicationTile = (props) => {
               {application.job.title}
             </Typography>
           </Grid>
-          <Grid item>Đăng bởi: {application.recruiter.nameCompany}</Grid>
+          <Grid item>Đăng bởi: {application.recruiter.companyName}</Grid>
           <Grid item>Loại: {application.job.jobType}</Grid>
           <Grid item>
             Trợ phí:{" "}
@@ -128,15 +128,24 @@ const ApplicationTile = (props) => {
           <Grid item xs>
             <Paper
               sx={{
-                background: colorSet[application.status.color],
-                color: "#ffffff",
+                background: colorSet[application.status],
+                color: "#fff",
                 width: "100%",
                 height: "100%",
-                textAlign: "center",
                 fontWeight: "bold",
               }}
             >
-              <Typography variant="p">{application.status.msg}</Typography>
+              <Typography
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: "100%",
+                }}
+                variant="p"
+              >
+                {application.status.toUpperCase()}
+              </Typography>
             </Paper>
           </Grid>
           {application.status === "accepted" ||

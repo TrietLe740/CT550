@@ -241,50 +241,56 @@ const Navbar = (props) => {
               textDecoration: "none",
             }}
           >
-            {/* <Link to="/">
-              <img className="logo" src={LOGO} alt="logo" />
-            </Link> */}
-            <Grid
-              item
-              sx={{
-                margin: "0 auto",
-                border: "1px solid #000",
-                borderRadius: "30px",
-                padding: "0 0 0 20px",
-                maxWidth: "400px",
-              }}
-            >
-              <Input
-                placeholder="Tìm kiếm"
-                value={searchInput}
-                onChange={(event) => setSearchInput(event.target.value)}
-                onKeyPress={(ev) => {
-                  if (ev.key === "Enter") {
-                    history.push({
-                      pathname: "/tim-kiem",
-                      search: `?search=${searchInput}`,
-                    });
-                  }
-                }}
-              />
+            {/* Tìm kiếm */}
+            {isAuth() ? (
+              userType() === "recruiter" || userType() === "applicant" ? (
+                <Grid
+                  item
+                  sx={{
+                    margin: "0 auto",
+                    border: "1px solid #000",
+                    borderRadius: "30px",
+                    padding: "0 0 0 20px",
+                    maxWidth: "400px",
+                  }}
+                >
+                  <Input
+                    placeholder="Tìm kiếm"
+                    value={searchInput}
+                    onChange={(event) => setSearchInput(event.target.value)}
+                    onKeyPress={(ev) => {
+                      if (ev.key === "Enter") {
+                        history.push({
+                          pathname: "/tim-kiem",
+                          search: `?search=${searchInput}`,
+                        });
+                      }
+                    }}
+                  />
 
-              <IconButton
-                sx={{
-                  borderRadius: "50%",
-                  backgroundColor: "primary.main",
-                  color: "common.white",
-                  marginLeft: "10px",
-                }}
-                onClick={() =>
-                  history.push({
-                    pathname: "/tim-kiem",
-                    search: `?search=${searchInput}`,
-                  })
-                }
-              >
-                <SearchIcon />
-              </IconButton>
-            </Grid>
+                  <IconButton
+                    sx={{
+                      borderRadius: "50%",
+                      backgroundColor: "primary.main",
+                      color: "common.white",
+                      marginLeft: "10px",
+                    }}
+                    onClick={() =>
+                      history.push({
+                        pathname: "/tim-kiem",
+                        search: `?search=${searchInput}`,
+                      })
+                    }
+                  >
+                    <SearchIcon />
+                  </IconButton>
+                </Grid>
+              ) : (
+                <></>
+              )
+            ) : (
+              <></>
+            )}
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {isAuth() ? (
@@ -365,83 +371,89 @@ const Navbar = (props) => {
                     </IconButton>
                   </Grid>
                 </>
-              ) : (
-                // Applicant
-                <>
-                  <MenuItem onClick={handleCloseNavMenu}>
-                    <Typography
-                      textAlign="center"
-                      onClick={() => handleClick("/viec-lam")}
+              ) : userType() === "applicant" ? (
+                userType() === "applicant" ? (
+                  // Applicant
+                  <>
+                    <MenuItem onClick={handleCloseNavMenu}>
+                      <Typography
+                        textAlign="center"
+                        onClick={() => handleClick("/viec-lam")}
+                      >
+                        Việc làm
+                      </Typography>
+                    </MenuItem>
+                    <MenuItem onClick={handleCloseNavMenu}>
+                      <Typography
+                        textAlign="center"
+                        onClick={() => handleClick("/cong-ty")}
+                      >
+                        Công ty
+                      </Typography>
+                    </MenuItem>
+                    <MenuItem onClick={handleCloseNavMenu}>
+                      <Typography
+                        textAlign="center"
+                        onClick={() => handleClick("/tin-tuc")}
+                      >
+                        Tin tức
+                      </Typography>
+                    </MenuItem>
+                    <MenuItem onClick={handleCloseNavMenu}>
+                      <Typography
+                        textAlign="center"
+                        onClick={() => handleClick("/ung-vien")}
+                      >
+                        Nộp đơn
+                      </Typography>
+                    </MenuItem>
+                    {/* Right Nav */}
+                    <Grid
+                      item
+                      sx={{
+                        marginLeft: "auto",
+                        border: "1px solid #000",
+                        borderRadius: "30px",
+                        padding: "0 0 0 20px",
+                        maxWidth: "400px",
+                      }}
                     >
-                      Việc làm
-                    </Typography>
-                  </MenuItem>
-                  <MenuItem onClick={handleCloseNavMenu}>
-                    <Typography
-                      textAlign="center"
-                      onClick={() => handleClick("/cong-ty")}
-                    >
-                      Công ty
-                    </Typography>
-                  </MenuItem>
-                  <MenuItem onClick={handleCloseNavMenu}>
-                    <Typography
-                      textAlign="center"
-                      onClick={() => handleClick("/tin-tuc")}
-                    >
-                      Tin tức
-                    </Typography>
-                  </MenuItem>
-                  <MenuItem onClick={handleCloseNavMenu}>
-                    <Typography
-                      textAlign="center"
-                      onClick={() => handleClick("/ung-vien")}
-                    >
-                      Nộp đơn
-                    </Typography>
-                  </MenuItem>
-                  {/* Right Nav */}
-                  <Grid
-                    item
-                    sx={{
-                      marginLeft: "auto",
-                      border: "1px solid #000",
-                      borderRadius: "30px",
-                      padding: "0 0 0 20px",
-                      maxWidth: "400px",
-                    }}
-                  >
-                    <Input
-                      placeholder="Tìm kiếm"
-                      value={searchInput}
-                      onChange={(event) => setSearchInput(event.target.value)}
-                      onKeyPress={(ev) => {
-                        if (ev.key === "Enter") {
+                      <Input
+                        placeholder="Tìm kiếm"
+                        value={searchInput}
+                        onChange={(event) => setSearchInput(event.target.value)}
+                        onKeyPress={(ev) => {
+                          if (ev.key === "Enter") {
+                            history.push({
+                              pathname: "/tim-kiem",
+                              search: `?search=${searchInput}`,
+                            });
+                          }
+                        }}
+                      />
+                      <IconButton
+                        sx={{
+                          borderRadius: "50%",
+                          backgroundColor: "primary.main",
+                          color: "common.white",
+                          marginLeft: "10px",
+                        }}
+                        onClick={() =>
                           history.push({
                             pathname: "/tim-kiem",
                             search: `?search=${searchInput}`,
-                          });
+                          })
                         }
-                      }}
-                    />
-                    <IconButton
-                      sx={{
-                        borderRadius: "50%",
-                        backgroundColor: "primary.main",
-                        color: "common.white",
-                        marginLeft: "10px",
-                      }}
-                      onClick={() =>
-                        history.push({
-                          pathname: "/tim-kiem",
-                          search: `?search=${searchInput}`,
-                        })
-                      }
-                    >
-                      <SearchIcon />
-                    </IconButton>
-                  </Grid>
-                </>
+                      >
+                        <SearchIcon />
+                      </IconButton>
+                    </Grid>
+                  </>
+                ) : (
+                  <>{/* TODO */}</>
+                )
+              ) : (
+                <></>
               )
             ) : (
               <>

@@ -20,7 +20,6 @@ import { SetPopupContext } from "../App";
 
 const JobCard = (props) => {
   const { job } = props;
-  const setPopup = useContext(SetPopupContext);
 
   const [open, setOpen] = useState(false);
   const [sop, setSop] = useState("");
@@ -30,48 +29,13 @@ const JobCard = (props) => {
     setSop("");
   };
 
-  // const handleApply = () => {
-  //   console.log(job._id);
-  //   console.log(sop);
-  //   axios
-  //     .post(
-  //       `${apiList.jobs}/${job._id}/applications`,
-  //       {
-  //         sop: sop,
-  //       },
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
-  //         },
-  //       }
-  //     )
-  //     .then((response) => {
-  //       setPopup({
-  //         open: true,
-  //         severity: "success",
-  //         message: response.data.message,
-  //       });
-  //       handleClose();
-  //     })
-  //     .catch((err) => {
-  //       console.log(err.response);
-  //       setPopup({
-  //         open: true,
-  //         severity: "error",
-  //         message: err.response.data.message,
-  //       });
-  //       handleClose();
-  //     });
-  // };
-
-  const deadline = new Date(job.deadline).toLocaleDateString("en-GB");
-
   return (
     <Paper
       sx={{
-        margin: "10px",
         padding: "20px",
-        minWidth: "500px",
+        marginTop: "20px",
+        minWidth: "200px",
+        width: "100%",
         textDecoration: "none",
         borderRadius: "30px",
       }}

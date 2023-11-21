@@ -26,7 +26,7 @@ export default function ProfileEditPage() {
   const majorServ = new MajorsService();
 
   const initValue = {
-    avatar: "",
+    avatar: {},
     name: "",
     education: [],
     skills: [],

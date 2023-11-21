@@ -10,19 +10,22 @@ let schema = new mongoose.Schema(
       type: String,
       // required: true,
     },
-    avatar: {
+    role: {
       type: String,
+      // required: true,
     },
     companyName: {
       type: String,
       // required: true,
     },
-    mailCompany: {
+    companyMail: {
       type: String,
     },
-    role: {
+    website: {
       type: String,
-      // required: true,
+    },
+    bio: {
+      type: String,
     },
     contactNumber: {
       type: String,
@@ -33,9 +36,6 @@ let schema = new mongoose.Schema(
       //   },
       //   msg: "Số điện thoại không hợp lệ!",
       // },
-    },
-    bio: {
-      type: String,
     },
     location: {
       no: {
@@ -50,6 +50,9 @@ let schema = new mongoose.Schema(
       commune: {
         type: String,
       },
+    },
+    avatar: {
+      type: Object,
     },
     level: {
       type: Number,

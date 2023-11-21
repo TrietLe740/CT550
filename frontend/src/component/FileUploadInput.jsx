@@ -4,7 +4,6 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 
 import { SetPopupContext } from "../App";
 import UploadService from "../services/upload.sevice";
-import UsersService from "../services/user.service";
 
 const FileUploadInput = (props) => {
   const uploadServ = new UploadService();
@@ -20,39 +19,20 @@ const FileUploadInput = (props) => {
     try {
       await uploadServ.uploadResume(data);
       // console.log(uploadData);
-      alert("Upload thành công!");
+      setPopup({
+        open: true,
+        severity: "success",
+        message: "Upload CV thành công!",
+      });
       location.href("http://localhost:3000/ho-so/chinh-sua");
     } catch (error) {
       console.log(error);
+      setPopup({
+        open: true,
+        severity: "error",
+        message: "Đã có lỗi xảy ra!",
+      });
     }
-    //   headers: {
-    //     "Content-Type": "multipart/form-data",
-    //   },
-    //   onUploadProgress: (progressEvent) => {
-    //     setUploadPercentage(
-    //       parseInt(
-    //         Math.round((progressEvent.loaded * 100) / progressEvent.total)
-    //       )
-    //     );
-    //   },
-    // })
-    //   .then((response) => {
-    //     console.log(response.data);
-    //     handleInput(identifier, response.data.url);
-    //     setPopup({
-    //       open: true,
-    //       severity: "success",
-    //       message: response.data.message,
-    //     });
-    //   })
-    //   .catch((err) => {
-    //     console.log(err.response);
-    //     setPopup({
-    //       open: true,
-    //       severity: "error",
-    //       message: err?.response?.data,
-    //     });
-    //   });
   };
 
   return (
@@ -76,7 +56,11 @@ const FileUploadInput = (props) => {
                   setUploadPercentage(0);
                   setFile(event.target.files[0]);
                 } else {
-                  alert("Sai định dạng");
+                  setPopup({
+                    open: true,
+                    severity: "error",
+                    message: "Sai định dạng!",
+                  });
                 }
               }}
             />
@@ -90,14 +74,14 @@ const FileUploadInput = (props) => {
               readOnly: true,
             }}
             variant="outlined"
-            style={{ width: "100%" }}
+            sx={{ width: "100%" }}
           />
         </Grid>
         <Grid item xs={3}>
           <Button
             variant="contained"
             color="secondary"
-            style={{ width: "100%", height: "100%" }}
+            sx={{ width: "100%", height: "100%" }}
             onClick={() => handleUpload()}
             disabled={file ? false : true}
           >

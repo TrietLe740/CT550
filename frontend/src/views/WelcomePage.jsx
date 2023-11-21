@@ -18,14 +18,12 @@ import { useHistory } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import UsersService from "../services/user.service";
 import JobsService from "../services/jobs.service";
-import { userType } from "../lib/isAuth";
-import JobCard from "../component/JobCard";
+import RecruiterCard from "../component/recruiter/RecruiterCard";
 
 const FilterPopup = (props) => {
-  // const classes = useStyles();
   const { open, handleClose, searchOptions, setSearchOptions, getData } = props;
   return (
     <Modal open={open} onClose={handleClose}>
@@ -361,6 +359,8 @@ const Welcome = (props) => {
   const jobServ = new JobsService();
   const userServ = new UsersService();
 
+  const [companyList, setCompanyList] = useState([]);
+
   let history = useHistory();
   const [searchInput, setSearchInput] = useState("");
 
@@ -371,10 +371,6 @@ const Welcome = (props) => {
     var dt = await jobServ.getAll();
     setJobs(dt);
   }
-
-  useEffect(() => {
-    getJob();
-  }, []);
 
   const [searchOptions, setSearchOptions] = useState({
     query: "",
@@ -476,6 +472,25 @@ const Welcome = (props) => {
     //   });
   };
 
+  useEffect(() => {
+    getJob();
+  }, []);
+
+  useEffect(() => {
+    async function getCompanies() {
+      var companyData = await userServ.getAll();
+      const companies = [];
+      for (let i = 0; i < companyData.length; i++) {
+        if (companyData[i].type === "recruiter" && companyData[i].level > 0) {
+          companies[i] = companyData[i];
+        }
+      }
+      setCompanyList(companies);
+      console.log(companies);
+    }
+    getCompanies();
+  }, []);
+
   return (
     <Grid
       container
@@ -506,55 +521,65 @@ const Welcome = (props) => {
               NÂNG CAO TAY NGHỀ
             </Typography>
           </Grid>
+
+          {/* Thanh tim kiem */}
           <Grid
+            container
             item
             sx={{
               border: "2px solid #36593C",
               borderRadius: "20px",
               padding: "0 0 0 20px",
               backgroundColor: "common.white",
+              alignItems: "center",
             }}
           >
-            <IconButton
-              onClick={() =>
-                history.push({
-                  pathname: "/tim-kiem",
-                  search: `?search=${searchInput}`,
-                })
-              }
-            >
-              <SearchIcon
-                sx={{
-                  color: "common.black",
-                }}
-              />
-            </IconButton>
-            <Input
-              sx={{ height: "50px", width: "50%" }}
-              placeholder="Tìm kiếm công việc, công ty,..."
-              value={searchInput}
-              onChange={(event) => setSearchInput(event.target.value)}
-              onKeyPress={(ev) => {
-                if (ev.key === "Enter") {
+            <Grid item xs={1}>
+              <IconButton
+                onClick={() =>
                   history.push({
                     pathname: "/tim-kiem",
                     search: `?search=${searchInput}`,
-                  });
+                  })
                 }
-              }}
-            />
-            <Button
-              sx={{ marginLeft: "40px" }}
-              variant="contained"
-              onClick={() =>
-                history.push({
-                  pathname: "/tim-kiem",
-                  search: `?search=${searchInput}`,
-                })
-              }
-            >
-              Tìm kiếm
-            </Button>
+              >
+                <SearchIcon
+                  sx={{
+                    color: "common.black",
+                  }}
+                />
+              </IconButton>
+            </Grid>
+            <Grid item xs={9} xl={8}>
+              <Input
+                disableUnderline
+                sx={{ height: "50px", width: "100%" }}
+                placeholder="Tìm kiếm công việc, công ty,..."
+                value={searchInput}
+                onChange={(event) => setSearchInput(event.target.value)}
+                onKeyPress={(ev) => {
+                  if (ev.key === "Enter") {
+                    history.push({
+                      pathname: "/tim-kiem",
+                      search: `?search=${searchInput}`,
+                    });
+                  }
+                }}
+              />
+            </Grid>
+            <Grid item xs={2} xl={3}>
+              <Button
+                variant="contained"
+                onClick={() =>
+                  history.push({
+                    pathname: "/tim-kiem",
+                    search: `?search=${searchInput}`,
+                  })
+                }
+              >
+                Tìm kiếm
+              </Button>
+            </Grid>
           </Grid>
         </Grid>
         <Grid item xs={6}>
@@ -562,23 +587,52 @@ const Welcome = (props) => {
         </Grid>
       </Grid>
       {/* 2 */}
-      <Grid item container sx={{ margin: "50px auto" }} xs={12}>
-        {/* <Grid item xs={12} textAlign="center">
-          <Typography variant="h4" sx={{ fontWeight: "bold" }}>
-            NHÀ TUYỂN DỤNG HÀNG ĐẦU
-          </Typography>
-        </Grid> */}
-        {/* <Grid container alignItems="stretch" justifyContent="center">
-          {jobs.length > 0 ? (
-            jobs.map((job) => {
-              return <JobCard job={job} />;
-            })
-          ) : (
-            <Typography variant="h5" style={{ textAlign: "center" }}>
-              Không tìm thấy việc làm phù hợp
-            </Typography>
-          )}
-        </Grid> */}
+      <Grid container item direction="column">
+        <Typography
+          variant="h4"
+          align="center"
+          sx={{ fontWeight: "500", margin: "50px 0 30px 0" }}
+        >
+          NHÀ TUYỂN DỤNG HÀNG ĐẦU
+        </Typography>
+        <Grid container item>
+          <Grid item container justifyContent="center" xs={12}>
+            {companyList?.length > 0
+              ? companyList?.map((company) => {
+                  return (
+                    <Grid item xs={3}>
+                      <RecruiterCard company={company} />
+                    </Grid>
+                  );
+                })
+              : null}
+          </Grid>
+        </Grid>
+      </Grid>
+      {/* 3 */}
+      <Grid
+        container
+        sx={{
+          backgroundColor: "primary.main",
+          height: "200px",
+          marginTop: "50px",
+          marginBottom: "50px",
+          borderRadius: "20px",
+        }}
+      >
+        <Typography
+          align="center"
+          variant="p"
+          sx={{
+            padding: "50px",
+            color: "common.white",
+          }}
+        >
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa ratione
+          eius recusandae ducimus ipsam voluptatibus pariatur facilis
+          repudiandae aut a, fuga necessitatibus. Placeat maiores temporibus,
+          qui quod nesciunt perspiciatis quae.
+        </Typography>
       </Grid>
       <FilterPopup
         open={filterOpen}

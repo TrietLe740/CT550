@@ -22,14 +22,18 @@ import RecruiterEditProfile from "./views/recruiter/RecruiterEditProfile.jsx";
 import SearchPage from "./views/SearchPage.jsx";
 import NewsPage from "./views/NewsPage.jsx";
 import CompaniesPage from "./views/CompaniesPage.jsx";
+import CompanyDetailPage from "./views/CompanyDetailPage.jsx";
 
 import MessagePopup from "./lib/MessagePopup.jsx";
-// eslint-disable-next-line no-unused-vars
+
+import AdminLoginPage from "./views/admin/AdminLoginPage.jsx";
+
 import isAuth, { userType } from "./lib/isAuth.jsx";
 import JobDetailPage from "./views/JobDetailPage.jsx";
 import ProfileEditPage from "./views/ProfileEditPage.jsx";
 import UpdateAccountPage from "./views/UpdateAccountPage.jsx";
 import UploadCVPage from "./views/UploadCVPage.jsx";
+import Footer from "./component/Footer.jsx";
 
 export const SetPopupContext = createContext();
 
@@ -48,7 +52,7 @@ function App() {
         contrastText: "#fff",
       },
       secondary: {
-        main: "#48884A",
+        main: "#EE9322",
       },
     },
     typoraphy: {
@@ -103,9 +107,11 @@ function App() {
       <BrowserRouter>
         <SetPopupContext.Provider value={setPopup}>
           <Grid container direction="column">
-            <Grid item xs>
-              <Navbar />
+            {/* Nav */}
+            <Grid item>
+              {location.pathname === "/admin/dang-nhap" ? <></> : <Navbar />}
             </Grid>
+            {/* Main */}
             <Grid item>
               <Switch>
                 <Route exact path="/">
@@ -126,21 +132,22 @@ function App() {
                 <Route exact path="/viec-lam/:id">
                   <JobDetailPage />
                 </Route>
+                <Route exact path="/tim-kiem">
+                  <SearchPage />
+                </Route>
+
+                {/* Applicant */}
                 <Route exact path="/ung-vien">
                   <ApplicationsPage />
                 </Route>
                 <Route exact path="/ho-so/thuc-tap-sinh/:id">
                   <ProfilePage />
                 </Route>
-                <Route exact path="/tai-khoan/nang-cap">
-                  <UpdateAccountPage />
-                </Route>
                 <Route exact path="/update-cv">
                   <UploadCVPage />
                 </Route>
-                <Route exact path="/tim-kiem">
-                  <SearchPage />
-                </Route>
+
+                {/* Profile */}
                 <Route exact path="/ho-so/chinh-sua">
                   {userType() === "recruiter" ? (
                     <RecruiterEditProfile />
@@ -148,6 +155,13 @@ function App() {
                     <ProfileEditPage />
                   )}
                 </Route>
+
+                {/* Update Level Account */}
+                <Route exact path="/tai-khoan/nang-cap">
+                  <UpdateAccountPage />
+                </Route>
+
+                {/* Recruiter */}
                 <Route exact path="/dang-tin">
                   <CreateJobs />
                 </Route>
@@ -166,10 +180,24 @@ function App() {
                 <Route exact path="/cong-ty">
                   <CompaniesPage />
                 </Route>
+                <Route exact path="/cong-ty/:id">
+                  <CompanyDetailPage />
+                </Route>
+
+                {/* Admin */}
+                <Route exact path="/admin/dang-nhap">
+                  <AdminLoginPage />
+                </Route>
+
+                {/* Error */}
                 <Route>
                   <ErrorPage />
                 </Route>
               </Switch>
+            </Grid>
+            {/* Footer */}
+            <Grid item>
+              {location.pathname === "/admin/dang-nhap" ? <></> : <Footer />}
             </Grid>
           </Grid>
           <MessagePopup

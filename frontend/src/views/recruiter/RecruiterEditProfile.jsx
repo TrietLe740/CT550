@@ -29,12 +29,14 @@ const Profile = (props) => {
 
   const [profileDetails, setProfileDetails] = useState({
     name: "",
-    bio: "",
-    contactNumber: "",
-    nameCompany: "",
-    mailCompany: "",
-    website: "",
     role: "",
+    email: "",
+    companyName: "",
+    companyMail: "",
+    website: "",
+    bio: "",
+    avatar: {},
+    contactNumber: "",
     location: {
       no: "",
       province: "",
@@ -203,9 +205,9 @@ const Profile = (props) => {
             <Grid item>
               <TextField
                 label="Tên doanh nghiệp"
-                value={profileDetails?.nameCompany}
+                value={profileDetails?.companyName}
                 onChange={(event) =>
-                  handleInput("nameCompany", event.target.value)
+                  handleInput("companyName", event.target.value)
                 }
                 variant="outlined"
                 fullWidth
@@ -216,9 +218,9 @@ const Profile = (props) => {
               <TextField
                 type="text"
                 label="Email doanh nghiệp"
-                value={profileDetails?.mailCompany}
+                value={profileDetails?.companyMail}
                 onChange={(event) =>
-                  handleInput("mailCompany", event.target.value)
+                  handleInput("companyMail", event.target.value)
                 }
                 variant="outlined"
                 fullWidth
@@ -334,7 +336,6 @@ const Profile = (props) => {
                   label="Xã/Phường"
                   required
                   variant="outlined"
-                  InputProps={{ inputProps: { min: 1 } }}
                   fullWidth
                   value={profileDetails?.location?.commune}
                   onChange={(event) => {

@@ -311,36 +311,9 @@ router.delete("/jobs/:id", jwtAuth, (req, res) => {
 });
 
 router.get("/user", jwtAuth, (req, res) => {
-  const user = req.user;
-  if (user.type === "recruiter") {
-    Recruiter.findOne({ userId: user._id })
-      .then((recruiter) => {
-        if (recruiter == null) {
-          res.status(404).json({
-            message: "Người dùng không tồn tại!",
-          });
-          return;
-        }
-        res.json(recruiter);
-      })
-      .catch((err) => {
-        res.status(400).json(err);
-      });
-  } else {
-    JobApplicant.findOne({ userId: user._id })
-      .then((jobApplicant) => {
-        if (jobApplicant == null) {
-          res.status(404).json({
-            message: "Người dùng không tồn tại!",
-          });
-          return;
-        }
-        res.json(jobApplicant);
-      })
-      .catch((err) => {
-        res.status(400).json(err);
-      });
-  }
+  const users = User.find().then((users) => {
+    res.json(users);
+  });
 });
 
 router.get("/user/:id", jwtAuth, (req, res) => {

@@ -14,15 +14,19 @@ import { SetPopupContext } from "../App";
 
 import apiList from "../lib/apiList";
 import { useHistory } from "react-router-dom";
+import UsersService from "../services/user.service";
 
 import JobCard from "../component/JobCard";
 import FilterPopup from "../component/FilterPopup";
+import RecruiterCard from "../component/recruiter/RecruiterCard";
 
 const Home = (props) => {
+  const userServ = new UsersService();
   let history = useHistory();
   const [searchInput, setSearchInput] = useState("");
 
   const [jobs, setJobs] = useState([]);
+  const [companyList, setCompanyList] = useState([]);
   const [filterOpen, setFilterOpen] = useState(false);
   const [searchOptions, setSearchOptions] = useState({
     query: "",
@@ -52,6 +56,21 @@ const Home = (props) => {
   const setPopup = useContext(SetPopupContext);
   useEffect(() => {
     getData();
+  }, []);
+
+  useEffect(() => {
+    async function getCompanies() {
+      var companyData = await userServ.getAll();
+      const companies = [];
+      for (let i = 0; i < companyData.length; i++) {
+        if (companyData[i].type === "recruiter" && companyData[i].level == 4) {
+          companies[i] = companyData[i];
+        }
+      }
+      setCompanyList(companies);
+      console.log(companies);
+    }
+    getCompanies();
   }, []);
 
   const getData = () => {
@@ -132,7 +151,7 @@ const Home = (props) => {
   };
 
   return (
-    <>
+    <Grid container>
       <Grid
         container
         direction="column"
@@ -221,16 +240,6 @@ const Home = (props) => {
               </Button>
             </Grid>
           </Grid>
-
-          {/* <Grid item>
-            <IconButton
-              sx={{ color: "common.white" }}
-              onClick={() => setFilterOpen(true)}
-              size="large"
-            >
-              <FilterListIcon />
-            </IconButton>
-          </Grid> */}
         </Grid>
 
         {/* Quang cao */}
@@ -268,6 +277,7 @@ const Home = (props) => {
             TIN THỰC TẬP TỐT NHẤT VIỆT NAM
           </Typography>
           <Grid container item>
+            {/* Co the ban quan tam */}
             <Grid
               item
               xs={4}
@@ -275,9 +285,8 @@ const Home = (props) => {
                 boxShadow:
                   "0px 3px 3px -2px rgba(0,0,0,0.2), 0px 3px 4px 0px rgba(0,0,0,0.14), 0px 1px 8px 0px rgba(0,0,0,0.12)",
                 borderRadius: "30px",
-                margin: "0 auto",
                 height: "500px",
-                marginTop: "10px",
+                marginTop: "20px",
                 padding: "30px",
               }}
             >
@@ -286,16 +295,40 @@ const Home = (props) => {
               </Typography>
               <Grid>Đang cập nhật</Grid>
             </Grid>
-            <Grid item container justifyContent="center" xs={8}>
-              {jobs.length > 0 ? (
-                jobs.map((job) => {
-                  return <JobCard job={job} />;
-                })
-              ) : (
-                <Typography variant="h5" style={{ textAlign: "center" }}>
-                  Không tìm thấy việc làm phù hợp
-                </Typography>
-              )}
+
+            {/* DS cong viec */}
+            <Grid item container xs={8} sx={{ padding: "0 0 0 20px" }}>
+              {jobs.length > 0
+                ? jobs.map((job) => {
+                    return (
+                      <Grid item>
+                        <JobCard job={job} />
+                      </Grid>
+                    );
+                  })
+                : null}
+            </Grid>
+          </Grid>
+        </Grid>
+        <Grid container item direction="column">
+          <Typography
+            variant="h4"
+            align="center"
+            sx={{ fontWeight: "500", margin: "50px 0 30px 0" }}
+          >
+            NHÀ TUYỂN DỤNG HÀNG ĐẦU
+          </Typography>
+          <Grid container item>
+            <Grid item container justifyContent="center" xs={12}>
+              {companyList?.length > 0
+                ? companyList?.map((company) => {
+                    return (
+                      <Grid item xs={3}>
+                        <RecruiterCard company={company} />
+                      </Grid>
+                    );
+                  })
+                : null}
             </Grid>
           </Grid>
         </Grid>
@@ -313,7 +346,7 @@ const Home = (props) => {
           setFilterOpen(false);
         }}
       />
-    </>
+    </Grid>
   );
 };
 
