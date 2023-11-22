@@ -18,7 +18,7 @@ import UsersService from "../../services/user.service";
 import LocationsService from "../../services/location.service";
 import { useLocation } from "react-router-dom";
 
-const RecruiterEditProfile = (props) => {
+const EditCPPage = (props) => {
   const authServ = new AuthService();
   const userServ = new UsersService();
   const locationServ = new LocationsService();
@@ -98,14 +98,14 @@ const RecruiterEditProfile = (props) => {
   };
 
   let location = useLocation();
-  let userId = location.pathname.slice(10);
+  let userId = location.pathname.slice(15);
 
   useEffect(() => {
-    console.log(location);
     async function getUser() {
       const locations = await locationServ.getAll();
       setLocations(locations);
-      const user = await userServ.get();
+      const user = await userServ.get(userId);
+      console.log(user);
       setProfileDetails(user);
     }
     getUser();
@@ -131,7 +131,7 @@ const RecruiterEditProfile = (props) => {
   return (
     <Paper>
       <Grid
-        sx={{ padding: "100px" }}
+        sx={{ padding: "50px 100px" }}
         container
         item
         direction="column"
@@ -371,4 +371,4 @@ const RecruiterEditProfile = (props) => {
   );
 };
 
-export default RecruiterEditProfile;
+export default EditCPPage;

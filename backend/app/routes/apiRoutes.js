@@ -316,9 +316,17 @@ router.get("/user", jwtAuth, (req, res) => {
   });
 });
 
+router.get("/user/recruiter", jwtAuth, (req, res) => {
+  const recruiters = Recruiter.find().then((recruiters) => {
+    res.json(recruiters);
+  });
+});
+
 router.get("/user/:id", jwtAuth, (req, res) => {
   User.findOne({ _id: req.params.id })
     .then((userData) => {
+      console.log("ID: " + req.params.id);
+      console.log(userData);
       if (userData === null) {
         res.status(404).json({
           message: "Người dùng không tồn tại!",
@@ -331,7 +339,7 @@ router.get("/user/:id", jwtAuth, (req, res) => {
           .then((recruiter) => {
             if (recruiter === null) {
               res.status(404).json({
-                message: "Người dùng không tồn tại!",
+                message: "Người dùng không tồn tại!!",
               });
               return;
             }
@@ -345,7 +353,7 @@ router.get("/user/:id", jwtAuth, (req, res) => {
           .then((jobApplicant) => {
             if (jobApplicant === null) {
               res.status(404).json({
-                message: "Người dùng không tồn tại!",
+                message: "Người dùng không tồn tại!!!",
               });
               return;
             }
@@ -499,7 +507,6 @@ router.post("/jobs/:id/applications", jwtAuth, (req, res) => {
     },
   })
     .then((appliedApplication) => {
-      console.log(appliedApplication);
       if (appliedApplication !== null) {
         res.status(400).json({
           message: "Bạn đã nộp đơn cho công việc này!",

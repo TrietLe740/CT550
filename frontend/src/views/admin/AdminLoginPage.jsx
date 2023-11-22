@@ -95,7 +95,7 @@ const AdminLoginPage = (props) => {
   };
 
   return loggedin ? (
-    <Redirect to="/" />
+    <Redirect to="/admin/bang-dieu-khien" />
   ) : (
     <Paper sx={{ padding: "50px", minHeight: "100vh" }}>
       <Grid

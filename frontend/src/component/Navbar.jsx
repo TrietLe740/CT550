@@ -14,7 +14,6 @@ import {
   Tooltip,
   Avatar,
   Badge,
-  Button,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import NotificationsIcon from "@mui/icons-material/Notifications";
@@ -23,6 +22,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import isAuth, { userType } from "../lib/isAuth";
 
 import LOGO from "../assets/logo_Hitern.png";
+import LOGO2 from "../assets/logo_Hitern2.png";
 import AuthService from "../services/auth.service";
 import { useEffect } from "react";
 
@@ -34,7 +34,6 @@ const Navbar = (props) => {
   const [user, setUser] = useState();
 
   const handleClick = (location) => {
-    console.log(location);
     history.push(location);
   };
 
@@ -96,9 +95,17 @@ const Navbar = (props) => {
               textDecoration: "none",
             }}
           >
-            <Link to="/">
-              <img className="logo" src={LOGO} alt="logo" />
-            </Link>
+            {userType() === "admin" ? (
+              // Admin
+              <Link to="/admin/bang-dieu-khien">
+                <img className="logo" src={LOGO2} alt="logo" />
+              </Link>
+            ) : (
+              // Recruiter & Applicant
+              <Link to="/">
+                <img className="logo" src={LOGO} alt="logo" />
+              </Link>
+            )}
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
@@ -166,8 +173,8 @@ const Navbar = (props) => {
                       </Typography>
                     </MenuItem>
                   </>
-                ) : (
-                  // Applicant
+                ) : // Applicant
+                userType() === "applicant" ? (
                   <>
                     <MenuItem onClick={handleCloseNavMenu}>
                       <Typography
@@ -202,6 +209,58 @@ const Navbar = (props) => {
                       </Typography>
                     </MenuItem>
                   </>
+                ) : (
+                  // Admin
+                  <>
+                    <MenuItem onClick={handleCloseNavMenu}>
+                      <Typography
+                        textAlign="center"
+                        onClick={() => handleClick("/admin/bang-dieu-khien")}
+                      >
+                        Bảng điều khiển
+                      </Typography>
+                    </MenuItem>
+                    <MenuItem onClick={handleCloseNavMenu}>
+                      <Typography
+                        textAlign="center"
+                        onClick={() => handleClick("/admin/cong-ty")}
+                      >
+                        Công ty
+                      </Typography>
+                    </MenuItem>
+                    <MenuItem onClick={handleCloseNavMenu}>
+                      <Typography
+                        textAlign="center"
+                        onClick={() => handleClick("/admin/thuc-tap-sinh")}
+                      >
+                        Thực tập sinh
+                      </Typography>
+                    </MenuItem>
+                    <MenuItem onClick={handleCloseNavMenu}>
+                      <Typography
+                        textAlign="center"
+                        onClick={() => handleClick("/admin/tim-kiem-cong-viec")}
+                      >
+                        Tìm kiếm công việc
+                      </Typography>
+                    </MenuItem>
+                    <MenuItem onClick={handleCloseNavMenu}>
+                      <Typography
+                        textAlign="center"
+                        onClick={() => handleClick("/admin/tin-tuc")}
+                      >
+                        Tin tức
+                      </Typography>
+                    </MenuItem>
+                    <MenuItem onClick={handleCloseNavMenu}>
+                      <Typography
+                        textAlign="center"
+                        onClick={() => handleClick("/admin/dich-vu")}
+                      >
+                        Gói dịch vụ
+                      </Typography>
+                    </MenuItem>
+                  </>
                 )
               ) : (
                 <>
@@ -225,6 +284,7 @@ const Navbar = (props) => {
               )}
             </Menu>
           </Box>
+
           <Typography
             variant="h5"
             noWrap
@@ -256,6 +316,7 @@ const Navbar = (props) => {
                 >
                   <Input
                     placeholder="Tìm kiếm"
+                    disableUnderline
                     value={searchInput}
                     onChange={(event) => setSearchInput(event.target.value)}
                     onKeyPress={(ev) => {
@@ -285,13 +346,10 @@ const Navbar = (props) => {
                     <SearchIcon />
                   </IconButton>
                 </Grid>
-              ) : (
-                <></>
-              )
-            ) : (
-              <></>
-            )}
+              ) : null
+            ) : null}
           </Typography>
+
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {isAuth() ? (
               userType() === "recruiter" ? (
@@ -341,6 +399,7 @@ const Navbar = (props) => {
                   >
                     <Input
                       placeholder="Tìm kiếm"
+                      disableUnderline
                       value={searchInput}
                       onChange={(event) => setSearchInput(event.target.value)}
                       onKeyPress={(ev) => {
@@ -420,6 +479,7 @@ const Navbar = (props) => {
                     >
                       <Input
                         placeholder="Tìm kiếm"
+                        disableUnderline
                         value={searchInput}
                         onChange={(event) => setSearchInput(event.target.value)}
                         onKeyPress={(ev) => {
@@ -450,10 +510,85 @@ const Navbar = (props) => {
                     </Grid>
                   </>
                 ) : (
-                  <>{/* TODO */}</>
+                  <>
+                    <MenuItem onClick={handleCloseNavMenu}>
+                      <Typography
+                        textAlign="center"
+                        onClick={() => handleClick("/viec-lam")}
+                      >
+                        Việc làm
+                      </Typography>
+                    </MenuItem>
+                    <MenuItem onClick={handleCloseNavMenu}>
+                      <Typography
+                        textAlign="center"
+                        onClick={() => handleClick("/cong-ty")}
+                      >
+                        Công ty
+                      </Typography>
+                    </MenuItem>
+                    <MenuItem onClick={handleCloseNavMenu}>
+                      <Typography
+                        textAlign="center"
+                        onClick={() => handleClick("/tin-tuc")}
+                      >
+                        Tin tức
+                      </Typography>
+                    </MenuItem>
+                  </>
                 )
               ) : (
-                <></>
+                // Admin
+                <>
+                  <MenuItem onClick={handleCloseNavMenu}>
+                    <Typography
+                      textAlign="center"
+                      onClick={() => handleClick("/admin/bang-dieu-khien")}
+                    >
+                      Bảng điều khiển
+                    </Typography>
+                  </MenuItem>
+                  <MenuItem onClick={handleCloseNavMenu}>
+                    <Typography
+                      textAlign="center"
+                      onClick={() => handleClick("/admin/cong-ty")}
+                    >
+                      Công ty
+                    </Typography>
+                  </MenuItem>
+                  <MenuItem onClick={handleCloseNavMenu}>
+                    <Typography
+                      textAlign="center"
+                      onClick={() => handleClick("/admin/thuc-tap-sinh")}
+                    >
+                      Thực tập sinh
+                    </Typography>
+                  </MenuItem>
+                  <MenuItem onClick={handleCloseNavMenu}>
+                    <Typography
+                      textAlign="center"
+                      onClick={() => handleClick("/admin/tim-kiem-cong-viec")}
+                    >
+                      Tìm kiếm công việc
+                    </Typography>
+                  </MenuItem>
+                  <MenuItem onClick={handleCloseNavMenu}>
+                    <Typography
+                      textAlign="center"
+                      onClick={() => handleClick("/admin/tin-tuc")}
+                    >
+                      Tin tức
+                    </Typography>
+                  </MenuItem>
+                  <MenuItem onClick={handleCloseNavMenu}>
+                    <Typography
+                      textAlign="center"
+                      onClick={() => handleClick("/admin/dich-vu")}
+                    >
+                      Gói dịch vụ
+                    </Typography>
+                  </MenuItem>
+                </>
               )
             ) : (
               <>
@@ -481,7 +616,9 @@ const Navbar = (props) => {
           </Box>
 
           {isAuth() ? (
-            userType() === "recruiter" || userType() === "applicant" ? (
+            userType() === "recruiter" ||
+            userType() === "applicant" ||
+            userType() === "admin" ? (
               <Box sx={{ flexGrow: 0 }}>
                 <IconButton
                   sx={{
@@ -542,14 +679,16 @@ const Navbar = (props) => {
                   open={Boolean(anchorElUser)}
                   onClose={handleCloseUserMenu}
                 >
-                  <MenuItem onClick={handleCloseUserMenu}>
-                    <Typography
-                      textAlign="center"
-                      onClick={() => handleClick("/ho-so/chinh-sua")}
-                    >
-                      Hồ sơ
-                    </Typography>
-                  </MenuItem>
+                  {userType() !== "admin" ? (
+                    <MenuItem onClick={handleCloseUserMenu}>
+                      <Typography
+                        textAlign="center"
+                        onClick={() => handleClick("/ho-so/chinh-sua")}
+                      >
+                        Hồ sơ
+                      </Typography>
+                    </MenuItem>
+                  ) : null}
                   <MenuItem onClick={handleCloseUserMenu}>
                     <Typography
                       textAlign="center"
@@ -563,9 +702,7 @@ const Navbar = (props) => {
             ) : (
               <></>
             )
-          ) : (
-            <></>
-          )}
+          ) : null}
         </Toolbar>
       </Container>
     </AppBar>

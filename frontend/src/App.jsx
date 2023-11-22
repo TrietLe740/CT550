@@ -1,6 +1,7 @@
 import { createContext, useState } from "react";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
-import { Grid, ThemeProvider, createTheme, CssBaseline } from "@mui/material";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { Grid, CssBaseline } from "@mui/material";
 
 import Welcome, { ErrorPage } from "./views/WelcomePage.jsx";
 
@@ -34,6 +35,13 @@ import ProfileEditPage from "./views/ProfileEditPage.jsx";
 import UpdateAccountPage from "./views/UpdateAccountPage.jsx";
 import UploadCVPage from "./views/UploadCVPage.jsx";
 import Footer from "./component/Footer.jsx";
+import AdminDashBoardPage from "./views/admin/AdminDashBoardPage.jsx";
+import AdminListCPPage from "./views/admin/AdminListCPPage.jsx";
+import AdminListInternPage from "./views/admin/AdminListInternPage.jsx";
+import AdminListJobPage from "./views/admin/AdminListJobPage.jsx";
+import AdminNewsPage from "./views/admin/AdminNewsPage.jsx";
+import AdminServicesPage from "./views/admin/AdminServicesPage.jsx";
+import EditCPPage from "./views/admin/EditCPPage.jsx";
 
 export const SetPopupContext = createContext();
 
@@ -53,6 +61,8 @@ function App() {
       },
       secondary: {
         main: "#EE9322",
+        dark: "#a75c00",
+        contrastText: "#fff",
       },
     },
     typoraphy: {
@@ -109,7 +119,7 @@ function App() {
           <Grid container direction="column">
             {/* Nav */}
             <Grid item>
-              {location.pathname === "/admin/dang-nhap" ? <></> : <Navbar />}
+              {location.pathname === "/admin/dang-nhap" ? null : <Navbar />}
             </Grid>
             {/* Main */}
             <Grid item>
@@ -188,6 +198,29 @@ function App() {
                 <Route exact path="/admin/dang-nhap">
                   <AdminLoginPage />
                 </Route>
+                <Route exact path="/admin/bang-dieu-khien">
+                  <AdminDashBoardPage />
+                </Route>
+
+                <Route exact path="/admin/cong-ty">
+                  <AdminListCPPage />
+                </Route>
+                <Route exact path="/admin/cong-ty/:id">
+                  <EditCPPage />
+                </Route>
+
+                <Route exact path="/admin/thuc-tap-sinh">
+                  <AdminListInternPage />
+                </Route>
+                <Route exact path="/admin/tim-kiem-cong-viec">
+                  <AdminListJobPage />
+                </Route>
+                <Route exact path="/admin/tin-tuc">
+                  <AdminNewsPage />
+                </Route>
+                <Route exact path="/admin/dich-vu">
+                  <AdminServicesPage />
+                </Route>
 
                 {/* Error */}
                 <Route>
@@ -197,7 +230,11 @@ function App() {
             </Grid>
             {/* Footer */}
             <Grid item>
-              {location.pathname === "/admin/dang-nhap" ? <></> : <Footer />}
+              {location.pathname === "/admin/dang-nhap" ? (
+                <></>
+              ) : (
+                <>{userType() === "admin" ? null : <Footer />}</>
+              )}
             </Grid>
           </Grid>
           <MessagePopup

@@ -1,8 +1,17 @@
-import React, { useEffect, useState } from "react";
-// import axios from "axios";
+import React, { useContext, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom/cjs/react-router-dom";
-// import apiList from "../lib/apiList";
-import { Box, Button, Grid, Paper, Tab, Tabs, Typography } from "@mui/material";
+import apiList from "../lib/apiList";
+import {
+  Box,
+  Button,
+  Grid,
+  Paper,
+  Tab,
+  Tabs,
+  Typography,
+  Modal,
+  TextField,
+} from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { userType } from "../lib/isAuth";
 import JobsService from "../services/jobs.service";
@@ -10,6 +19,8 @@ import SwipeableViews from "react-swipeable-views";
 import PropTypes from "prop-types";
 import UsersService from "../services/user.service";
 import JobCard from "../component/JobCard";
+import { SetPopupContext } from "../App";
+import axios from "axios";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -45,6 +56,10 @@ function a11yProps(index) {
 }
 
 export default function JobDetailPage() {
+  const setPopup = useContext(SetPopupContext);
+  const [open, setOpen] = useState(false);
+  const [sop, setSop] = useState("");
+
   const jobServ = new JobsService();
   const userServ = new UsersService();
 
@@ -52,6 +67,11 @@ export default function JobDetailPage() {
   let jobId = location.pathname.slice(10);
 
   const [job, setJob] = useState();
+
+  const handleClose = () => {
+    setOpen(false);
+    setSop("");
+  };
 
   async function getJob() {
     var dt = await jobServ.get(jobId);
@@ -88,69 +108,46 @@ export default function JobDetailPage() {
 
   // Apply button
   const handleApply = async (id) => {
-    try {
-      await jobServ.apply(id);
-    } catch (error) {
-      console.log(error);
-    }
-    // axios
-    //   .post(
-    //     `${apiList.jobs}/${job._id}/applications`,
-    //     {
-    //       sop: sop,
-    //     },
-    //     {
-    //       headers: {
-    //         Authorization: `Bearer ${localStorage.getItem("token")}`,
-    //       },
-    //     }
-    //   )
-    //   .then((response) => {
-    //     setPopup({
-    //       open: true,
-    //       severity: "success",
-    //       message: response.data.message,
-    //     });
-    //     handleClose();
-    //   })
-    //   .catch((err) => {
-    //     console.log(err.response);
-    //     setPopup({
-    //       open: true,
-    //       severity: "error",
-    //       message: err.response.data.message,
-    //     });
-    //     handleClose();
-    //   });
+    // try {
+    //   await jobServ.apply(id);
+    // } catch (error) {
+    //   console.log(error);
+    //   // setPopup({
+    //   //   open: true,
+    //   //   severity: "error",
+    //   //   message: "B",
+    //   // });
+    // }
+    axios
+      .post(
+        `${apiList.jobs}/${job._id}/applications`,
+        {
+          sop: sop,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      )
+      .then((response) => {
+        setPopup({
+          open: true,
+          severity: "success",
+          message: response.data.message,
+        });
+        handleClose();
+      })
+      .catch((err) => {
+        console.log(err.response);
+        setPopup({
+          open: true,
+          severity: "error",
+          message: err.response.data.message,
+        });
+        handleClose();
+      });
   };
-
-  //   useEffect(() => {
-  //     getData();
-  //   }, []);
-
-  //   const getData = () => {
-  //     let address = apiList.jobs;
-  //     address = `${address}/${location.pathname.slice(10)}`;
-  //     console.log(address);
-
-  //     axios
-  //       .get(address, {
-  //         headers: {
-  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
-  //         },
-  //       })
-  //       .then((response) => {
-  //         console.log(response.data);
-  //       })
-  //       .catch((err) => {
-  //         console.log(err);
-  //         setPopup({
-  //           open: true,
-  //           severity: "error",
-  //           message: "Error",
-  //         });
-  //       });
-  //   };
 
   return (
     <Paper sx={{ padding: "100px 200px", minHeight: "100vh" }}>
@@ -202,7 +199,7 @@ export default function JobDetailPage() {
               <Button
                 variant="contained"
                 onClick={() => {
-                  handleApply(job._id);
+                  setOpen(true);
                 }}
                 disabled={userType() === "recruiter"}
               >
@@ -258,8 +255,8 @@ export default function JobDetailPage() {
                       aperiam, saepe explicabo a dolores eligendi consequatur
                       ea.
                     </p>
-                    <br />
-                    <Typography variant="p" sx={{ fontWeight: "bold" }}>
+                    {/* <br /> */}
+                    {/* <Typography variant="p" sx={{ fontWeight: "bold" }}>
                       YÊU CẦU CÔNG VIỆC
                     </Typography>
                     <p>
@@ -290,8 +287,8 @@ export default function JobDetailPage() {
                       nulla corrupti. Reprehenderit perferendis culpa aliquid
                       aperiam, saepe explicabo a dolores eligendi consequatur
                       ea.
-                    </p>
-                    <br />
+                    </p> */}
+                    {/* <br /> */}
                     <Typography variant="p" sx={{ fontWeight: "bold" }}>
                       HẠN NỘP HỒ SƠ
                     </Typography>
@@ -302,7 +299,7 @@ export default function JobDetailPage() {
                       <Button
                         variant="contained"
                         onClick={() => {
-                          handleApply(job._id);
+                          setOpen(true);
                         }}
                         disabled={userType() === "recruiter"}
                       >
@@ -371,6 +368,45 @@ export default function JobDetailPage() {
           </Grid>
         </Grid>
       </Grid>
+      <Modal open={open} onClose={handleClose}>
+        <Paper
+          style={{
+            padding: "20px",
+            outline: "none",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            minWidth: "50%",
+            alignItems: "center",
+          }}
+        >
+          <TextField
+            label="Write SOP (upto 250 words)"
+            multiline
+            rows={8}
+            style={{ width: "100%", marginBottom: "30px" }}
+            variant="outlined"
+            value={sop}
+            onChange={(event) => {
+              if (
+                event.target.value.split(" ").filter(function (n) {
+                  return n != "";
+                }).length <= 250
+              ) {
+                setSop(event.target.value);
+              }
+            }}
+          />
+          <Button
+            variant="contained"
+            color="primary"
+            style={{ padding: "10px 50px" }}
+            onClick={() => handleApply()}
+          >
+            Xác nhận
+          </Button>
+        </Paper>
+      </Modal>
     </Paper>
   );
 }
