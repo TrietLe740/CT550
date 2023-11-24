@@ -126,6 +126,9 @@ let schema = new mongoose.Schema(
     detail: {
       type: String,
     },
+    duration: {
+      type: "String",
+    },
   },
   { collation: { locale: "vi" } }
 );

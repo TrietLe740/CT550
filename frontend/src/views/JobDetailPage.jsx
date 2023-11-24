@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useLocation } from "react-router-dom/cjs/react-router-dom";
+import { useLocation } from "react-router-dom";
 import apiList from "../lib/apiList";
 import {
   Box,
@@ -11,16 +11,28 @@ import {
   Typography,
   Modal,
   TextField,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  IconButton,
+  Link,
+  Input,
 } from "@mui/material";
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
+import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { useTheme } from "@mui/material/styles";
 import { userType } from "../lib/isAuth";
-import JobsService from "../services/jobs.service";
 import SwipeableViews from "react-swipeable-views";
 import PropTypes from "prop-types";
-import UsersService from "../services/user.service";
 import JobCard from "../component/JobCard";
 import { SetPopupContext } from "../App";
 import axios from "axios";
+import FileUploadInput from "../component/FileUploadInput";
+
+import UsersService from "../services/user.service";
+import AuthService from "../services/auth.service";
+import JobsService from "../services/jobs.service";
+import UploadService from "../services/upload.sevice";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -62,11 +74,14 @@ export default function JobDetailPage() {
 
   const jobServ = new JobsService();
   const userServ = new UsersService();
+  const authServ = new AuthService();
+  const uploadServ = new UploadService();
 
   let location = useLocation();
   let jobId = location.pathname.slice(10);
 
   const [job, setJob] = useState();
+  const [listJobConnect, setListJobConnect] = useState();
 
   const handleClose = () => {
     setOpen(false);
@@ -74,23 +89,39 @@ export default function JobDetailPage() {
   };
 
   async function getJob() {
-    var dt = await jobServ.get(jobId);
-    console.log(dt);
+    let dt = await jobServ.get(jobId);
+    let listJob = await jobServ.getAll();
+    let list = [];
+    for (let i = 0; i < listJob.length; i++) {
+      if (listJob[i].userId == dt.userId) {
+        list[i] = listJob[i];
+      }
+    }
     setJob(dt);
+    setListJobConnect(list);
   }
 
   useEffect(() => {
     getJob();
   }, []);
 
-  const [user, setUser] = useState();
+  const [company, setCompany] = useState();
+  async function getCompany() {
+    var us = await userServ.get(job.userId);
+    setCompany(us);
+    console.log(company);
+  }
   useEffect(() => {
-    async function getUser() {
-      var us = await userServ.getOne(job.userId);
-      console.log(job.userId);
-      setUser(us);
-    }
-    getUser();
+    getCompany();
+  }, []);
+
+  const [user, setUser] = useState();
+  async function getAuth() {
+    let auth = await authServ.get();
+    setUser(auth);
+  }
+  useEffect(() => {
+    getAuth();
   }, []);
 
   const dayPost = new Date(job?.dateOfPosting).toLocaleDateString("en-GB");
@@ -101,28 +132,26 @@ export default function JobDetailPage() {
   const [value, setValue] = React.useState(0);
   const handleChange = (event, newValue) => {
     setValue(newValue);
+    getCompany();
   };
   const handleChangeIndex = (index) => {
     setValue(index);
   };
 
+  const [resume, setResume] = useState(0);
+  const handleChangeResume = (event) => {
+    console.log(event.target.value);
+    setResume(event.target.value);
+  };
+
   // Apply button
   const handleApply = async (id) => {
-    // try {
-    //   await jobServ.apply(id);
-    // } catch (error) {
-    //   console.log(error);
-    //   // setPopup({
-    //   //   open: true,
-    //   //   severity: "error",
-    //   //   message: "B",
-    //   // });
-    // }
     axios
       .post(
         `${apiList.jobs}/${job._id}/applications`,
         {
           sop: sop,
+          resume: user.resume[resume],
         },
         {
           headers: {
@@ -136,6 +165,59 @@ export default function JobDetailPage() {
           severity: "success",
           message: response.data.message,
         });
+        axios
+          .post(
+            `${apiList.user}/${user._id}`,
+            {
+              notification: {
+                AID: user.userId,
+                UID: user._id,
+                title: "BẠN ĐÃ ỨNG TUYỂN VÀO MỘT CÔNG VIỆC",
+                desc: `Đã gửi yêu cầu xin thực tập công việc ${job.title} đến nhà tuyển dụng ${company.companyName}`,
+                type: "apply",
+                link: "/ung-vien",
+                createAt: "",
+              },
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            }
+          )
+          .then((response) => {
+            console.log(response);
+          })
+          .catch((err) => {
+            console.log(err.response);
+          });
+
+        axios
+          .post(
+            `${apiList.user}/${company._id}`,
+            {
+              notification: {
+                AID: company.userId,
+                UID: company._id,
+                title: "BẠN CÓ ỨNG CỬ VIÊN MỚI",
+                desc: `${user.name} đã xin thực tập công việc ${job.title} của bạn`,
+                type: "apply",
+                link: `/cong-viec/ung-vien/${job._id}`,
+                createAt: "",
+              },
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            }
+          )
+          .then((response) => {
+            console.log(response);
+          })
+          .catch((err) => {
+            console.log(err.response);
+          });
         handleClose();
       })
       .catch((err) => {
@@ -147,6 +229,16 @@ export default function JobDetailPage() {
         });
         handleClose();
       });
+  };
+
+  const handleDeleteCV = async (cv) => {
+    try {
+      await uploadServ.deleteCV(cv);
+      alert("Xóa thành công!");
+      getUser();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -163,7 +255,7 @@ export default function JobDetailPage() {
               "0px 3px 3px -2px rgba(0,0,0,0.2), 0px 3px 4px 0px rgba(0,0,0,0.14), 0px 1px 8px 0px rgba(0,0,0,0.12)",
           }}
         >
-          <Grid xs={3}>
+          <Grid xs={12} lg={3}>
             <Box
               component="img"
               sx={{
@@ -175,7 +267,8 @@ export default function JobDetailPage() {
             />
           </Grid>
           <Grid
-            xs={9}
+            xs={12}
+            lg={9}
             container
             direction="column"
             sx={{ width: "100%", padding: "10px" }}
@@ -244,51 +337,24 @@ export default function JobDetailPage() {
             >
               <TabPanel value={value} index={0} dir={theme.direction}>
                 <Grid item container>
-                  <Grid item xs={8}>
+                  <Grid item xs={12} lg={8}>
                     <Typography variant="p" sx={{ fontWeight: "bold" }}>
                       MÔ TẢ CÔNG VIỆC
                     </Typography>
-                    <p>
-                      Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                      Quae adipisci similique fugiat commodi esse dolores quo
-                      nulla corrupti. Reprehenderit perferendis culpa aliquid
-                      aperiam, saepe explicabo a dolores eligendi consequatur
-                      ea.
-                    </p>
-                    {/* <br /> */}
-                    {/* <Typography variant="p" sx={{ fontWeight: "bold" }}>
-                      YÊU CẦU CÔNG VIỆC
-                    </Typography>
-                    <p>
-                      Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                      Quae adipisci similique fugiat commodi esse dolores quo
-                      nulla corrupti. Reprehenderit perferendis culpa aliquid
-                      aperiam, saepe explicabo a dolores eligendi consequatur
-                      ea.
-                    </p>
+                    <p>{job?.detail}</p>
                     <br />
                     <Typography variant="p" sx={{ fontWeight: "bold" }}>
                       ĐỊA ĐIỂM LÀM VIỆC
                     </Typography>
                     <p>
-                      Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                      Quae adipisci similique fugiat commodi esse dolores quo
-                      nulla corrupti. Reprehenderit perferendis culpa aliquid
-                      aperiam, saepe explicabo a dolores eligendi consequatur
-                      ea.
+                      {`${job?.location?.no}, ${job?.location?.commune}, ${job?.location?.district}, ${job?.location?.province}`}
                     </p>
                     <br />
                     <Typography variant="p" sx={{ fontWeight: "bold" }}>
-                      QUYỀN LỢI
+                      TRỢ PHÍ
                     </Typography>
-                    <p>
-                      Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                      Quae adipisci similique fugiat commodi esse dolores quo
-                      nulla corrupti. Reprehenderit perferendis culpa aliquid
-                      aperiam, saepe explicabo a dolores eligendi consequatur
-                      ea.
-                    </p> */}
-                    {/* <br /> */}
+                    <p>{job?.salary}</p>
+                    <br />
                     <Typography variant="p" sx={{ fontWeight: "bold" }}>
                       HẠN NỘP HỒ SƠ
                     </Typography>
@@ -309,7 +375,8 @@ export default function JobDetailPage() {
                   </Grid>
                   <Grid
                     item
-                    xs={4}
+                    xs={12}
+                    lg={4}
                     sx={{
                       padding: "30px",
                       borderRadius: "30px",
@@ -337,23 +404,28 @@ export default function JobDetailPage() {
               </TabPanel>
               <TabPanel value={value} index={1} dir={theme.direction}>
                 <Typography variant="h5" sx={{ fontWeight: "bold" }}>
-                  {user?.nameCompany}
+                  {company?.companyName}
+                  <Link href={`/cong-ty/${company?._id}`} target="_blank">
+                    <IconButton>
+                      <OpenInNewIcon />
+                    </IconButton>
+                  </Link>
                 </Typography>
                 <br />
                 <Typography variant="p" sx={{ fontWeight: "bold" }}>
                   Thông tin liên hệ: <br />
                 </Typography>
-                <Typography variant="p">{user?.contactNumber}</Typography>
+                <Typography variant="p">{company?.contactNumber}</Typography>
                 <br />
                 <Typography variant="p" sx={{ fontWeight: "bold" }}>
                   Mô tả: <br />
                 </Typography>
-                <Typography variant="p">{user?.bio}</Typography>
+                <Typography variant="p">{company?.bio}</Typography>
               </TabPanel>
               <TabPanel value={value} index={2} dir={theme.direction}>
-                {/* {job?.map((job) => {
+                {listJobConnect?.map((job) => {
                   return <JobCard sx={{ width: "100%" }} job={job} />;
-                })} */}
+                })}
               </TabPanel>
             </SwipeableViews>
           </Grid>
@@ -368,23 +440,28 @@ export default function JobDetailPage() {
           </Grid>
         </Grid>
       </Grid>
+
+      {/* Modal popup */}
       <Modal open={open} onClose={handleClose}>
         <Paper
-          style={{
+          sx={{
+            margin: "5px auto",
             padding: "20px",
             outline: "none",
             display: "flex",
-            flexDirection: "column",
             justifyContent: "center",
+            flexDirection: "column",
             minWidth: "50%",
+            maxWidth: "60%",
             alignItems: "center",
+            borderRadius: "20px",
           }}
         >
           <TextField
-            label="Write SOP (upto 250 words)"
+            label="Gửi lời giới thiệu (Không quá 250 từ - Không bắt buộc)"
             multiline
             rows={8}
-            style={{ width: "100%", marginBottom: "30px" }}
+            sx={{ width: "100%", margin: "10px" }}
             variant="outlined"
             value={sop}
             onChange={(event) => {
@@ -397,10 +474,58 @@ export default function JobDetailPage() {
               }
             }}
           />
+
+          <Typography variant="h5">Chọn CV ứng tuyển:</Typography>
+          <Box
+            sx={{
+              border: "1px solid #000",
+              width: "100%",
+              padding: "10px 30px",
+            }}
+          >
+            <Typography variant="h6">Kho CV của bạn:</Typography>
+            <RadioGroup
+              aria-labelledby="demo-radio-buttons-group-label"
+              defaultValue={user?.resume?.[0]}
+              value={resume}
+              name="radio-buttons-group"
+              onChange={handleChangeResume}
+            >
+              {user?.resume?.length > 0
+                ? user?.resume?.map((v, i) => {
+                    return (
+                      <Grid container>
+                        <Grid item xs={11}>
+                          <FormControlLabel
+                            value={i}
+                            control={<Radio />}
+                            label={v?.originalname}
+                          />
+                        </Grid>
+                        <Grid item xs={1}>
+                          <IconButton
+                            key={i}
+                            variant="contained"
+                            onClick={() => {
+                              handleDeleteCV(v.filename);
+                            }}
+                          >
+                            <HighlightOffIcon />
+                          </IconButton>
+                        </Grid>
+                      </Grid>
+                    );
+                  })
+                : null}
+            </RadioGroup>
+            <Grid item>
+              <FileUploadInput />
+            </Grid>
+          </Box>
           <Button
             variant="contained"
             color="primary"
-            style={{ padding: "10px 50px" }}
+            sx={{ padding: "10px 50px", marginTop: "20px" }}
             onClick={() => handleApply()}
           >
             Xác nhận

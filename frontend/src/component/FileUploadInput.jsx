@@ -1,6 +1,7 @@
 import { useState, useContext, useEffect } from "react";
 import { Grid, Button, TextField, LinearProgress } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import TextSnippetIcon from "@mui/icons-material/TextSnippet";
 
 import { SetPopupContext } from "../App";
 import UploadService from "../services/upload.sevice";
@@ -24,7 +25,6 @@ const FileUploadInput = (props) => {
         severity: "success",
         message: "Upload CV thành công!",
       });
-      location.href("http://localhost:3000/ho-so/chinh-sua");
     } catch (error) {
       console.log(error);
       setPopup({
@@ -43,9 +43,9 @@ const FileUploadInput = (props) => {
             variant="contained"
             color="primary"
             component="label"
-            style={{ width: "100%", height: "100%" }}
+            sx={{ width: "100%", height: "100%" }}
           >
-            {props.icon}
+            <TextSnippetIcon />
             <input
               accept=".pdf"
               type="file"

@@ -49,8 +49,6 @@ router.post("/resume", upload.single("file"), jwtAuth, async (req, res) => {
   try {
     const UID = req.user._id;
     const { file: CV } = req;
-    console.log(CV);
-    // await JobApplicant.findOneAndUpdate({ userId: UID }, { resume: [CV] });
     const doc = await JobApplicant.findOne({ userId: UID });
     if (doc.resume.length < 5) {
       doc.resume.push(CV);

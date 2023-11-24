@@ -40,6 +40,7 @@ router.post("/jobs", jwtAuth, (req, res) => {
     location: data.location,
     majors: data.major,
     detail: data.detail,
+    duration: data.duration,
   });
 
   console.log(data);
@@ -405,6 +406,12 @@ router.put("/user", jwtAuth, (req, res) => {
         if (data.location) {
           recruiter.location = data.location;
         }
+        if (data.follower) {
+          recruiter.follower = data.follower;
+        }
+        if (data.notification) {
+          recruiter.notification = data.notification;
+        }
         recruiter
           .save()
           .then(() => {
@@ -470,6 +477,12 @@ router.put("/user", jwtAuth, (req, res) => {
         if (data.resume) {
           jobApplicant.resume = data.resume;
         }
+        if (data.following) {
+          jobApplicant.follower = data.following;
+        }
+        if (data.notification) {
+          jobApplicant.notification = data.notification;
+        }
         console.log(jobApplicant);
         jobApplicant
           .save()
@@ -485,6 +498,42 @@ router.put("/user", jwtAuth, (req, res) => {
       .catch((err) => {
         res.status(400).json(err);
       });
+  }
+});
+
+router.post("/user/:id", jwtAuth, async (req, res) => {
+  try {
+    const data = req.body;
+    const user = await User.findOne({ _id: data.notification.AID });
+    console.log(data.notification.UID);
+    console.log(user);
+    if (user.type == "recruiter") {
+      const company = await Recruiter.findOne({
+        _id: data.notification.UID,
+      });
+      console.log(company);
+      company.notification.push(data);
+      await company.save();
+      res.status(200).json({
+        message: "Thông báo đã được đẩy lên",
+      });
+    }
+    if (user.type == "applicant") {
+      const applicant = await JobApplicant.findOne({
+        _id: data.notification.UID,
+      });
+      console.log(applicant);
+      applicant.notification.push(data);
+      await applicant.save();
+      res.status(200).json({
+        message: "Thông báo đã được đẩy lên",
+      });
+    }
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({
+      message: "Có lỗi xảy ra",
+    });
   }
 });
 
@@ -546,14 +595,13 @@ router.post("/jobs/:id/applications", jwtAuth, (req, res) => {
                           JobApplicant.findOne({
                             userId: user._id,
                           }).then((v) => {
-                            v.resume[0];
                             const application = new Application({
                               userId: user._id,
                               recruiterId: job.userId,
                               jobId: job._id,
                               status: "applied",
                               sop: data.sop,
-                              resume: v.resume[0],
+                              resume: data.resume,
                             });
                             application
                               .save()

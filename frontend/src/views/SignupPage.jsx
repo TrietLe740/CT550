@@ -521,26 +521,12 @@ const SignupPage = (props) => {
           </>
         ) : (
           <>
-            {/* Tên công ty */}
-            <Grid item>
-              <TextField
-                sx={{ width: "300px" }}
-                label="Tên công ty"
-                value={signupDetails.companyName}
-                // value={getFieldValue("companyName")}
-                onChange={(event) =>
-                  handleInput("companyName", event.target.value)
-                }
-                variant="outlined"
-              />
-            </Grid>
-
             {/* Vị trí công tác */}
             <Grid item>
               <TextField
                 sx={{ width: "300px" }}
                 select
-                label="Vị trí"
+                label="Vị trí công tác"
                 variant="outlined"
                 value={signupDetails.workplace}
                 // value={getFieldValue("workplace")}
@@ -557,6 +543,20 @@ const SignupPage = (props) => {
                 <MenuItem value="Giám đốc">Giám đốc</MenuItem>
                 <MenuItem value="Tổng giám đốc">Tổng giám đốc</MenuItem>
               </TextField>
+            </Grid>
+
+            {/* Tên công ty */}
+            <Grid item>
+              <TextField
+                sx={{ width: "300px" }}
+                label="Tên công ty"
+                value={signupDetails.companyName}
+                // value={getFieldValue("companyName")}
+                onChange={(event) =>
+                  handleInput("companyName", event.target.value)
+                }
+                variant="outlined"
+              />
             </Grid>
 
             {/* <Grid item sx={{ width: "300px" }}>

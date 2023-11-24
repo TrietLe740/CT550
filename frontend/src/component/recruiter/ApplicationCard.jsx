@@ -63,7 +63,7 @@ const ApplicationCard = (props) => {
       setPopup({
         open: true,
         severity: "error",
-        message: "No resume found",
+        message: "Không tìm thấy CV",
       });
     }
   };
@@ -298,11 +298,8 @@ const ApplicationCard = (props) => {
           </Grid>
         </Grid>
       </Grid>
-      <Modal
-        open={open}
-        onClose={handleClose}
-        // className={classes.popupDialog}
-      >
+
+      <Modal open={open} onClose={handleClose}>
         <Paper>
           <Button
             variant="contained"

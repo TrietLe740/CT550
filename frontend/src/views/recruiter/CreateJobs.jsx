@@ -128,7 +128,7 @@ const CreateJobs = (props) => {
             .toISOString()
             .substr(0, 16),
           jobType: "Offline",
-          duration: 0,
+          duration: 1,
           salary: 0,
           location: {
             no: "",

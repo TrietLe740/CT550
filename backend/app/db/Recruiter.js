@@ -57,6 +57,8 @@ let schema = new mongoose.Schema(
     level: {
       type: Number,
     },
+    notification: [Object],
+    follower: [Object],
   },
   { collation: { locale: "vi" } }
 );
