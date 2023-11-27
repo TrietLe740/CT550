@@ -1,6 +1,7 @@
-import { useHistory, Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { useState } from "react";
 import {
+  Link,
   AppBar,
   Toolbar,
   Typography,
@@ -14,12 +15,14 @@ import {
   Tooltip,
   Avatar,
   Badge,
+  Popover,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import MenuIcon from "@mui/icons-material/Menu";
 
 import isAuth, { userType } from "../lib/isAuth";
+import PubSub from "pubsub-js";
 
 import LOGO from "../assets/logo_Hitern.png";
 import LOGO2 from "../assets/logo_Hitern2.png";
@@ -57,58 +60,72 @@ const Navbar = (props) => {
     setAnchorElUser(null);
   };
 
+  const [anchorEl, setAnchorEl] = useState(null);
+  const handleClickNoti = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleCloseNoti = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? "simple-popover" : undefined;
+
   useEffect(() => {
     async function getUser() {
       const auth = await authServ.get();
       setUser(auth);
-      console.log(auth);
     }
     getUser();
+    // console.log("sub RELOAD_PROFILE");
+    const sub = PubSub.subscribe("RELOAD_PROFILE", (msg, data) => {
+      getUser();
+    });
+    return () => {
+      PubSub.unsubscribe(sub);
+    };
   }, []);
 
   return (
     <AppBar
       position="static"
       sx={{
-        padding: "10px 20px",
+        padding: "10px 0px",
         backgroundColor: "common.white",
         color: "common.black",
-        width: "100%",
         boxShadow:
           "rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px",
       }}
     >
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href="#app-bar-with-responsive-menu"
-            sx={{
-              mr: 2,
-              display: { xs: "none", md: "flex" },
-              fontFamily: "monospace",
-              fontWeight: 700,
-              letterSpacing: ".3rem",
-              color: "inherit",
-              textDecoration: "none",
-            }}
-          >
-            {userType() === "admin" ? (
-              // Admin
-              <Link to="/admin/bang-dieu-khien">
-                <img className="logo" src={LOGO2} alt="logo" />
-              </Link>
-            ) : (
-              // Recruiter & Applicant
-              <Link to="/">
-                <img className="logo" src={LOGO} alt="logo" />
-              </Link>
-            )}
-          </Typography>
+          {userType() === "admin" ? (
+            // Admin
+            <Link
+              sx={{
+                mr: 2,
+                display: { xs: "none", md: "flex" },
+                cursor: "pointer",
+              }}
+              onClick={() => handleClick("/admin/bang-dieu-khien")}
+            >
+              <img className="logo" src={LOGO2} alt="logo" />
+            </Link>
+          ) : (
+            // Recruiter & Applicant
+            <Link
+              sx={{
+                mr: 2,
+                display: { xs: "none", md: "flex" },
+                cursor: "pointer",
+              }}
+              onClick={() => handleClick("/")}
+            >
+              <img className="logo" src={LOGO} alt="logo" />
+            </Link>
+          )}
 
-          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+          <Box sx={{ display: { xs: "flex", md: "none" } }}>
             <IconButton
               size="large"
               aria-label="account of current user"
@@ -117,7 +134,7 @@ const Navbar = (props) => {
               onClick={handleOpenNavMenu}
               color="inherit"
             >
-              <MenuIcon />
+              <MenuIcon sx={{ marginRight: "30px" }} />
             </IconButton>
             <Menu
               id="menu-appbar"
@@ -139,7 +156,7 @@ const Navbar = (props) => {
             >
               {isAuth() ? (
                 userType() === "recruiter" ? (
-                  <>
+                  <Grid container item xs={7}>
                     <MenuItem onClick={handleCloseNavMenu}>
                       <Typography
                         textAlign="center"
@@ -172,7 +189,7 @@ const Navbar = (props) => {
                         DS Ứng cử viên
                       </Typography>
                     </MenuItem>
-                  </>
+                  </Grid>
                 ) : // Applicant
                 userType() === "applicant" ? (
                   <>
@@ -306,45 +323,51 @@ const Navbar = (props) => {
               userType() === "recruiter" || userType() === "applicant" ? (
                 <Grid
                   item
+                  container
                   sx={{
                     margin: "0 auto",
                     border: "1px solid #000",
                     borderRadius: "30px",
-                    padding: "0 0 0 20px",
-                    maxWidth: "400px",
+                    padding: "0 0 0 10px",
                   }}
                 >
-                  <Input
-                    placeholder="Tìm kiếm"
-                    disableUnderline
-                    value={searchInput}
-                    onChange={(event) => setSearchInput(event.target.value)}
-                    onKeyPress={(ev) => {
-                      if (ev.key === "Enter") {
+                  <Grid item xs={9}>
+                    <Input
+                      placeholder="Tìm kiếm"
+                      disableUnderline
+                      value={searchInput}
+                      onChange={(event) => setSearchInput(event.target.value)}
+                      onKeyPress={(ev) => {
+                        if (ev.key === "Enter") {
+                          history.push({
+                            pathname: "/tim-kiem",
+                            search: `?search=${searchInput}`,
+                          });
+                        }
+                      }}
+                    />
+                  </Grid>
+
+                  <Grid item xs={3}>
+                    <IconButton
+                      sx={{
+                        borderRadius: "50%",
+                        backgroundColor: "primary.main",
+                        color: "common.white",
+                        marginLeft: "auto",
+                        display: "flex",
+                        justifyContent: "right",
+                      }}
+                      onClick={() =>
                         history.push({
                           pathname: "/tim-kiem",
                           search: `?search=${searchInput}`,
-                        });
+                        })
                       }
-                    }}
-                  />
-
-                  <IconButton
-                    sx={{
-                      borderRadius: "50%",
-                      backgroundColor: "primary.main",
-                      color: "common.white",
-                      marginLeft: "10px",
-                    }}
-                    onClick={() =>
-                      history.push({
-                        pathname: "/tim-kiem",
-                        search: `?search=${searchInput}`,
-                      })
-                    }
-                  >
-                    <SearchIcon />
-                  </IconButton>
+                    >
+                      <SearchIcon />
+                    </IconButton>
+                  </Grid>
                 </Grid>
               ) : null
             ) : null}
@@ -389,45 +412,54 @@ const Navbar = (props) => {
                   {/* Right Nav */}
                   <Grid
                     item
+                    container
                     sx={{
                       marginLeft: "auto",
+                      marginRight: "20px",
                       border: "1px solid #000",
                       borderRadius: "30px",
                       padding: "0 0 0 20px",
-                      maxWidth: "400px",
+                      maxWidth: "300px",
                     }}
                   >
-                    <Input
-                      placeholder="Tìm kiếm"
-                      disableUnderline
-                      value={searchInput}
-                      onChange={(event) => setSearchInput(event.target.value)}
-                      onKeyPress={(ev) => {
-                        if (ev.key === "Enter") {
+                    <Grid item xs={9}>
+                      <Input
+                        placeholder="Tìm kiếm"
+                        sx={{ height: "100%" }}
+                        disableUnderline
+                        value={searchInput}
+                        onChange={(event) => setSearchInput(event.target.value)}
+                        onKeyPress={(ev) => {
+                          if (ev.key === "Enter") {
+                            history.push({
+                              pathname: "/tim-kiem",
+                              search: `?search=${searchInput}`,
+                            });
+                          }
+                        }}
+                      />
+                    </Grid>
+
+                    <Grid item xs={3}>
+                      <IconButton
+                        sx={{
+                          borderRadius: "50%",
+                          backgroundColor: "primary.main",
+                          color: "common.white",
+                          marginLeft: "auto",
+                          display: "flex",
+                          justifyContent: "right",
+                        }}
+                        onClick={() =>
                           history.push({
                             pathname: "/tim-kiem",
                             search: `?search=${searchInput}`,
-                          });
+                          })
                         }
-                      }}
-                    />
-
-                    <IconButton
-                      sx={{
-                        borderRadius: "50%",
-                        backgroundColor: "primary.main",
-                        color: "common.white",
-                        marginLeft: "10px",
-                      }}
-                      onClick={() =>
-                        history.push({
-                          pathname: "/tim-kiem",
-                          search: `?search=${searchInput}`,
-                        })
-                      }
-                    >
-                      <SearchIcon />
-                    </IconButton>
+                      >
+                        <SearchIcon />
+                      </IconButton>
+                    </Grid>
                   </Grid>
                 </>
               ) : userType() === "applicant" ? (
@@ -469,44 +501,58 @@ const Navbar = (props) => {
                     {/* Right Nav */}
                     <Grid
                       item
+                      container
                       sx={{
                         marginLeft: "auto",
                         border: "1px solid #000",
                         borderRadius: "30px",
                         padding: "0 0 0 20px",
                         maxWidth: "400px",
+                        display: "flex",
+                        alignItem: "center",
                       }}
                     >
-                      <Input
-                        placeholder="Tìm kiếm"
-                        disableUnderline
-                        value={searchInput}
-                        onChange={(event) => setSearchInput(event.target.value)}
-                        onKeyPress={(ev) => {
-                          if (ev.key === "Enter") {
+                      <Grid item xs={10}>
+                        <Input
+                          sx={{ height: "100%" }}
+                          placeholder="Tìm kiếm"
+                          disableUnderline
+                          value={searchInput}
+                          onChange={(event) =>
+                            setSearchInput(event.target.value)
+                          }
+                          onKeyPress={(ev) => {
+                            if (ev.key === "Enter") {
+                              history.push({
+                                pathname: "/tim-kiem",
+                                search: `?search=${searchInput}`,
+                              });
+                            }
+                          }}
+                        />
+                      </Grid>
+                      <Grid
+                        item
+                        xs={2}
+                        sx={{ display: "flex", justifyContent: "right" }}
+                      >
+                        <IconButton
+                          sx={{
+                            borderRadius: "50%",
+                            backgroundColor: "primary.main",
+                            color: "common.white",
+                            marginLeft: "auto",
+                          }}
+                          onClick={() =>
                             history.push({
                               pathname: "/tim-kiem",
                               search: `?search=${searchInput}`,
-                            });
+                            })
                           }
-                        }}
-                      />
-                      <IconButton
-                        sx={{
-                          borderRadius: "50%",
-                          backgroundColor: "primary.main",
-                          color: "common.white",
-                          marginLeft: "10px",
-                        }}
-                        onClick={() =>
-                          history.push({
-                            pathname: "/tim-kiem",
-                            search: `?search=${searchInput}`,
-                          })
-                        }
-                      >
-                        <SearchIcon />
-                      </IconButton>
+                        >
+                          <SearchIcon />
+                        </IconButton>
+                      </Grid>
                     </Grid>
                   </>
                 ) : (
@@ -620,88 +666,167 @@ const Navbar = (props) => {
             userType() === "applicant" ||
             userType() === "admin" ? (
               <Box sx={{ flexGrow: 0 }}>
-                <IconButton
-                  sx={{
-                    marginLeft: "20px",
-                    marginRight: "10px",
-                  }}
-                >
-                  <Badge badgeContent={17} color="error">
-                    {/* Thong bao */}
-                    <NotificationsIcon />
-                  </Badge>
-                </IconButton>
-                <Tooltip>
-                  <IconButton
-                    onClick={handleOpenUserMenu}
-                    sx={{
-                      border: "1px solid",
-                      borderColor: "primary.main",
-                      padding: "5px 5px 5px 15px",
-                      borderRadius: "30px",
-                      backgroundColor: "primary.main",
-                    }}
-                  >
-                    <Typography
-                      variant="h8"
-                      sx={{
-                        textAlign: "left",
-                        fontWeight: "bold",
-                        fontSize: "12px",
-                        marginRight: "10px",
-                        color: "common.white",
-                      }}
-                    >
-                      Xin chào!
-                      <br />
-                      {user?.name}
-                    </Typography>
-                    <Avatar
-                      sx={{ border: "1px solid", borderColor: "primary.light" }}
-                      alt="Remy Sharp"
-                      src={user?.avatar}
-                    />
-                  </IconButton>
-                </Tooltip>
-                <Menu
-                  sx={{ marginTop: "45px" }}
-                  id="menu-appbar"
-                  anchorEl={anchorElUser}
-                  anchorOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  open={Boolean(anchorElUser)}
-                  onClose={handleCloseUserMenu}
-                >
-                  {userType() !== "admin" ? (
-                    <MenuItem onClick={handleCloseUserMenu}>
-                      <Typography
-                        textAlign="center"
-                        onClick={() => handleClick("/ho-so/chinh-sua")}
+                <Grid container>
+                  <Grid item container xs={6} sm={6} md={6} lg={4}>
+                    <IconButton>
+                      <Badge
+                        badgeContent={user?.notification?.length}
+                        color="error"
                       >
-                        Hồ sơ
-                      </Typography>
-                    </MenuItem>
-                  ) : null}
-                  <MenuItem onClick={handleCloseUserMenu}>
-                    <Typography
-                      textAlign="center"
-                      onClick={() => handleClick("/dang-xuat")}
+                        {/* Thong bao */}
+                        <IconButton
+                          aria-describedby={id}
+                          variant="contained"
+                          onClick={handleClickNoti}
+                        >
+                          <NotificationsIcon />
+                        </IconButton>
+                        <Popover
+                          id={id}
+                          open={open}
+                          anchorEl={anchorEl}
+                          onClose={handleCloseNoti}
+                          anchorOrigin={{
+                            vertical: "bottom",
+                            horizontal: "right",
+                          }}
+                          transformOrigin={{
+                            vertical: "top",
+                            horizontal: "right",
+                          }}
+                          sx={{ marginTop: "2px" }}
+                        >
+                          <Grid container direction="column">
+                            <Grid item sx={{ padding: "10px 20px 0 20px" }}>
+                              <Typography variant="h6">
+                                Thông báo của bạn
+                              </Typography>
+                            </Grid>
+                            {user?.notification?.length > 0
+                              ? user?.notification
+                                  ?.slice(0)
+                                  .reverse()
+                                  .map((v) => {
+                                    return (
+                                      <Link
+                                        sx={{ color: "common.black" }}
+                                        href={v?.notification?.link}
+                                        underline="none"
+                                      >
+                                        <Grid
+                                          item
+                                          sx={{
+                                            maxWidth: "500px",
+                                            padding: "10px 20px",
+                                            backgroundColor: "primary.light",
+                                            borderTop: "1px, solid #000",
+                                          }}
+                                        >
+                                          <Typography
+                                            variant="h6"
+                                            sx={{ fontSize: "12pt" }}
+                                          >
+                                            {v?.notification?.title}
+                                          </Typography>
+                                          <Typography
+                                            variant="p"
+                                            sx={{ fontSize: "10pt" }}
+                                          >
+                                            {v?.notification?.desc}
+                                          </Typography>
+                                        </Grid>
+                                      </Link>
+                                    );
+                                  })
+                              : null}
+                          </Grid>
+                        </Popover>
+                      </Badge>
+                    </IconButton>
+                  </Grid>
+                  <Grid item xs={6} sm={6} md={6} lg={8}>
+                    <Tooltip>
+                      <IconButton
+                        onClick={handleOpenUserMenu}
+                        sx={{
+                          border: "1px solid",
+                          borderColor: {
+                            xs: "common.white",
+                            lg: "primary.main",
+                          },
+                          padding: "5px 5px 5px 5px",
+                          borderRadius: "30px",
+                          backgroundColor: {
+                            xs: "common.white",
+                            lg: "primary.main",
+                          },
+                        }}
+                      >
+                        <Typography
+                          variant="h8"
+                          sx={{
+                            textAlign: "left",
+                            fontWeight: "bold",
+                            fontSize: { md: "12px" },
+                            marginRight: "10px",
+                            marginLeft: "10px",
+                            color: "common.white",
+                          }}
+                          display={{ xs: "none", lg: "block" }}
+                        >
+                          Xin chào!
+                          <br />
+                          {user?.name}
+                        </Typography>
+                        <Avatar
+                          sx={{
+                            border: "1px solid",
+                            borderColor: "primary.light",
+                          }}
+                          alt="avatar"
+                          src={user?.avatar}
+                        />
+                      </IconButton>
+                    </Tooltip>
+                    <Menu
+                      sx={{ marginTop: "45px" }}
+                      id="menu-appbar"
+                      anchorEl={anchorElUser}
+                      anchorOrigin={{
+                        vertical: "top",
+                        horizontal: "right",
+                      }}
+                      keepMounted
+                      transformOrigin={{
+                        vertical: "top",
+                        horizontal: "right",
+                      }}
+                      open={Boolean(anchorElUser)}
+                      onClose={handleCloseUserMenu}
                     >
-                      Đăng xuất
-                    </Typography>
-                  </MenuItem>
-                </Menu>
+                      {userType() !== "admin" ? (
+                        <MenuItem onClick={handleCloseUserMenu}>
+                          <Typography
+                            textAlign="center"
+                            onClick={() => handleClick("/ho-so/chinh-sua")}
+                          >
+                            Hồ sơ
+                          </Typography>
+                        </MenuItem>
+                      ) : null}
+                      <MenuItem onClick={handleCloseUserMenu}>
+                        <Typography
+                          textAlign="center"
+                          onClick={() => handleClick("/dang-xuat")}
+                        >
+                          Đăng xuất
+                        </Typography>
+                      </MenuItem>
+                    </Menu>
+                  </Grid>
+                </Grid>
               </Box>
-            ) : (
-              <></>
-            )
+            ) : null
           ) : null}
         </Toolbar>
       </Container>

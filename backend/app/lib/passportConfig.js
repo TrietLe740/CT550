@@ -32,7 +32,7 @@ passport.use(
         }
         if (!user) {
           return done(null, false, {
-            message: "User does not exist",
+            message: "Người dùng không tồn tại",
           });
         }
 
@@ -64,7 +64,7 @@ passport.use(
           console.log(Object.keys(jwt_payload));
           if (!user) {
             return done(null, false, {
-              message: "JWT Token does not exist",
+              message: "JWT Token không tồn tại",
             });
           }
           user["_doc"] = filterJson(user["_doc"], ["password", "__v"]);
@@ -72,7 +72,7 @@ passport.use(
         })
         .catch((err) => {
           return done(err, false, {
-            message: "Incorrect Token",
+            message: "Token không chính xác",
           });
         });
     }

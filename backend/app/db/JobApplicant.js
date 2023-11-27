@@ -9,18 +9,16 @@ let schema = new mongoose.Schema(
     name: {
       type: String,
       required: true,
-    },
-    rating: {
-      type: Number,
-      max: 5.0,
-      default: -1.0,
       validate: {
         validator: function (v) {
-          return v >= -1.0 && v <= 5.0;
+          return v !== ""
+            ? /[a-vxyỳọáầảấờễàạằệếýộậốũứĩõúữịỗìềểẩớặòùồợãụủíỹắẫựỉỏừỷởóéửỵẳẹèẽổẵẻỡơôưăêâđ]/
+            : true;
         },
-        msg: "Invalid rating",
+        msg: "Họ và tên không hợp lệ",
       },
     },
+    rating: [Object],
     avatar: {
       type: String,
     },
@@ -31,7 +29,6 @@ let schema = new mongoose.Schema(
       type: String,
       validate: {
         validator: function (v) {
-          // return v !== "" ? /((09|03|07|08|05)+([0-9]{8})\b)/g.test(v) : true;
           return v !== "" ? /\+\d{1,3}\d{10}/.test(v) : true;
         },
         msg: "Số điện thoại không hợp lệ!",
@@ -59,7 +56,7 @@ let schema = new mongoose.Schema(
     notification: [Object],
     following: [Object],
   },
-  { collation: { locale: "en" } }
+  { collation: { locale: "vi" } }
 );
 
 module.exports = mongoose.model("JobApplicants", schema);

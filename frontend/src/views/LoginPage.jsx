@@ -5,6 +5,7 @@ import { Grid, Button, Typography, Paper } from "@mui/material";
 
 import axios from "axios";
 import { Redirect } from "react-router-dom";
+import PubSub from "pubsub-js";
 
 import PasswordInput from "../lib/PasswordInput";
 import EmailInput from "../lib/EmailInput";
@@ -75,7 +76,8 @@ const Login = (props) => {
             severity: "success",
             message: "Đăng nhập thành công",
           });
-          console.log(response);
+          PubSub.publish("RELOAD_PROFILE", null);
+          console.log("RELOAD_PROFILE");
         })
         .catch((err) => {
           setPopup({
@@ -83,13 +85,12 @@ const Login = (props) => {
             severity: "error",
             message: err.response.data.message,
           });
-          console.log(err.response);
         });
     } else {
       setPopup({
         open: true,
         severity: "error",
-        message: "Xin vui lòng cung cấp thông tin đúng yêu cầu",
+        message: "Vui lòng cung cấp thông tin đúng yêu cầu",
       });
     }
   };

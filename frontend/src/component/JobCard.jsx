@@ -87,7 +87,7 @@ const JobCard = (props) => {
                 style={{ marginRight: "5px" }}
               />
               <br />
-              {job?.majors.map((m) => (
+              {job?.majors?.map((m) => (
                 <Chip label={m} sx={{ marginRight: "5px", marginTop: "5px" }} />
               ))}
             </Grid>

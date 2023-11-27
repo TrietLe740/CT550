@@ -18,13 +18,18 @@ import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import { SetPopupContext } from "../../App";
 
 import apiList, { server } from "../../lib/apiList";
+import JobsService from "../../services/jobs.service";
 import ApplicationCard from "../../component/recruiter/ApplicationCard";
 
 const FilterPopup = (props) => {
   const { open, handleClose, searchOptions, setSearchOptions, getData } = props;
   return (
-    <Modal open={open} onClose={handleClose}>
-      <Paper>
+    <Modal
+      open={open}
+      onClose={handleClose}
+      sx={{ margin: "5% auto", width: "80%" }}
+    >
+      <Paper sx={{ borderRadius: "30px" }}>
         <Grid
           sx={{ padding: "100px" }}
           container
@@ -34,7 +39,7 @@ const FilterPopup = (props) => {
         >
           <Grid container item alignItems="center">
             <Grid item xs={3}>
-              Application Status
+              Trạng thái đơn đăng ký
             </Grid>
             <Grid
               container
@@ -60,7 +65,7 @@ const FilterPopup = (props) => {
                       }}
                     />
                   }
-                  label="Rejected"
+                  label="Loại"
                 />
               </Grid>
               <Grid item>
@@ -80,7 +85,7 @@ const FilterPopup = (props) => {
                       }}
                     />
                   }
-                  label="Applied"
+                  label="Duyệt"
                 />
               </Grid>
               <Grid item>
@@ -100,14 +105,14 @@ const FilterPopup = (props) => {
                       }}
                     />
                   }
-                  label="Shortlisted"
+                  label="Xem xét"
                 />
               </Grid>
             </Grid>
           </Grid>
           <Grid container item alignItems="center">
             <Grid item xs={3}>
-              Sort
+              Sắp xếp
             </Grid>
             <Grid item container direction="row" xs={9}>
               <Grid
@@ -139,7 +144,7 @@ const FilterPopup = (props) => {
                 </Grid>
                 <Grid item>
                   <label for="name">
-                    <Typography>Name</Typography>
+                    <Typography>Theo tên</Typography>
                   </label>
                 </Grid>
                 <Grid item>
@@ -196,7 +201,7 @@ const FilterPopup = (props) => {
                 </Grid>
                 <Grid item>
                   <label for="dateOfApplication">
-                    <Typography>Date of Application</Typography>
+                    <Typography>Ngày ứng tuyển</Typography>
                   </label>
                 </Grid>
                 <Grid item>
@@ -253,7 +258,7 @@ const FilterPopup = (props) => {
                 </Grid>
                 <Grid item>
                   <label for="rating">
-                    <Typography>Rating</Typography>
+                    <Typography>Đánh giá</Typography>
                   </label>
                 </Grid>
                 <Grid item>
@@ -291,7 +296,7 @@ const FilterPopup = (props) => {
               style={{ padding: "10px 50px" }}
               onClick={() => getData()}
             >
-              Apply
+              Thực hiện
             </Button>
           </Grid>
         </Grid>
@@ -305,6 +310,7 @@ const JobApplications = (props) => {
   const [applications, setApplications] = useState([]);
   const { jobId } = useParams();
   const [filterOpen, setFilterOpen] = useState(false);
+  const jobServ = new JobsService();
   const [searchOptions, setSearchOptions] = useState({
     status: {
       all: false,
@@ -326,11 +332,6 @@ const JobApplications = (props) => {
       },
     },
   });
-
-  useEffect(() => {
-    getData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const getData = () => {
     let searchParams = [];
@@ -366,8 +367,6 @@ const JobApplications = (props) => {
       address = `${address}&${queryString}`;
     }
 
-    console.log(address);
-
     axios
       .get(address, {
         headers: {
@@ -390,8 +389,12 @@ const JobApplications = (props) => {
       });
   };
 
+  useEffect(() => {
+    getData();
+  }, []);
+
   return (
-    <>
+    <Paper>
       <Grid
         container
         item
@@ -401,6 +404,11 @@ const JobApplications = (props) => {
       >
         <Grid item>
           <Typography variant="h2">DS ỨNG VIÊN</Typography>
+        </Grid>
+        <Grid item>
+          <Typography variant="p">
+            Công việc: {applications?.[0]?.job?.title}
+          </Typography>
         </Grid>
         <Grid item>
           <IconButton onClick={() => setFilterOpen(true)} size="large">
@@ -416,8 +424,8 @@ const JobApplications = (props) => {
           alignItems="stretch"
           justifyContent="center"
         >
-          {applications.length > 0 ? (
-            applications.map((obj) => (
+          {applications?.length > 0 ? (
+            applications?.map((obj) => (
               <Grid item>
                 <ApplicationCard application={obj} getData={getData} />
               </Grid>
@@ -439,7 +447,7 @@ const JobApplications = (props) => {
           setFilterOpen(false);
         }}
       />
-    </>
+    </Paper>
   );
 };
 

@@ -87,6 +87,32 @@ const ApplicationCard = (props) => {
           message: response.data.message,
         });
         getData();
+        axios
+          .post(
+            `${apiList.user}/${application.jobApplicant._id}`,
+            {
+              notification: {
+                AID: application.jobApplicant.userId,
+                UID: application.jobApplicant._id,
+                title: "BẠN CÓ TIN CẬP NHẬT TRẠNG THÁI CÔNG VIỆC",
+                desc: `Công việc ${application.job.title} mà bạn đang ứng tuyển đã được nhà tuyển dụng đưa vào danh sách ${status}`,
+                type: "update",
+                link: "/ung-vien",
+                createAt: "",
+              },
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            }
+          )
+          .then((response) => {
+            console.log(response);
+          })
+          .catch((err) => {
+            console.log(err.response);
+          });
       })
       .catch((err) => {
         setPopup({

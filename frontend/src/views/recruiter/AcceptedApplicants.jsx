@@ -9,6 +9,7 @@ import {
   Modal,
   Checkbox,
   Avatar,
+  TextField,
 } from "@mui/material";
 import Rating from "@mui/material/Rating";
 import axios from "axios";
@@ -24,7 +25,14 @@ const FilterPopup = (props) => {
   const { open, handleClose, searchOptions, setSearchOptions, getData } = props;
   return (
     <Modal open={open} onClose={handleClose}>
-      <Paper sx={{ width: "50%", padding: "40px", margin: "15% auto" }}>
+      <Paper
+        sx={{
+          width: "50%",
+          padding: "40px",
+          margin: "15% auto",
+          borderRadius: "20px",
+        }}
+      >
         <Grid container direction="column" alignItems="center" spacing={3}>
           {/* <Grid container item alignItems="center">
             <Grid item xs={3}>
@@ -357,11 +365,24 @@ const ApplicationTile = (props) => {
 
   const appliedOn = new Date(application.dateOfApplication);
 
+  const [profileDetails, setProfileDetails] = useState({
+    comment: "",
+  });
+  const handleInput = (value) => {
+    setProfileDetails(value);
+  };
+
   const changeRating = () => {
     axios
       .put(
         apiList.rating,
-        { rating: rating, applicantId: application.jobApplicant.userId },
+        {
+          rating: {
+            star: rating,
+            comment: profileDetails,
+          },
+          applicantId: application.jobApplicant.userId,
+        },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -476,7 +497,10 @@ const ApplicationTile = (props) => {
   };
 
   return (
-    <Paper elevation={3} sx={{ padding: "20px", width: "100%" }}>
+    <Paper
+      elevation={3}
+      sx={{ padding: "20px", width: "100%", borderRadius: "30px" }}
+    >
       <Grid container>
         <Grid
           item
@@ -563,7 +587,7 @@ const ApplicationTile = (props) => {
       <Modal open={open} onClose={handleClose}>
         <Paper
           style={{
-            margin: "45vh auto",
+            margin: "5% auto",
             padding: "20px",
             outline: "none",
             display: "flex",
@@ -571,6 +595,7 @@ const ApplicationTile = (props) => {
             justifyContent: "center",
             maxWidth: "50%",
             alignItems: "center",
+            borderRadius: "20px",
           }}
         >
           Đánh giá thực tập sinh {application.jobApplicant?.name}
@@ -582,10 +607,20 @@ const ApplicationTile = (props) => {
               setRating(newValue);
             }}
           />
+          <TextField
+            label="Lời nhận xét"
+            value={profileDetails?.comment}
+            multiline
+            rows={10}
+            onChange={(event) => handleInput(event.target.value)}
+            variant="outlined"
+            fullWidth
+            sx={{ width: "100%" }}
+          />
           <Button
             variant="contained"
             color="primary"
-            style={{ padding: "10px 50px" }}
+            sx={{ padding: "10px 50px", marginTop: "20px" }}
             onClick={() => changeRating()}
           >
             Xác nhận
@@ -715,7 +750,7 @@ const AcceptedApplicants = (props) => {
   };
 
   return (
-    <>
+    <Paper>
       <Grid
         sx={{ padding: "50px 160px", minHeight: "93vh" }}
         container
@@ -738,6 +773,7 @@ const AcceptedApplicants = (props) => {
           direction="column"
           alignItems="stretch"
           justify="center"
+          sx={{ marginTop: "20px" }}
         >
           {applications.length > 0 ? (
             applications.map((obj) => (
@@ -766,7 +802,7 @@ const AcceptedApplicants = (props) => {
           setFilterOpen(false);
         }}
       />
-    </>
+    </Paper>
   );
 };
 

@@ -17,11 +17,11 @@ const EmailInput = (props) => {
       variant="outlined"
       value={value}
       onChange={onChange}
-      // helperText={inputErrorHandler.email?.message}
+      helperText={inputErrorHandler?.email?.message}
       onBlur={(event) => {
         if (event.target.value === "") {
           if (required) {
-            handleInputError("email", true, "Email is required");
+            handleInputError("email", true, "Email là bắt buộc");
           } else {
             handleInputError("email", false, "");
           }
@@ -31,7 +31,7 @@ const EmailInput = (props) => {
           if (re.test(String(event.target.value).toLowerCase())) {
             handleInputError("email", false, "");
           } else {
-            handleInputError("email", true, "Incorrect email format");
+            handleInputError("email", true, "Định dạng email không chính xác");
           }
         }
       }}

@@ -1059,19 +1059,18 @@ router.put("/rating", jwtAuth, (req, res) => {
           })
             .then((acceptedApplicant) => {
               if (acceptedApplicant > 0) {
-                // add a new rating
-
+                console.log(data.rating);
                 rating = new Rating({
                   category: "applicant",
                   receiverId: data.applicantId,
                   senderId: user._id,
                   rating: data.rating,
                 });
-
+                console.log("AA");
+                console.log(rating);
                 rating
                   .save()
                   .then(() => {
-                    // get the average of ratings
                     Rating.aggregate([
                       {
                         $match: {
@@ -1087,15 +1086,18 @@ router.put("/rating", jwtAuth, (req, res) => {
                       },
                     ])
                       .then((result) => {
-                        // update the user's rating
+                        console.log(result);
                         if (result === null) {
                           res.status(400).json({
-                            message: "Error while calculating rating",
+                            message: "Lỗi đánh giá",
                           });
                           return;
                         }
+                        console.log("RS: ");
+                        console.log(result);
                         const avg = result[0].average;
-
+                        console.log("AVG: ");
+                        console.log(avg);
                         JobApplicant.findOneAndUpdate(
                           {
                             userId: data.applicantId,
@@ -1110,12 +1112,12 @@ router.put("/rating", jwtAuth, (req, res) => {
                             if (applicant === null) {
                               res.status(400).json({
                                 message:
-                                  "Error while updating applicant's average rating",
+                                  "Lỗi khi cập nhật đánh giá của người nộp đơn",
                               });
                               return;
                             }
                             res.json({
-                              message: "Rating added successfully",
+                              message: "Thêm đánh giá thành công",
                             });
                           })
                           .catch((err) => {
@@ -1130,10 +1132,9 @@ router.put("/rating", jwtAuth, (req, res) => {
                     res.status(400).json(err);
                   });
               } else {
-                // you cannot rate
                 res.status(400).json({
                   message:
-                    "Applicant didn't worked under you. Hence you cannot give a rating.",
+                    "Người nộp đơn không làm việc dưới quyền của bạn. Do đó bạn không thể đưa ra đánh giá.",
                 });
               }
             })

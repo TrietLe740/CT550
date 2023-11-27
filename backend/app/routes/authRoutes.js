@@ -92,6 +92,8 @@ router.post("/login", (req, res, next) => {
         return next(err);
       }
       if (!user) {
+        info.message = "Hãy cung cấp đầy đủ thông tin để đăng nhập";
+        console.log(info);
         res.status(401).json(info);
         return;
       }

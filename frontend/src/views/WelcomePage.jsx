@@ -13,6 +13,7 @@ import {
   Checkbox,
   Slider,
   MenuItem,
+  Box,
 } from "@mui/material";
 import { useHistory } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
@@ -498,92 +499,114 @@ const Welcome = (props) => {
       justifyContent="center"
       style={{ padding: "30px", minHeight: "93vh" }}
     >
+      {/* 1 */}
       <Grid
         container
         item
-        xs={12}
         sx={{
-          borderRadius: "20px 20px 200px 20px",
+          borderRadius: {
+            md: "20px 20px 200px 20px",
+            xs: "20px 20px 100px 20px",
+          },
           backgroundColor: "primary.main",
-          minHeight: "60vh",
           padding: "50px",
         }}
       >
-        <Grid container item xs={6} direction="column" sx={{ padding: "50px" }}>
-          <Grid item>
+        <Grid container item>
+          <Grid item xs={6} sx={{ color: "common.white" }}>
             <Typography
-              variant="h2"
-              sx={{ color: "common.white", fontWeight: "bold" }}
-              textAlign="left"
+              sx={{
+                fontWeight: "bold",
+                typography: { lg: "h2", sm: "h4", xs: "h6" },
+              }}
             >
               TÌM VIỆC CHẤT
               <br />
               NÂNG CAO TAY NGHỀ
             </Typography>
+            <Typography
+              variant="p"
+              sx={{ display: { md: "block", xs: "none" } }}
+            >
+              Lorem ipsum dolor sit amet consectetur adipisicing elit.
+              Consectetur iusto facere quas iure quos. Non libero cum facere.
+              Sint quasi ducimus dolor at in architecto consequatur, enim
+              numquam maiores iure!
+            </Typography>
           </Grid>
 
-          {/* Thanh tim kiem */}
-          <Grid
-            container
-            item
-            sx={{
-              border: "2px solid #36593C",
-              borderRadius: "20px",
-              padding: "0 0 0 20px",
-              backgroundColor: "common.white",
-              alignItems: "center",
-            }}
-          >
-            <Grid item xs={1}>
-              <IconButton
-                onClick={() =>
-                  history.push({
-                    pathname: "/tim-kiem",
-                    search: `?search=${searchInput}`,
-                  })
-                }
-              >
-                <SearchIcon
-                  sx={{
-                    color: "common.black",
-                  }}
-                />
-              </IconButton>
-            </Grid>
-            <Grid item xs={9} xl={8}>
-              <Input
-                disableUnderline
-                sx={{ height: "50px", width: "100%" }}
-                placeholder="Tìm kiếm công việc, công ty,..."
-                value={searchInput}
-                onChange={(event) => setSearchInput(event.target.value)}
-                onKeyPress={(ev) => {
-                  if (ev.key === "Enter") {
-                    history.push({
-                      pathname: "/tim-kiem",
-                      search: `?search=${searchInput}`,
-                    });
-                  }
-                }}
-              />
-            </Grid>
-            <Grid item xs={2} xl={3}>
-              <Button
-                variant="contained"
-                onClick={() =>
-                  history.push({
-                    pathname: "/tim-kiem",
-                    search: `?search=${searchInput}`,
-                  })
-                }
-              >
-                Tìm kiếm
-              </Button>
-            </Grid>
+          <Grid item xs={6}>
+            <Box
+              component="img"
+              sx={{
+                maxHeight: { xs: 150, sm: 250, md: 450, lg: 600 },
+                maxWidth: { xs: 150, sm: 250, md: 450, lg: 600 },
+              }}
+              alt="banner"
+              src="/src/assets/JOB.png"
+            />
           </Grid>
         </Grid>
-        <Grid item xs={6}>
-          <img style={{ width: "100%" }} src="/src/assets/JOB.png" />
+        {/* Thanh tim kiem */}
+        <Grid
+          container
+          item
+          sx={{
+            border: "2px solid #36593C",
+            borderRadius: "20px",
+            padding: "5px 5px 5px 20px",
+            backgroundColor: "common.white",
+            alignItems: "center",
+            maxWidth: "80%",
+            display: { xs: "none", md: "flex" },
+          }}
+        >
+          <Grid item xs={1}>
+            <IconButton
+              onClick={() =>
+                history.push({
+                  pathname: "/tim-kiem",
+                  search: `?search=${searchInput}`,
+                })
+              }
+            >
+              <SearchIcon
+                sx={{
+                  color: "common.black",
+                }}
+              />
+            </IconButton>
+          </Grid>
+          <Grid item xs={9} xl={8}>
+            <Input
+              disableUnderline
+              sx={{ maxHeight: "50px", width: "100%" }}
+              placeholder="Tìm kiếm công việc, công ty,..."
+              value={searchInput}
+              onChange={(event) => setSearchInput(event.target.value)}
+              onKeyPress={(ev) => {
+                if (ev.key === "Enter") {
+                  history.push({
+                    pathname: "/tim-kiem",
+                    search: `?search=${searchInput}`,
+                  });
+                }
+              }}
+            />
+          </Grid>
+          <Grid item xs={2} xl={3}>
+            <Button
+              variant="contained"
+              onClick={() =>
+                history.push({
+                  pathname: "/tim-kiem",
+                  search: `?search=${searchInput}`,
+                })
+              }
+            >
+              <Typography variant="h7">Tìm kiếm</Typography>
+            </Button>
+          </Grid>
         </Grid>
       </Grid>
       {/* 2 */}
@@ -591,7 +614,7 @@ const Welcome = (props) => {
         <Typography
           variant="h4"
           align="center"
-          sx={{ fontWeight: "500", margin: "50px 0 30px 0" }}
+          sx={{ fontWeight: "500", marginTop: "50px" }}
         >
           NHÀ TUYỂN DỤNG HÀNG ĐẦU
         </Typography>
@@ -614,7 +637,7 @@ const Welcome = (props) => {
         container
         sx={{
           backgroundColor: "primary.main",
-          height: "200px",
+          minHeight: "200px",
           marginTop: "50px",
           marginBottom: "50px",
           borderRadius: "20px",

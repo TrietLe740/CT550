@@ -6,14 +6,32 @@ export default function Footer() {
   return (
     <Grid
       container
-      sx={{ height: "500px", backgroundColor: "primary.dark", padding: "50px" }}
+      sx={{
+        minHeight: "500px",
+        backgroundColor: "primary.dark",
+        padding: "50px 20px",
+      }}
     >
-      <Grid item xs={4}>
+      <Grid
+        item
+        xs={12}
+        md={4}
+        sx={{ display: "flex", justifyContent: "center" }}
+      >
         <Link href="/">
           <img className="logo_footer" src={LOGO} alt="logo" />
         </Link>
       </Grid>
-      <Grid item container xs={8} sx={{ color: "common.white" }}>
+      <Grid
+        item
+        container
+        xs={12}
+        md={8}
+        sx={{
+          color: "common.white",
+          padding: "0 10px",
+        }}
+      >
         <Grid item xs={4}>
           <Typography sx={{ mt: 3, mb: 2 }} variant="h6" component="div">
             Về HItern

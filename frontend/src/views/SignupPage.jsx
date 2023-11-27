@@ -37,7 +37,7 @@ const SignupPage = (props) => {
     workplace: "",
     level: "0",
     tmpPassword: "",
-    resume: "",
+    resume: [],
     avatar: "",
   });
 
@@ -105,30 +105,12 @@ const SignupPage = (props) => {
       error: false,
       message: "",
     },
-    // tmpPassword: {
-    //   untouched: true,
-    //   required: true,
-    //   error: false,
-    //   message: "",
-    // },
     name: {
       untouched: true,
       required: true,
       error: false,
       message: "",
     },
-    // companyName: {
-    //   untouched: true,
-    //   required: true,
-    //   error: false,
-    //   message: "",
-    // },
-    // workplace: {
-    //   untouched: true,
-    //   required: true,
-    //   error: false,
-    //   message: "",
-    // },
   });
 
   // const getFieldValue = (key) => {
@@ -363,7 +345,7 @@ const SignupPage = (props) => {
   return loggedin ? (
     <Redirect to="/" />
   ) : (
-    <Paper elevation={3} sx={{ padding: "50px", minHeight: "93vh" }}>
+    <Grid elevation={3} sx={{ padding: "50px", minHeight: "93vh" }}>
       <Grid container direction="column" spacing={4} alignItems="center">
         <Grid item>
           <img src={LOGO} alt="" width={300} />
@@ -393,6 +375,7 @@ const SignupPage = (props) => {
           <TextField
             sx={{ width: "300px" }}
             label="Họ và tên"
+            type="text"
             // value={getFieldValue("name")}
             value={signupDetails.name}
             onChange={(event) => handleInput("name", event.target.value)}
@@ -401,7 +384,13 @@ const SignupPage = (props) => {
             helperText={inputErrorHandler.name.message}
             onBlur={(event) => {
               if (event.target.value === "") {
-                handleInputError("name", true, "Họ Tên là bắt buộc");
+                handleInputError("name", true, "Họ và tên là bắt buộc");
+              } else if (event.target.value.type === "number") {
+                handleInputError(
+                  "name",
+                  true,
+                  "Vui lòng nhập đúng họ tên của bạn"
+                );
               } else {
                 handleInputError("name", false, "");
               }
@@ -474,52 +463,7 @@ const SignupPage = (props) => {
 
         {/* Câu hỏi thêm */}
         {/* getFieldValue("type") */}
-        {signupDetails.type === "applicant" ? (
-          <>
-            {/* Trường */}
-            {/* <Grid item>
-              <TextField
-                sx={{ width: "300px" }}
-                label={`Tên trường đại học`}
-                variant="outlined"
-              />
-            </Grid> */}
-
-            {/* Ngành */}
-            {/* <Grid item>
-              <InputLabel id="major-label">Ngành học</InputLabel>
-              <Select
-                sx={{ width: "300px" }}
-                labelId="major-label"
-                id="demo-simple-select-standard"
-                onChange={(event) => handleInput("major", event.target.value)}
-                label="Major"
-              >
-                <MenuItem value="">
-                  <em>-Ngành-</em>
-                </MenuItem>
-                <MenuItem value={10}>Công nghệ thông tin</MenuItem>
-              </Select>
-            </Grid> */}
-
-            {/* Chân dung */}
-            {/* <Grid item>
-              <FileUploadInput
-                label="Chân dung (.jpg/.png)"
-                icon={<AllInboxIcon />}
-                uploadTo={apiList.uploadProfileImage}
-                handleInput={handleInput}
-                identifier={"profile"}
-              />
-            </Grid> */}
-            {/* <Grid item sx={{ width: "300px" }}>
-              <Typography variant="p">
-                Bằng việc ấn vào nút Đăng ký, bạn đã đồng ý với Điều khoản dịch
-                vụ và Chính sách bảo mật của chúng tôi
-              </Typography>
-            </Grid> */}
-          </>
-        ) : (
+        {signupDetails.type === "applicant" ? null : (
           <>
             {/* Vị trí công tác */}
             <Grid item>
@@ -558,26 +502,6 @@ const SignupPage = (props) => {
                 variant="outlined"
               />
             </Grid>
-
-            {/* <Grid item sx={{ width: "300px" }}>
-              <TextField
-                label="Thông tin mô tả (Tối đa 250 từ)"
-                multiline
-                rows={8}
-                style={{ width: "100%" }}
-                variant="outlined"
-                value={getFieldValue("bio")}
-                onChange={(event) => {
-                  if (
-                    event.target.value.split(" ").filter(function (n) {
-                      return n !== "";
-                    }).length <= 250
-                  ) {
-                    handleInput("bio", event.target.value);
-                  }
-                }}
-              />
-            </Grid> */}
             <Grid item>
               <PhoneInput
                 country={"vn"}
@@ -603,7 +527,7 @@ const SignupPage = (props) => {
           </Button>
         </Grid>
       </Grid>
-    </Paper>
+    </Grid>
   );
 };
 

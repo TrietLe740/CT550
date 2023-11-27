@@ -22,36 +22,34 @@ const PasswordInput = (props) => {
   };
 
   return (
-    <>
-      <FormControl variant="outlined" error={props.error ? props.error : null}>
-        <InputLabel htmlFor="outlined-adornment-password">
-          {props.label}
-        </InputLabel>
-        <OutlinedInput
-          sx={{ width: "300px" }}
-          type={showPassword ? "text" : "password"}
-          endAdornment={
-            <InputAdornment position="end">
-              <IconButton
-                onClick={handleShowPassword}
-                onMouseDown={handleMouseDownPassword}
-                edge="end"
-                size="large"
-              >
-                {showPassword ? <Visibility /> : <VisibilityOff />}
-              </IconButton>
-            </InputAdornment>
-          }
-          value={props.value}
-          onChange={(event) => props.onChange(event)}
-          // labelWidth={props.labelWidth ? props.labelWidth : 70}
-          onBlur={props.onBlur ? props.onBlur : null}
-        />
-        {props.helperText ? (
-          <FormHelperText>{props.helperText}</FormHelperText>
-        ) : null}
-      </FormControl>
-    </>
+    <FormControl variant="outlined" error={props.error ? props.error : null}>
+      <InputLabel htmlFor="outlined-adornment-password">
+        {props.label}
+      </InputLabel>
+      <OutlinedInput
+        sx={{ width: "300px" }}
+        type={showPassword ? "text" : "password"}
+        endAdornment={
+          <InputAdornment position="end">
+            <IconButton
+              onClick={handleShowPassword}
+              onMouseDown={handleMouseDownPassword}
+              edge="end"
+              size="large"
+            >
+              {showPassword ? <Visibility /> : <VisibilityOff />}
+            </IconButton>
+          </InputAdornment>
+        }
+        value={props.value}
+        onChange={(event) => props.onChange(event)}
+        // labelWidth={props.labelWidth ? props.labelWidth : 70}
+        onBlur={props.onBlur ? props.onBlur : null}
+      />
+      {props.helperText ? (
+        <FormHelperText>{props.helperText}</FormHelperText>
+      ) : null}
+    </FormControl>
   );
 };
 

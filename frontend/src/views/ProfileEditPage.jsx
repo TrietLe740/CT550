@@ -7,7 +7,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Select from "react-select";
 import UsersService from "../services/user.service";
 import AuthService from "../services/auth.service";
@@ -18,12 +18,14 @@ import apiList, { server } from "../lib/apiList";
 import PhoneInput from "react-phone-input-2";
 import axios from "axios";
 import UploadService from "../services/upload.sevice";
+import { SetPopupContext } from "../App";
 
 export default function ProfileEditPage() {
   const uploadServ = new UploadService();
   const userServ = new UsersService();
   const authServ = new AuthService();
   const majorServ = new MajorsService();
+  const setPopup = useContext(SetPopupContext);
 
   const initValue = {
     avatar: {},
@@ -75,7 +77,11 @@ export default function ProfileEditPage() {
       await userServ.update(updatedDetails);
       alert("Cập nhật thành công!");
     } catch (error) {
-      console.log(error);
+      setPopup({
+        open: true,
+        severity: "error",
+        message: "Thông tin cung cấp chưa đầy đủ",
+      });
     }
   };
 
@@ -127,18 +133,25 @@ export default function ProfileEditPage() {
   }, []);
 
   return (
-    <Paper sx={{ padding: "100px" }}>
+    <Paper sx={{ padding: { md: "100px", xs: "none" } }}>
       <Grid
         container
         sx={{
           boxShadow:
             "0px 3px 3px -2px rgba(0,0,0,0.2), 0px 3px 4px 0px rgba(0,0,0,0.14), 0px 1px 8px 0px rgba(0,0,0,0.12)",
           margin: "0 auto",
-          borderRadius: "30px",
+          borderRadius: { md: "30px", xs: "0" },
           padding: "30px",
         }}
       >
-        <Grid item container direction="column" xs={8} sx={{ padding: "20px" }}>
+        <Grid
+          item
+          container
+          direction="column"
+          xs={12}
+          md={8}
+          sx={{ padding: "20px" }}
+        >
           <Grid item>
             <Typography variant="h5" sx={{ fontWeight: "bold" }}>
               CÀI ĐẶT THÔNG TIN CÁ NHÂN
@@ -146,6 +159,7 @@ export default function ProfileEditPage() {
           </Grid>
           <Grid item sx={{ marginTop: "20px" }}>
             <TextField
+              type="text"
               sx={{ width: "100%", margin: "15px 0" }}
               label="Họ và tên"
               variant="outlined"
@@ -153,6 +167,7 @@ export default function ProfileEditPage() {
               onChange={(event) => {
                 handleInput("name", event.target.value);
               }}
+              required="true"
             />
           </Grid>
           <Grid item sx={{ marginTop: "20px" }}>
@@ -202,26 +217,34 @@ export default function ProfileEditPage() {
           <Grid item>
             <Button
               variant="contained"
-              sx={{ padding: "10px 50px", marginTop: "30px" }}
+              sx={{ padding: "10px 50px", marginTop: "30px", width: "100%" }}
               onClick={() => handleUpdate()}
             >
               Lưu
             </Button>
           </Grid>
         </Grid>
-        <Grid item container direction="column" xs={4} sx={{ padding: "20px" }}>
+
+        <Grid
+          item
+          container
+          direction="column"
+          xs={12}
+          md={4}
+          sx={{ padding: "20px", marginTop: { xs: "30px", md: "0" } }}
+        >
           <Grid item container>
-            <Grid item xs={4}>
+            <Grid item xs={4} md={12} lg={4}>
               <Avatar
                 sx={{
-                  width: "100px",
-                  height: "100px",
+                  width: { lg: "90px", md: "80px", sm: "100px", xs: "80px" },
+                  height: { lg: "90px", md: "80px", sm: "100px", xs: "80px" },
                   border: "3px solid",
                 }}
                 src={profileDetails?.avatar}
               />
             </Grid>
-            <Grid item xs={8}>
+            <Grid item xs={8} md={12} lg={8}>
               <Typography variant="p">Chào mừng trở lại,</Typography>
               <br />
               <Typography variant="p" sx={{ fontWeight: "bold" }}>
@@ -233,37 +256,46 @@ export default function ProfileEditPage() {
                   ? `Tài khoản cấp ${profileDetails?.level}`
                   : `Tài khoản cấp tối đa`}
               </Typography>
+              <br />
               <Link to={`/tai-khoan/nang-cap`}>
                 <Button variant="contained" sx={{ marginTop: "10px" }}>
-                  Nâng cấp tài khoản
+                  <Typography fontSize={13}>Nâng cấp tài khoản</Typography>
                 </Button>
               </Link>
             </Grid>
           </Grid>
           <Grid item container sx={{ marginTop: "30px" }}>
-            <Grid item xs={12}>
-              <Typography variant="h6">DS CV của bạn</Typography>
-              <ul>
-                {profileDetails?.resume?.map((v, key) => (
-                  <li>
-                    <Link onClick={() => getResume(key)}>{v.originalname}</Link>
-                    <IconButton
-                      variant="contained"
-                      sx={{ marginRight: "20px" }}
-                      onClick={() => {
-                        handleDeleteCV(v.filename);
-                      }}
-                    >
-                      <HighlightOffIcon />
-                    </IconButton>
-                  </li>
-                ))}
-              </ul>
+            <Grid
+              item
+              xs={12}
+              sx={{
+                border: "1px solid #48884A",
+                borderRadius: "20px",
+                padding: "20px",
+              }}
+            >
+              <Typography variant="h6">Danh sách CV của bạn</Typography>
+              {profileDetails?.resume !== ""
+                ? profileDetails?.resume?.map((v, key) => (
+                    <Grid item>
+                      <Link onClick={() => getResume(key)}>
+                        {v.originalname}
+                      </Link>
+                      <IconButton
+                        variant="contained"
+                        sx={{ marginRight: "20px" }}
+                        onClick={() => {
+                          handleDeleteCV(v.filename);
+                        }}
+                      >
+                        <HighlightOffIcon />
+                      </IconButton>
+                    </Grid>
+                  ))
+                : null}
               <br />
               <Link to={`/update-cv`}>
-                <Button variant="contained" sx={{ marginTop: "10px" }}>
-                  Upload CV
-                </Button>
+                <Button variant="contained">Upload CV</Button>
               </Link>
             </Grid>
           </Grid>

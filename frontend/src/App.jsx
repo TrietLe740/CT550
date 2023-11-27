@@ -230,9 +230,9 @@ function App() {
             </Grid>
             {/* Footer */}
             <Grid item>
-              {location.pathname === "/admin/dang-nhap" ? (
-                <></>
-              ) : (
+              {location.pathname === "/admin/dang-nhap" ||
+              location.pathname === "/dang-nhap" ||
+              location.pathname === "/dang-ky" ? null : (
                 <>{userType() === "admin" ? null : <Footer />}</>
               )}
             </Grid>

@@ -13,6 +13,14 @@ let schema = new mongoose.Schema(
     password: {
       type: String,
       required: true,
+      validate: {
+        validator: function (v) {
+          return v !== ""
+            ? /"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$"/
+            : true;
+        },
+        msg: "Mật khẩu phải có tối thiểu 08 ký tự, ít nhất một chữ cái, một số và một ký tự đặc biệt",
+      },
     },
     type: {
       type: String,

@@ -1,7 +1,9 @@
 import createApiClient from "./api.service";
 
 export default class AuthService {
+  baseUrl = "";
   constructor(baseUrl = "http://localhost:3001/auth") {
+    this.baseUrl = baseUrl;
     this.api = createApiClient(baseUrl);
   }
 
@@ -18,6 +20,7 @@ export default class AuthService {
   }
 
   async get() {
+    this.api = createApiClient(this.baseUrl);
     return (await this.api.get("/auth")).data;
   }
 }

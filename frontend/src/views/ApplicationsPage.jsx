@@ -87,7 +87,7 @@ const ApplicationTile = (props) => {
   };
 
   return (
-    <Paper elevation={3} sx={{ margin: "0 100px", borderRadius: "30px" }}>
+    <Paper elevation={3} sx={{ margin: "20px 100px", borderRadius: "30px" }}>
       <Grid container sx={{ padding: "30px 50px", borderRadius: "30px" }}>
         <Grid container item xs={9} spacing={1} direction="column">
           <Grid item>
@@ -216,12 +216,9 @@ const Applications = (props) => {
         },
       })
       .then((response) => {
-        console.log(response.data);
         setApplications(response.data);
       })
       .catch((err) => {
-        // console.log(err.response);
-        console.log(err.response.data);
         setPopup({
           open: true,
           severity: "error",
@@ -246,9 +243,8 @@ const Applications = (props) => {
       <Grid
         container
         item
-        xs
         direction="column"
-        style={{ width: "100%" }}
+        sx={{ width: "100%" }}
         alignItems="stretch"
         justify="center"
       >
@@ -259,7 +255,7 @@ const Applications = (props) => {
             </Grid>
           ))
         ) : (
-          <Typography variant="h5" style={{ textAlign: "center" }}>
+          <Typography variant="h5" sx={{ textAlign: "center" }}>
             Chưa có công việc ứng tuyển
           </Typography>
         )}
