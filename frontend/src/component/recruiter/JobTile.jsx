@@ -29,7 +29,7 @@ const JobTile = (props) => {
   const [openUpdate, setOpenUpdate] = useState(false);
   const [jobDetails, setJobDetails] = useState(job);
 
-  console.log(jobDetails);
+  // console.log(jobDetails);
 
   const [majors, setMajors] = useState({});
 
@@ -65,7 +65,7 @@ const JobTile = (props) => {
   };
 
   const handleDelete = () => {
-    console.log(job._id);
+    // console.log(job._id);
     axios
       .delete(`${apiList.jobs}/${job._id}`, {
         headers: {

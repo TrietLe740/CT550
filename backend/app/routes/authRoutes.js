@@ -6,6 +6,7 @@ const authKeys = require("../lib/authKeys");
 const User = require("../db/User");
 const JobApplicant = require("../db/JobApplicant");
 const Recruiter = require("../db/Recruiter");
+const Admin = require("../db/Admin");
 
 const jwtAuth = require("../lib/jwtAuth");
 
@@ -29,31 +30,38 @@ router.post("/signup", (req, res) => {
               name: data.name,
               role: data.role,
               companyName: data.companyName,
-              companyMail: data.companyMail,
-              website: data.website,
-              bio: data.bio,
+              companyMail: "",
+              website: "",
+              bio: "",
               contactNumber: data.contactNumber,
-              location: data.location,
-              level: "0",
+              location: [],
+              avatar: "",
+              level: 0,
+              notification: [],
+              follower: [],
+              credit: 0,
             })
           : new JobApplicant({
               userId: user._id,
               name: data.name,
-              education: data.education,
-              avatar: data.avatar,
-              rating: data.rating,
-              major: data.major,
-              contactNumber: data.contactNumber,
-              socialLink: data.socialLink,
-              skills: data.skills,
-              activities: data.activities,
-              certificates: data.certificates,
-              awards: data.awards,
-              target: data.target,
-              exp: data.exp,
-              interest: data.interest,
-              resume: data.resume,
-              level: "0",
+              rating: [],
+              avatar: "",
+              major: "",
+              school: {},
+              contactNumber: "",
+              // socialLink: data.socialLink,
+              // skills: data.skills,
+              // activities: data.activities,
+              // certificates: data.certificates,
+              // awards: data.awards,
+              // target: data.target,
+              // exp: data.exp,
+              // interest: data.interest,
+              resume: [],
+              level: 0,
+              notification: [],
+              following: [],
+              credit: 0,
             });
 
       userDetails
@@ -109,29 +117,32 @@ router.post("/login", (req, res, next) => {
 
 router.get("/auth", jwtAuth, (req, res) => {
   let user = req.user;
-  console.log(req.user);
 
-  // res.json(req.user);
   const id = req.user._id;
   const type = req.user.type;
   if (type === "applicant") {
     JobApplicant.findOne({ userId: id }).then((kq) => {
-      console.log(kq, user);
       user = {
         ...user.toObject(),
         ...kq.toObject(),
       };
-      console.log(user);
       res.json(user);
     });
   } else if (type === "recruiter") {
     Recruiter.findOne({ userId: id }).then((kq) => {
-      console.log(kq, user);
       user = {
         ...user.toObject(),
         ...kq.toObject(),
       };
-      console.log(user);
+      res.json(user);
+    });
+  } else if (type === "admin") {
+    console.log("ID " + id);
+    Admin.findOne({ userId: id }).then((kq) => {
+      user = {
+        ...user.toObject(),
+        ...kq.toObject(),
+      };
       res.json(user);
     });
   }

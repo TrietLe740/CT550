@@ -17,6 +17,10 @@ export default class UsersService {
     return (await this.api.get(`/recruiter`)).data;
   }
 
+  async getRecruiter(id) {
+    return (await this.api.get(`/recruiter/${id}`)).data;
+  }
+
   async create(data) {
     return (await this.api.post("/", data)).data;
   }

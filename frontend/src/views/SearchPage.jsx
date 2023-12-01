@@ -71,7 +71,7 @@ export default function SearchPage() {
         query: searchStr,
       };
     });
-    console.log(searchStr);
+    // console.log(searchStr);
     getData(searchStr);
   }, [searchStr]);
 
@@ -122,7 +122,7 @@ export default function SearchPage() {
     });
     searchParams = [...searchParams, ...asc, ...desc];
     const queryString = searchParams.join("&");
-    console.log(queryString);
+    // console.log(queryString);
     let address = apiList.jobs;
     if (queryString !== "") {
       address = `${address}?${queryString}`;
@@ -135,7 +135,6 @@ export default function SearchPage() {
         },
       })
       .then((response) => {
-        console.log(response.data);
         setJobs(
           response.data.filter((obj) => {
             const today = new Date();
@@ -145,7 +144,6 @@ export default function SearchPage() {
         );
       })
       .catch((err) => {
-        console.log(err);
         setPopup({
           open: true,
           severity: "error",
@@ -155,7 +153,12 @@ export default function SearchPage() {
   };
   return (
     <Paper>
-      <Grid container xs={12} item sx={{ padding: "100px", minHeight: "93vh" }}>
+      <Grid
+        container
+        xs={12}
+        item
+        sx={{ padding: { md: "100px", xs: "0" }, minHeight: "93vh" }}
+      >
         <Grid item xs={12} sx={{ width: "100%" }}>
           <SearchBar />
         </Grid>
@@ -169,7 +172,8 @@ export default function SearchPage() {
           {/* Công việc xs=8 */}
           <Grid
             item
-            xs={8}
+            xs={12}
+            md={8}
             container
             direction="column"
             alignItems="stretch"
@@ -191,7 +195,8 @@ export default function SearchPage() {
           <Grid
             container
             item
-            xs={4}
+            xs={12}
+            md={4}
             direction="column"
             sx={{
               padding: "20px",

@@ -390,7 +390,6 @@ const ApplicationTile = (props) => {
         }
       )
       .then((response) => {
-        console.log(response.data);
         setPopup({
           open: true,
           severity: "success",
@@ -401,7 +400,6 @@ const ApplicationTile = (props) => {
         setOpen(false);
       })
       .catch((err) => {
-        console.log(err);
         setPopup({
           open: true,
           severity: "error",
@@ -437,7 +435,6 @@ const ApplicationTile = (props) => {
       application.jobApplicant.resume !== ""
     ) {
       const address = `${apiList.downloadResume}/${application.resume.filename}`;
-      console.log(address);
       axios(address, {
         method: "GET",
         responseType: "blob",
@@ -448,7 +445,6 @@ const ApplicationTile = (props) => {
           window.open(fileURL);
         })
         .catch((error) => {
-          console.log(error);
           setPopup({
             open: true,
             severity: "error",
@@ -491,7 +487,6 @@ const ApplicationTile = (props) => {
           severity: "error",
           message: err.response.data.message,
         });
-        console.log(err.response);
         handleCloseEndJob();
       });
   };
@@ -721,13 +716,10 @@ const AcceptedApplicants = (props) => {
 
     searchParams = [...searchParams, ...asc, ...desc];
     const queryString = searchParams.join("&");
-    console.log(queryString);
     let address = `${apiList.applicants}`;
     if (queryString !== "") {
       address = `${address}?${queryString}`;
     }
-
-    console.log(address);
 
     axios
       .get(address, {
@@ -736,7 +728,6 @@ const AcceptedApplicants = (props) => {
         },
       })
       .then((response) => {
-        console.log(response.data);
         setApplications(response.data);
       })
       .catch((err) => {

@@ -14,6 +14,7 @@ import {
   Slider,
   MenuItem,
   Box,
+  Link,
 } from "@mui/material";
 import { useHistory } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
@@ -23,6 +24,9 @@ import { useEffect, useState } from "react";
 import UsersService from "../services/user.service";
 import JobsService from "../services/jobs.service";
 import RecruiterCard from "../component/recruiter/RecruiterCard";
+import Ads1 from "../assets/Ads1.png";
+import Ads2 from "../assets/Ads2.png";
+import isAuth from "../lib/isAuth";
 
 const FilterPopup = (props) => {
   const { open, handleClose, searchOptions, setSearchOptions, getData } = props;
@@ -373,6 +377,10 @@ const Welcome = (props) => {
     setJobs(dt);
   }
 
+  const handleClick = (location) => {
+    history.push(location);
+  };
+
   const [searchOptions, setSearchOptions] = useState({
     query: "",
     jobType: {
@@ -477,17 +485,17 @@ const Welcome = (props) => {
     getJob();
   }, []);
 
+  // Chỉ khi > lv1
   useEffect(() => {
     async function getCompanies() {
-      var companyData = await userServ.getAll();
+      var companyData = await userServ.getAllRecruiter();
       const companies = [];
       for (let i = 0; i < companyData.length; i++) {
-        if (companyData[i].type === "recruiter" && companyData[i].level > 0) {
+        if (companyData[i].level >= 0) {
           companies[i] = companyData[i];
         }
       }
       setCompanyList(companies);
-      console.log(companies);
     }
     getCompanies();
   }, []);
@@ -497,7 +505,7 @@ const Welcome = (props) => {
       container
       alignItems="center"
       justifyContent="center"
-      style={{ padding: "30px", minHeight: "93vh" }}
+      sx={{ padding: "30px", minHeight: "93vh" }}
     >
       {/* 1 */}
       <Grid
@@ -526,137 +534,120 @@ const Welcome = (props) => {
             </Typography>
             <Typography
               variant="p"
-              sx={{ display: { md: "block", xs: "none" } }}
+              sx={{
+                display: { md: "block", xs: "none" },
+                textAlign: "justify",
+              }}
             >
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Consectetur iusto facere quas iure quos. Non libero cum facere.
-              Sint quasi ducimus dolor at in architecto consequatur, enim
-              numquam maiores iure!
+              Bạn đang là sinh viên hoặc mới tốt nghiệp và muốn tìm một công
+              việc thực tập để nâng cao tay nghề và học hỏi kinh nghiệm?
+              <br />
+              Hãy để HItern hỗ trợ bạn!
             </Typography>
+            <Button
+              onClick={() => handleClick("/dang-nhap")}
+              variant="contained"
+              sx={{
+                backgroundColor: "secondary.main",
+                mt: 2,
+              }}
+            >
+              Tham gia ngay
+            </Button>
           </Grid>
 
           <Grid item xs={6}>
             <Box
               component="img"
               sx={{
-                maxHeight: { xs: 150, sm: 250, md: 450, lg: 600 },
-                maxWidth: { xs: 150, sm: 250, md: 450, lg: 600 },
+                maxHeight: { xs: 150, sm: 250, md: 450, lg: 700 },
+                maxWidth: { xs: 150, sm: 250, md: 450, lg: 700 },
               }}
               alt="banner"
               src="/src/assets/JOB.png"
             />
           </Grid>
         </Grid>
-        {/* Thanh tim kiem */}
-        <Grid
-          container
-          item
-          sx={{
-            border: "2px solid #36593C",
-            borderRadius: "20px",
-            padding: "5px 5px 5px 20px",
-            backgroundColor: "common.white",
-            alignItems: "center",
-            maxWidth: "80%",
-            display: { xs: "none", md: "flex" },
-          }}
-        >
-          <Grid item xs={1}>
-            <IconButton
-              onClick={() =>
-                history.push({
-                  pathname: "/tim-kiem",
-                  search: `?search=${searchInput}`,
-                })
-              }
-            >
-              <SearchIcon
-                sx={{
-                  color: "common.black",
-                }}
-              />
-            </IconButton>
-          </Grid>
-          <Grid item xs={9} xl={8}>
-            <Input
-              disableUnderline
-              sx={{ maxHeight: "50px", width: "100%" }}
-              placeholder="Tìm kiếm công việc, công ty,..."
-              value={searchInput}
-              onChange={(event) => setSearchInput(event.target.value)}
-              onKeyPress={(ev) => {
-                if (ev.key === "Enter") {
-                  history.push({
-                    pathname: "/tim-kiem",
-                    search: `?search=${searchInput}`,
-                  });
-                }
-              }}
-            />
-          </Grid>
-          <Grid item xs={2} xl={3}>
-            <Button
-              variant="contained"
-              onClick={() =>
-                history.push({
-                  pathname: "/tim-kiem",
-                  search: `?search=${searchInput}`,
-                })
-              }
-            >
-              <Typography variant="h7">Tìm kiếm</Typography>
-            </Button>
-          </Grid>
-        </Grid>
       </Grid>
       {/* 2 */}
-      <Grid container item direction="column">
-        <Typography
-          variant="h4"
-          align="center"
-          sx={{ fontWeight: "500", marginTop: "50px" }}
-        >
-          NHÀ TUYỂN DỤNG HÀNG ĐẦU
-        </Typography>
-        <Grid container item>
-          <Grid item container justifyContent="center" xs={12}>
-            {companyList?.length > 0
-              ? companyList?.map((company) => {
-                  return (
-                    <Grid item xs={3}>
-                      <RecruiterCard company={company} />
-                    </Grid>
-                  );
-                })
-              : null}
+      {isAuth() ? (
+        <Grid>
+          <Grid container item direction="column">
+            <Typography
+              variant="h4"
+              align="center"
+              sx={{
+                fontWeight: "500",
+                margin: "50px 0",
+                typography: { xs: "h5", md: "h4", lg: "h3" },
+              }}
+            >
+              NHÀ TUYỂN DỤNG HÀNG ĐẦU
+            </Typography>
+            <Grid container item>
+              <Grid item container justifyContent="center" xs={12}>
+                {companyList?.length > 0
+                  ? companyList?.map((company) => {
+                      return (
+                        <Grid
+                          item
+                          container
+                          lg={3}
+                          md={4}
+                          sm={6}
+                          xs={12}
+                          sx={{
+                            display: "flex",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <RecruiterCard company={company} />
+                        </Grid>
+                      );
+                    })
+                  : null}
+              </Grid>
+            </Grid>
           </Grid>
+          <Grid
+            container
+            sx={{
+              backgroundColor: "primary.main",
+              marginTop: "50px",
+              marginBottom: "50px",
+              borderRadius: "20px",
+              color: "common.white",
+            }}
+          >
+            <Grid
+              item
+              xs={8}
+              sx={{ padding: { md: "50px 80px", xs: "30px 50px" } }}
+            >
+              <Typography sx={{ typography: { xs: "h5", md: "h4" } }}>
+                BẠN CÓ BIẾT?
+                <br />
+              </Typography>
+              <Typography sx={{ typography: { xs: "p", md: "h5" } }}>
+                Kỹ năng làm việc nhóm là một trong các kỹ năng quan trọng mà Nhà
+                tuyển dụng cần bên cạnh kỹ năng cứng...
+              </Typography>
+            </Grid>
+            <Grid
+              item
+              xs={4}
+              sx={{ width: "100%", display: "flex", alignItems: "center" }}
+            >
+              <Box
+                sx={{ width: "100%", padding: "30px 0" }}
+                component="img"
+                src={Ads1}
+              />
+            </Grid>
+          </Grid>
+          <Box sx={{ width: "100%" }} component="img" src={Ads2} />
         </Grid>
-      </Grid>
-      {/* 3 */}
-      <Grid
-        container
-        sx={{
-          backgroundColor: "primary.main",
-          minHeight: "200px",
-          marginTop: "50px",
-          marginBottom: "50px",
-          borderRadius: "20px",
-        }}
-      >
-        <Typography
-          align="center"
-          variant="p"
-          sx={{
-            padding: "50px",
-            color: "common.white",
-          }}
-        >
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa ratione
-          eius recusandae ducimus ipsam voluptatibus pariatur facilis
-          repudiandae aut a, fuga necessitatibus. Placeat maiores temporibus,
-          qui quod nesciunt perspiciatis quae.
-        </Typography>
-      </Grid>
+      ) : null}
       <FilterPopup
         open={filterOpen}
         searchOptions={searchOptions}

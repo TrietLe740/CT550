@@ -323,7 +323,23 @@ router.get("/user/recruiter", jwtAuth, (req, res) => {
   });
 });
 
-router.get("/user/:id", jwtAuth, (req, res) => {
+router.get("/user/recruiter/:id", jwtAuth, (req, res) => {
+  Recruiter.findOne({ _id: req.params.id })
+    .then((recruiter) => {
+      if (recruiter === null) {
+        res.status(404).json({
+          message: "Người dùng không tồn tại!!",
+        });
+        return;
+      }
+      res.json(recruiter);
+    })
+    .catch((err) => {
+      res.status(400).json(err);
+    });
+});
+
+router.get("/user/:id", jwtAuth, async (req, res) => {
   User.findOne({ _id: req.params.id })
     .then((userData) => {
       console.log("ID: " + req.params.id);
@@ -368,6 +384,26 @@ router.get("/user/:id", jwtAuth, (req, res) => {
     .catch((err) => {
       res.status(400).json(err);
     });
+  // try {
+  //   const user = await User.findOne({ _id: req.params.id });
+  //   console.log(req.params.id);
+  //   console.log(user);
+  //   if (user.type === "recruiter") {
+  //     const recruiter = Recruiter.findOne({ userId: user._id });
+  //     console.log(recruiter);
+  //     if (recruiter === null) {
+  //       res.status(404).json({
+  //         message: "Người dùng không tồn tại!!",
+  //       });
+  //     } else {
+  //       res.json(recruiter);
+  //     }
+  //   } else {
+  //     const jobapplicant = JobApplicant.findOne({ userId: user._id });
+  //   }
+  // } catch (err) {
+  //   res.status(400).json(err);
+  // }
 });
 
 router.put("/user", jwtAuth, (req, res) => {
@@ -385,32 +421,41 @@ router.put("/user", jwtAuth, (req, res) => {
         if (data.name) {
           recruiter.name = data.name;
         }
-        if (data.contactNumber) {
-          recruiter.contactNumber = data.contactNumber;
+        if (data.role) {
+          recruiter.role = data.role;
         }
         if (data.companyName) {
           recruiter.companyName = data.companyName;
         }
-        if (data.mailCompany) {
-          recruiter.mailCompany = data.mailCompany;
+        if (data.companyMail) {
+          recruiter.companyMail = data.companyMail;
         }
-        if (data.role) {
-          recruiter.role = data.role;
-        }
-        if (data.contactNumber) {
-          recruiter.contactNumber = data.contactNumber;
+        if (data.website) {
+          recruiter.website = data.website;
         }
         if (data.bio) {
           recruiter.bio = data.bio;
         }
+        if (data.contactNumber) {
+          recruiter.contactNumber = data.contactNumber;
+        }
         if (data.location) {
           recruiter.location = data.location;
+        }
+        if (data.avatar) {
+          recruiter.avatar = data.avatar;
+        }
+        if (data.level) {
+          recruiter.level = data.level;
+        }
+        if (data.notification) {
+          recruiter.notification = data.notification;
         }
         if (data.follower) {
           recruiter.follower = data.follower;
         }
-        if (data.notification) {
-          recruiter.notification = data.notification;
+        if (data.credit) {
+          recruiter.credit = data.credit;
         }
         recruiter
           .save()
@@ -438,50 +483,59 @@ router.put("/user", jwtAuth, (req, res) => {
         if (data.name) {
           jobApplicant.name = data.name;
         }
-        if (data.education) {
-          jobApplicant.education = data.education;
-        }
-        if (data.major) {
-          jobApplicant.major = data.major;
-        }
-        if (data.skills) {
-          jobApplicant.skills = data.skills;
+        if (data.rating) {
+          jobApplicant.rating = data.rating;
         }
         if (data.avatar) {
           jobApplicant.avatar = data.avatar;
         }
+        if (data.major) {
+          jobApplicant.major = data.major;
+        }
+        if (data.school) {
+          jobApplicant.school = data.school;
+        }
         if (data.contactNumber) {
           jobApplicant.contactNumber = data.contactNumber;
         }
-        if (data.socialLink) {
-          jobApplicant.socialLink = data.socialLink;
-        }
-        if (data.activities) {
-          jobApplicant.activities = data.activities;
-        }
-        if (data.certificates) {
-          jobApplicant.certificates = data.certificates;
-        }
-        if (data.awards) {
-          jobApplicant.awards = data.awards;
-        }
-        if (data.targer) {
-          jobApplicant.targer = data.targer;
-        }
-        if (data.exp) {
-          jobApplicant.exp = data.exp;
-        }
-        if (data.interest) {
-          jobApplicant.interest = data.interest;
-        }
+        // if (data.socialLink) {
+        //   jobApplicant.socialLink = data.socialLink;
+        // }
+        // if (data.skills) {
+        //   jobApplicant.skills = data.skills;
+        // }
+        // if (data.activities) {
+        //   jobApplicant.activities = data.activities;
+        // }
+        // if (data.certificates) {
+        //   jobApplicant.certificates = data.certificates;
+        // }
+        // if (data.awards) {
+        //   jobApplicant.awards = data.awards;
+        // }
+        // if (data.targer) {
+        //   jobApplicant.targer = data.targer;
+        // }
+        // if (data.exp) {
+        //   jobApplicant.exp = data.exp;
+        // }
+        // if (data.interest) {
+        //   jobApplicant.interest = data.interest;
+        // }
         if (data.resume) {
           jobApplicant.resume = data.resume;
+        }
+        if (data.level) {
+          jobApplicant.level = data.level;
+        }
+        if (data.notification) {
+          jobApplicant.notification = data.notification;
         }
         if (data.following) {
           jobApplicant.follower = data.following;
         }
-        if (data.notification) {
-          jobApplicant.notification = data.notification;
+        if (data.credit) {
+          jobApplicant.credit = data.credit;
         }
         console.log(jobApplicant);
         jobApplicant

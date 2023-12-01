@@ -434,13 +434,11 @@ const MyJobs = (props) => {
     });
     searchParams = [...searchParams, ...asc, ...desc];
     const queryString = searchParams.join("&");
-    console.log(queryString);
     let address = apiList.jobs;
     if (queryString !== "") {
       address = `${address}?${queryString}`;
     }
 
-    console.log(address);
     axios
       .get(address, {
         headers: {
@@ -448,11 +446,9 @@ const MyJobs = (props) => {
         },
       })
       .then((response) => {
-        console.log(response.data);
         setJobs(response.data);
       })
       .catch((err) => {
-        console.log(err.response.data);
         setPopup({
           open: true,
           severity: "error",

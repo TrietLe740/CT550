@@ -1,14 +1,26 @@
 import { useContext, useEffect, useState } from "react";
-import { Grid, Typography, Paper, Avatar, IconButton } from "@mui/material";
-
+import {
+  Grid,
+  Typography,
+  Paper,
+  Avatar,
+  IconButton,
+  Button,
+} from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
 import { SetPopupContext } from "../App";
 
 import AuthService from "../services/auth.service";
 import UsersService from "../services/user.service";
+import JobsService from "../services/jobs.service";
+
 import EditIcon from "@mui/icons-material/Edit";
 import { Link, useLocation } from "react-router-dom";
+import JobCard from "../component/JobCard";
 
 const CompanyDetailPage = (props) => {
+  const [jobs, setJobs] = useState([]);
+
   let location = useLocation();
   let path = location.pathname.split("/");
   let id = path[path.length - 1];
@@ -21,52 +33,113 @@ const CompanyDetailPage = (props) => {
   });
   const authServ = new AuthService();
   const userServ = new UsersService();
+  const jobServ = new JobsService();
+
+  async function getUser() {
+    const user = await userServ.getRecruiter(id);
+    // console.log(user);
+    setProfileDetails(user);
+  }
 
   useEffect(() => {
-    async function getUser() {
-      const user = await userServ.get(id);
-      console.log(user);
-      setProfileDetails(user);
-    }
     getUser();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  async function getJob() {
+    getUser();
+    const job = await jobServ.getAll();
+    const list = [];
+    for (let i = 0; i < job.length; i++) {
+      if (job[i].userId === profileDetails?.userId) {
+        list[i] = job[i];
+      }
+    }
+    // console.log(list);
+    setJobs(list);
+  }
+
+  useEffect(() => {
+    getJob();
   }, []);
 
   return (
-    <Paper sx={{ padding: "100px" }}>
+    <Paper sx={{ padding: { md: "100px", xs: "0px" } }}>
       <Grid
         container
         direction="column"
         sx={{
           boxShadow:
             "0px 3px 3px -2px rgba(0,0,0,0.2), 0px 3px 4px 0px rgba(0,0,0,0.14), 0px 1px 8px 0px rgba(0,0,0,0.12)",
-          borderRadius: "30px",
           margin: "0 auto",
+          borderRadius: "30px",
         }}
       >
+        {/* Giới thiệu */}
         <Grid
           item
           container
           sx={{
-            backgroundColor: "primary.main",
             width: "100%",
-            borderRadius: "30px 30px 0 0",
+            borderRadius: { md: "30px 30px 0 0", xs: "0" },
             color: "common.white",
+            backgroundColor: "primary.main",
           }}
         >
-          <Grid item xs={3} sx={{ padding: "20px 0 20px 50px" }}>
+          <Grid
+            item
+            xs={12}
+            md={3}
+            sx={{
+              padding: { md: "20px 0 20px 50px", xs: "50px 0 10px 0" },
+            }}
+          >
             <Avatar
-              sx={{ width: "200px", height: "200px", border: "3px solid" }}
-              // src={profileDetails?.avatar}
-              src="https://png.pngtree.com/template/20190317/ourlarge/pngtree-businessmanavataremployeesales-man-purple-business-logo-image_78692.jpg"
+              sx={{
+                width: { lg: "200px", xs: "100px" },
+                height: { lg: "200px", xs: "100px" },
+                border: "3px solid",
+                margin: { xs: "0 auto" },
+              }}
+              src={profileDetails?.avatar}
             />
           </Grid>
-          <Grid item xs={8} sx={{ padding: "20px 0 0 0" }}>
-            <Typography variant="h3" sx={{ fontWeight: "bold" }}>
-              {profileDetails?.companyName}
+          <Grid
+            item
+            xs={12}
+            md={9}
+            sx={{
+              padding: "20px 0 0 0",
+              textAlign: { xs: "center", md: "left" },
+            }}
+          >
+            <Typography
+              variant="h4"
+              sx={{
+                fontWeight: "bold",
+                mb: 2,
+                typography: { xs: "h4", md: "h2" },
+              }}
+            >
+              {profileDetails?.companyName} <br />
             </Typography>
+            <Typography variant="p">
+              Website: {profileDetails?.website} <br />
+            </Typography>
+            <Typography variant="p">
+              Số điện thoại: {profileDetails?.contactNumber} <br />
+            </Typography>
+            <Button
+              sx={{ backgroundColor: "common.white", mt: 2, mb: 3 }}
+              variant="outlined"
+              onClick={() => {
+                // TODO
+              }}
+            >
+              <AddIcon /> Theo dõi
+            </Button>
           </Grid>
         </Grid>
+        {/* Thông tin */}
         <Grid
           item
           container
@@ -76,15 +149,57 @@ const CompanyDetailPage = (props) => {
             color: "common.black",
           }}
         >
-          <Grid item xs={9} sx={{ padding: "20px 0 20px 50px" }}>
-            <Typography variant="h5" sx={{ fontWeight: "bold" }}>
-              Giới thiệu công ty
-            </Typography>
+          <Grid
+            item
+            xs={9}
+            container
+            sx={{
+              padding: "20px 0 20px 50px",
+            }}
+          >
+            <Grid item>
+              <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+                Giới thiệu công ty
+              </Typography>
+              <Grid item sx={{ padding: "10px 20px 10px 0" }}>
+                <Typography variant="p" textAlign="justify">
+                  {profileDetails?.bio}
+                </Typography>
+              </Grid>
+            </Grid>
           </Grid>
-          <Grid item xs={3} sx={{ padding: "20px 0 0 0" }}>
+          <Grid
+            item
+            xs={3}
+            sx={{
+              padding: "20px 0 0 0",
+            }}
+          >
             <Typography variant="h5" sx={{ fontWeight: "bold" }}>
               Thông tin liên hệ
             </Typography>
+            <Typography variant="p">
+              Địa chỉ:{" "}
+              {`${profileDetails?.location?.no}, ${profileDetails?.location?.commune}, ${profileDetails?.location?.district}, ${profileDetails?.location?.province}`}
+            </Typography>
+          </Grid>
+        </Grid>
+        <Grid item container sx={{ padding: "10px 50px" }}>
+          <Grid item>
+            <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+              Tuyển dụng
+            </Typography>
+          </Grid>
+          <Grid item container>
+            {jobs.length > 0
+              ? jobs.map((job) => {
+                  return (
+                    <Grid item>
+                      <JobCard job={job} />
+                    </Grid>
+                  );
+                })
+              : null}
           </Grid>
         </Grid>
       </Grid>

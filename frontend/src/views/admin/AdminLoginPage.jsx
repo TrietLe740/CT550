@@ -38,7 +38,6 @@ const AdminLoginPage = (props) => {
 
   let history = useHistory();
   const handleClick = (location) => {
-    console.log(location);
     history.push(location);
   };
 
@@ -75,7 +74,7 @@ const AdminLoginPage = (props) => {
             severity: "success",
             message: "Đăng nhập thành công",
           });
-          console.log(response);
+          PubSub.publish("RELOAD_PROFILE", null);
         })
         .catch((err) => {
           setPopup({
@@ -83,7 +82,6 @@ const AdminLoginPage = (props) => {
             severity: "error",
             message: err.response.data.message,
           });
-          console.log(err.response);
         });
     } else {
       setPopup({

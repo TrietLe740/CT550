@@ -17,6 +17,7 @@ const EmailInput = (props) => {
       variant="outlined"
       value={value}
       onChange={onChange}
+      required={required}
       helperText={inputErrorHandler?.email?.message}
       onBlur={(event) => {
         if (event.target.value === "") {

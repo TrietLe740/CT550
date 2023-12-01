@@ -41,7 +41,6 @@ export default function AdminDashBoardPage() {
       setCompanyList(companies);
       setInternList(interns);
       setJobList(jobsData);
-      console.log(jobsData);
     }
     getData();
   }, []);

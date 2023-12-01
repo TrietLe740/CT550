@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Button, Grid, Paper, Box, Link } from "@mui/material";
+import { Button, Grid, Paper, Box, Link, Typography } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 
 const RecruiterCard = (props) => {
@@ -10,33 +10,48 @@ const RecruiterCard = (props) => {
       sx={{
         margin: "10px",
         padding: "20px",
-        minWidth: "300px",
-        minHeight: "300px",
+        width: "380px",
+        height: "380px",
         textDecoration: "none",
         borderRadius: "30px",
       }}
     >
       <Link
-        href={`/cong-ty/${company._id}`}
+        href={`/cong-ty/${company?._id}`}
         sx={{ textDecoration: "none" }}
         target="_blank"
       >
-        <Grid container columns>
+        <Grid container columns sx={{ textAlign: "center" }}>
           {/* Ảnh đại diện công ty */}
-          <Grid item xs={12}>
+          <Grid item xs={12} sx={{ height: "200px" }}>
             <Box
               component="img"
               sx={{
-                width: "100%",
+                margin: "0 auto",
+                maxWidth: "200px",
+                maxHeight: "200px",
                 padding: "10px",
               }}
               alt="avt_company"
-              src="https://png.pngtree.com/template/20190317/ourlarge/pngtree-businessmanavataremployeesales-man-purple-business-logo-image_78692.jpg"
+              src={company?.avatar}
             />
           </Grid>
-          <Grid sx={{ display: "flex", justifyContent: "center" }} item xs={12}>
+          <Grid item xs={12} sx={{ mb: 2, height: "50px" }}>
+            <Typography
+              variant="h5"
+              sx={{ color: "common.black", fontSize: "20px" }}
+            >
+              {company?.companyName.toUpperCase()}
+            </Typography>
+          </Grid>
+          <Grid
+            sx={{ display: "flex", justifyContent: "center", height: "50px" }}
+            item
+            xs={12}
+          >
             <Button
               variant="outlined"
+              sx={{ backgroundColor: "common.white" }}
               onClick={() => {
                 // TODO
               }}

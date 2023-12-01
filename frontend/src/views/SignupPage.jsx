@@ -28,84 +28,62 @@ const SignupPage = (props) => {
 
   const [signupDetails, setSignupDetails] = useState({
     type: "applicant",
+    name: "",
     email: "",
     password: "",
-    name: "",
     companyName: "",
     role: "",
-    contactNumber: "",
-    workplace: "",
-    level: "0",
+    level: 0,
     tmpPassword: "",
-    resume: [],
-    avatar: "",
   });
-
-  useEffect(() => {
-    console.log(signupDetails);
-  }, []);
 
   const [phone, setPhone] = useState("");
 
-  // const [inputErrorHandler, setInputErrorHandler] = useState({
-  //   type: {
-  //     value: "applicant",
-  //     rules: [{ type: "required", message: "" }],
-  //     error: false,
-  //     message: "",
-  //   },
-  //   email: {
-  //     value: "",
-  //     rules: [{ type: "required", message: "Email là bắt buộc" }],
-  //     error: false,
-  //     message: "",
-  //   },
-  //   password: {
-  //     value: "",
-  //     rules: [{ type: "required", message: "Mật khẩu là bắt buộc" }],
-  //     error: false,
-  //     message: "",
-  //   },
-  //   tmpPassword: {
-  //     value: "",
-  //     rules: [{ type: "required", message: "Nhập lại mật khẩu là bắt buộc" }],
-  //     error: false,
-  //     message: "",
-  //   },
-  //   name: {
-  //     value: "",
-  //     rules: [{ type: "required", message: "Họ tên là bắt buộc" }],
-  //     error: false,
-  //     message: "",
-  //   },
-  //   companyName: {
-  //     value: "",
-  //     rules: [{ type: "required", message: "Tên công ty là bắt buộc" }],
-  //     error: false,
-  //     message: "",
-  //   },
-  //   workplace: {
-  //     value: "Chọn vị trí",
-  //     rules: [{ type: "required", message: "Vị trí là bắt buộc" }],
-  //     error: false,
-  //     message: "",
-  //   },
-  // });
-
   const [inputErrorHandler, setInputErrorHandler] = useState({
     email: {
+      vi_name: "Email",
       untouched: true,
       required: true,
       error: false,
       message: "",
     },
     password: {
+      vi_name: "Mật khẩu",
       untouched: true,
       required: true,
       error: false,
       message: "",
     },
     name: {
+      vi_name: "Họ và tên",
+      untouched: true,
+      required: true,
+      error: false,
+      message: "",
+    },
+    tmpPassword: {
+      vi_name: "Nhập lại mật khẩu",
+      untouched: true,
+      required: true,
+      error: false,
+      message: "",
+    },
+    role: {
+      vi_name: "Chọn vị trí",
+      untouched: true,
+      required: true,
+      error: false,
+      message: "",
+    },
+    companyName: {
+      vi_name: "Tên công ty",
+      untouched: true,
+      required: true,
+      error: false,
+      message: "",
+    },
+    contactNumber: {
+      vi_name: "Số điện thoại",
       untouched: true,
       required: true,
       error: false,
@@ -113,29 +91,22 @@ const SignupPage = (props) => {
     },
   });
 
-  // const getFieldValue = (key) => {
-  //   return inputErrorHandler[key]?.value || undefined;
-  // };
-
-  // const handleInput = (key, value) => {
-  //   setInputErrorHandler((o) => {
-  //     return {
-  //       ...o,
-  //       [key]: {
-  //         value,
-  //         error: false,
-  //         message: "",
-  //         rules: o[key].rules,
-  //       },
-  //     };
-  //   });
-  // };
-
   const handleInput = (key, value) => {
-    setSignupDetails({
-      ...signupDetails,
-      [key]: value,
-    });
+    if (signupDetails.type === "recruiter") {
+      setSignupDetails({
+        ...signupDetails,
+        [key]: value,
+      });
+    } else if (signupDetails.type === "applicant") {
+      const { type, name, email, password } = signupDetails;
+      setSignupDetails({
+        type,
+        name,
+        email,
+        password,
+        [key]: value,
+      });
+    }
   };
 
   const handleInputError = (key, status, message) => {
@@ -150,97 +121,41 @@ const SignupPage = (props) => {
     });
   };
 
-  // const validatorForm = (form) => {
-  //   const formValidate = {};
-  //   Object.entries(form).forEach(([key, field]) => {
-  //     if (field.rules) {
-  //       let isInvalid = false;
-  //       field.rules.forEach((rule) => {
-  //         if (isInvalid) return;
-  //         formValidate[key] = { ...field, error: false, message: "" };
-  //         if (
-  //           rule.type === "required" &&
-  //           ["", null, undefined].includes(field.value)
-  //         ) {
-  //           isInvalid = true;
-  //           formValidate[key] = {
-  //             ...field,
-  //             error: true,
-  //             message: rule.message,
-  //           };
-  //         } else if (key === "password" || key === "tmpPassword") {
-  //           // console.log(field);
-  //           if (field.value.length < 6) {
-  //             isInvalid = true;
-  //             formValidate[key] = {
-  //               ...field,
-  //               error: true,
-  //               message: "Mật khẩu phải có ít nhất 6 ký tự",
-  //             };
-  //           } else if (form["tmpPassword"]?.value !== form["password"]?.value) {
-  //             isInvalid = true;
-  //             formValidate[key] = {
-  //               ...field,
-  //               error: true,
-  //               message: "Mật khẩu không khớp",
-  //             };
-  //           }
-  //         }
-  //       });
-  //     }
-  //   });
-  //   setInputErrorHandler(formValidate);
-  //   // console.log(formValidate);
-  // };
-
   const handleLogin = () => {
     const tmpErrorHandler = {};
     Object.keys(inputErrorHandler).forEach((obj) => {
+      console.log(
+        inputErrorHandler[obj].required && inputErrorHandler[obj].untouched
+      );
+      console.log(obj);
+      if (signupDetails[obj] == undefined) return;
       if (inputErrorHandler[obj].required && inputErrorHandler[obj].untouched) {
         tmpErrorHandler[obj] = {
           required: true,
           untouched: false,
           error: true,
-          message: `${obj[0].toUpperCase() + obj.substr(1)} là bắt buộc`,
+          message: `${inputErrorHandler[obj].vi_name} là bắt buộc`,
         };
+        console.log(obj);
       } else {
         tmpErrorHandler[obj] = inputErrorHandler[obj];
+        console.log(tmpErrorHandler[obj]);
       }
     });
 
     let updatedDetails = {
       ...signupDetails,
-      // education: education
-      //   .filter((obj) => obj.institutionName.trim() !== "")
-      //   .map((obj) => {
-      //     if (obj["endYear"] === "") {
-      //       delete obj["endYear"];
-      //     }
-      //     return obj;
-      //   }),
     };
-
-    // const isValid = validatorForm(inputErrorHandler);
 
     setSignupDetails(updatedDetails);
 
     const verified = !Object.keys(tmpErrorHandler).some((obj) => {
-      return tmpErrorHandler[obj].error;
+      console.log(inputErrorHandler[obj].error);
+      if (tmpErrorHandler[obj].error) return true;
+      return false;
     });
-    // const value = false;
+    // console.log(verified);
     if (verified) {
-      // let updatedDetails = {
-      //   ...signupDetails,
-      //   // education: education
-      //   //   .filter((obj) => obj.institutionName.trim() !== "")
-      //   //   .map((obj) => {
-      //   //     if (obj["endYear"] === "") {
-      //   //       delete obj["endYear"];
-      //   //     }
-      //   //     return obj;
-      //   //   }),
-      // };
-
       axios
         .post(apiList.signup, updatedDetails)
         .then((response) => {
@@ -250,9 +165,9 @@ const SignupPage = (props) => {
           setPopup({
             open: true,
             severity: "success",
-            message: "Đã đăng xuất tài khoản",
+            message: "Đăng nhập thành công",
           });
-          console.log(response);
+          PubSub.publish("RELOAD_PROFILE", null);
         })
         .catch((err) => {
           setPopup({
@@ -280,7 +195,7 @@ const SignupPage = (props) => {
           required: true,
           untouched: false,
           error: true,
-          message: `${obj[0].toUpperCase() + obj.substr(1)} là bắt buộc`,
+          message: `${inputErrorHandler[obj].vi_name} là bắt buộc`,
         };
       } else {
         tmpErrorHandler[obj] = inputErrorHandler[obj];
@@ -301,8 +216,6 @@ const SignupPage = (props) => {
         contactNumber: "",
       };
     }
-
-    // setSignupDetails(updatedDetails);
 
     const verified = !Object.keys(tmpErrorHandler).some((obj) => {
       return tmpErrorHandler[obj].error;
@@ -342,10 +255,17 @@ const SignupPage = (props) => {
     }
   };
 
+  useEffect(() => {
+    console.log(signupDetails);
+  }, []);
+
   return loggedin ? (
     <Redirect to="/" />
   ) : (
-    <Grid elevation={3} sx={{ padding: "50px", minHeight: "93vh" }}>
+    <Grid
+      elevation={3}
+      sx={{ padding: { md: "50px", xs: "50px 0" }, minHeight: "93vh" }}
+    >
       <Grid container direction="column" spacing={4} alignItems="center">
         <Grid item>
           <img src={LOGO} alt="" width={300} />
@@ -361,7 +281,6 @@ const SignupPage = (props) => {
             select
             label="Đăng ký với vai trò"
             variant="outlined"
-            // value={getFieldValue("type")}
             value={signupDetails.type}
             onChange={(event) => {
               handleInput("type", event.target.value);
@@ -376,43 +295,35 @@ const SignupPage = (props) => {
             sx={{ width: "300px" }}
             label="Họ và tên"
             type="text"
-            // value={getFieldValue("name")}
             value={signupDetails.name}
             onChange={(event) => handleInput("name", event.target.value)}
-            error={inputErrorHandler.name.error}
-            variant="outlined"
-            helperText={inputErrorHandler.name.message}
             onBlur={(event) => {
               if (event.target.value === "") {
                 handleInputError("name", true, "Họ và tên là bắt buộc");
-              } else if (event.target.value.type === "number") {
-                handleInputError(
-                  "name",
-                  true,
-                  "Vui lòng nhập đúng họ tên của bạn"
-                );
               } else {
                 handleInputError("name", false, "");
               }
             }}
-            // inputErrorHandler={inputErrorHandler}
-            // handleInputError={handleInputError}
-            // required={true}
+            error={inputErrorHandler.name.error}
+            inputErrorHandler={inputErrorHandler}
+            handleInputError={handleInputError}
+            required={true}
+            variant="outlined"
+            helperText={inputErrorHandler.name.message}
           />
         </Grid>
         <Grid item>
           <EmailInput
             label="Email"
-            // value={getFieldValue("email")}
             value={signupDetails.email}
-            onChange={(event) => {
-              handleInput("email", event.target.value);
-            }}
             error={inputErrorHandler.email.error}
             inputErrorHandler={inputErrorHandler}
             handleInputError={handleInputError}
             required={true}
             helperText={inputErrorHandler.email.message}
+            onChange={(event) => {
+              handleInput("email", event.target.value);
+            }}
           />
         </Grid>
 
@@ -420,19 +331,26 @@ const SignupPage = (props) => {
         <Grid item>
           <PasswordInput
             label="Mật khẩu"
-            // value={getFieldValue("password")}
             value={signupDetails.password}
             onChange={(event) => handleInput("password", event.target.value)}
             error={inputErrorHandler.password.error}
             inputErrorHandler={inputErrorHandler}
             handleInputError={handleInputError}
-            required={true}
             helperText={inputErrorHandler.password.message}
             onBlur={(event) => {
               if (event.target.value === "") {
                 handleInputError("password", true, "Mật khẩu là bắt buộc");
               } else {
-                handleInputError("password", false, "");
+                const re = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+                if (re.test(String(event.target.value))) {
+                  handleInputError("password", false, "");
+                } else {
+                  handleInputError(
+                    "password",
+                    true,
+                    "Mật khẩu phải có tối thiểu tám ký tự, ít nhất một chữ cái và một số"
+                  );
+                }
               }
             }}
           />
@@ -442,28 +360,38 @@ const SignupPage = (props) => {
           <PasswordInput
             label="Nhập lại mật khẩu"
             value={signupDetails.tmpPassword}
-            // value={getFieldValue("tmpPassword")}
             onChange={(event) => handleInput("tmpPassword", event.target.value)}
-            // error={inputErrorHandler.tmpPassword.error}
+            error={inputErrorHandler.tmpPassword.error}
             inputErrorHandler={inputErrorHandler}
             handleInputError={handleInputError}
             required={true}
-            // helperText={inputErrorHandler.tmpPassword.message}
+            helperText={inputErrorHandler.tmpPassword.message}
             onBlur={(event) => {
-              if (event.target.value !== signupDetails.password) {
+              if (event.target.value === "") {
                 handleInputError(
                   "tmpPassword",
                   true,
-                  "Nhập lại mật khẩu chưa đúng"
+                  "Nhập lại mật khẩu là bắt buộc"
                 );
+              } else {
+                if (event.target.value !== signupDetails.password) {
+                  handleInputError(
+                    "tmpPassword",
+                    true,
+                    "Nhập lại mật khẩu chưa đúng"
+                  );
+                } else {
+                  handleInputError("tmpPassword", false, "");
+                }
               }
             }}
           />
         </Grid>
 
         {/* Câu hỏi thêm */}
-        {/* getFieldValue("type") */}
-        {signupDetails.type === "applicant" ? null : (
+        {signupDetails.type === "applicant" ? (
+          <Grid></Grid>
+        ) : (
           <>
             {/* Vị trí công tác */}
             <Grid item>
@@ -472,13 +400,28 @@ const SignupPage = (props) => {
                 select
                 label="Vị trí công tác"
                 variant="outlined"
-                value={signupDetails.workplace}
-                // value={getFieldValue("workplace")}
+                value={signupDetails.role}
                 onChange={(event) => {
-                  handleInput("workplace", event.target.value);
+                  handleInput("role", event.target.value);
+                  handleInputError("role", false, "");
+                }}
+                error={inputErrorHandler.role.error}
+                inputErrorHandler={inputErrorHandler}
+                handleInputError={handleInputError}
+                required={true}
+                helperText={inputErrorHandler.role.message}
+                onBlur={(event) => {
+                  if (event.target.value === "") {
+                    handleInputError(
+                      "role",
+                      true,
+                      "Vị trí công tác là bắt buộc"
+                    );
+                  } else {
+                    handleInputError("role", false, "");
+                  }
                 }}
               >
-                <MenuItem value="Chọn vị trí">-Chọn vị trí-</MenuItem>
                 <MenuItem value="Nhân viên">Nhân viên</MenuItem>
                 <MenuItem value="Trưởng nhóm">Trưởng nhóm</MenuItem>
                 <MenuItem value="Phó phòng">Phó phòng</MenuItem>
@@ -495,10 +438,26 @@ const SignupPage = (props) => {
                 sx={{ width: "300px" }}
                 label="Tên công ty"
                 value={signupDetails.companyName}
-                // value={getFieldValue("companyName")}
-                onChange={(event) =>
-                  handleInput("companyName", event.target.value)
-                }
+                error={inputErrorHandler.companyName.error}
+                inputErrorHandler={inputErrorHandler}
+                handleInputError={handleInputError}
+                required={true}
+                helperText={inputErrorHandler.companyName.message}
+                onChange={(event) => {
+                  handleInput("companyName", event.target.value);
+                  handleInputError("companyName", false, "");
+                }}
+                onBlur={(event) => {
+                  if (event.target.value === "") {
+                    handleInputError(
+                      "companyName",
+                      true,
+                      "Tên công ty là bắt buộc"
+                    );
+                  } else {
+                    handleInputError("companyName", false, "");
+                  }
+                }}
                 variant="outlined"
               />
             </Grid>
@@ -517,7 +476,6 @@ const SignupPage = (props) => {
           <Button
             variant="contained"
             onClick={() => {
-              // getFieldValue("type")
               signupDetails.type === "applicant"
                 ? handleLogin()
                 : handleLoginRecruiter();

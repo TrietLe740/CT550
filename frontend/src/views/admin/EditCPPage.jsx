@@ -67,7 +67,6 @@ const EditCPPage = (props) => {
     let updatedDetails = {
       ...profileDetails,
     };
-    console.log(updatedDetails);
     if (phone !== "") {
       updatedDetails = {
         ...profileDetails,
@@ -93,7 +92,6 @@ const EditCPPage = (props) => {
         severity: "error",
         message: "Đã xảy ra lỗi",
       });
-      console.log(error);
     }
   };
 
@@ -105,7 +103,6 @@ const EditCPPage = (props) => {
       const locations = await locationServ.getAll();
       setLocations(locations);
       const user = await userServ.get(userId);
-      console.log(user);
       setProfileDetails(user);
     }
     getUser();
@@ -120,7 +117,6 @@ const EditCPPage = (props) => {
   }, [profileDetails]);
 
   useEffect(() => {
-    // console.log(profileDetails.location[0].province);
     setCommuneList([]);
     const tmp = districtList.find(
       (i) => i.name == profileDetails.location?.district

@@ -694,7 +694,7 @@ const Navbar = (props) => {
                             vertical: "top",
                             horizontal: "right",
                           }}
-                          sx={{ marginTop: "2px" }}
+                          sx={{ marginTop: "20px", maxHeight: "50vh" }}
                         >
                           <Grid container direction="column">
                             <Grid item sx={{ padding: "10px 20px 0 20px" }}>

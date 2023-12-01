@@ -12,20 +12,20 @@ export default function CompaniesPage() {
   useEffect(() => {
     async function getCompanies() {
       var companyData = await userServ.getAllRecruiter();
-      console.log(companyData);
+      // console.log(companyData);
       const companies = [];
       for (let i = 0; i < companyData.length; i++) {
-        if (companyData[i].level >= 0) {
+        if (companyData[i].level > 0) {
           companies[i] = companyData[i];
         }
       }
       setCompanyList(companies);
-      console.log(companies);
+      // console.log(companies);
     }
     getCompanies();
   }, []);
   return (
-    <Grid container item sx={{ height: "93vh" }}>
+    <Grid container item sx={{ minHeight: "93vh" }}>
       <Grid item container justifyContent="center" xs={12}>
         {companyList?.length > 0
           ? companyList?.map((company) => {

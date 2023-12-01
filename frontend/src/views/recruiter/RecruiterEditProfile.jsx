@@ -36,7 +36,7 @@ const RecruiterEditProfile = (props) => {
     companyMail: "",
     website: "",
     bio: "",
-    avatar: {},
+    avatar: "",
     contactNumber: "",
     location: {
       no: "",
@@ -67,7 +67,6 @@ const RecruiterEditProfile = (props) => {
     let updatedDetails = {
       ...profileDetails,
     };
-    console.log(updatedDetails);
     if (phone !== "") {
       updatedDetails = {
         ...profileDetails,
@@ -93,7 +92,6 @@ const RecruiterEditProfile = (props) => {
         severity: "error",
         message: "Đã xảy ra lỗi",
       });
-      console.log(error);
     }
   };
 
@@ -101,11 +99,10 @@ const RecruiterEditProfile = (props) => {
   let userId = location.pathname.slice(10);
 
   useEffect(() => {
-    console.log(location);
     async function getUser() {
       const locations = await locationServ.getAll();
       setLocations(locations);
-      const user = await userServ.get();
+      const user = await authServ.get();
       setProfileDetails(user);
     }
     getUser();
@@ -120,7 +117,6 @@ const RecruiterEditProfile = (props) => {
   }, [profileDetails]);
 
   useEffect(() => {
-    // console.log(profileDetails.location[0].province);
     setCommuneList([]);
     const tmp = districtList.find(
       (i) => i.name == profileDetails.location?.district

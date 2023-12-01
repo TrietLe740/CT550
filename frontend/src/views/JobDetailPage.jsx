@@ -109,7 +109,7 @@ export default function JobDetailPage() {
   async function getCompany() {
     var us = await userServ.get(job.userId);
     setCompany(us);
-    console.log(company);
+    // console.log(company);
   }
   useEffect(() => {
     getCompany();
@@ -140,11 +140,11 @@ export default function JobDetailPage() {
 
   const [resume, setResume] = useState(0);
   const handleChangeResume = (event) => {
-    console.log(event.target.value);
+    // console.log(event.target.value);
     setResume(event.target.value);
   };
 
-  // Apply button
+  // Apply
   const handleApply = async (id) => {
     axios
       .post(
@@ -221,7 +221,7 @@ export default function JobDetailPage() {
         handleClose();
       })
       .catch((err) => {
-        console.log(err.response);
+        // console.log(err.response);
         setPopup({
           open: true,
           severity: "error",
@@ -242,7 +242,7 @@ export default function JobDetailPage() {
   };
 
   return (
-    <Paper sx={{ padding: "100px 200px", minHeight: "100vh" }}>
+    <Paper sx={{ padding: { md: "100px 200px", xs: "0" }, minHeight: "100vh" }}>
       <Grid container direction="column">
         <Grid
           item
@@ -263,7 +263,7 @@ export default function JobDetailPage() {
                 padding: "10px",
               }}
               alt="avt_company"
-              src="https://png.pngtree.com/template/20190317/ourlarge/pngtree-businessmanavataremployeesales-man-purple-business-logo-image_78692.jpg"
+              src={company?.avatar}
             />
           </Grid>
           <Grid
@@ -271,7 +271,11 @@ export default function JobDetailPage() {
             lg={9}
             container
             direction="column"
-            sx={{ width: "100%", padding: "10px" }}
+            sx={{
+              width: "100%",
+              padding: "10px",
+              textAlign: { xs: "center", md: "left" },
+            }}
           >
             <Grid item>
               <Typography variant="h3" sx={{ fontWeight: "Bold" }}>
@@ -415,7 +419,11 @@ export default function JobDetailPage() {
                 <Typography variant="p" sx={{ fontWeight: "bold" }}>
                   Thông tin liên hệ: <br />
                 </Typography>
-                <Typography variant="p">{company?.contactNumber}</Typography>
+                <Typography variant="p">
+                  Website: {company?.website} <br />
+                  Số diện thoại: {company?.contactNumber}
+                </Typography>
+                <br />
                 <br />
                 <Typography variant="p" sx={{ fontWeight: "bold" }}>
                   Mô tả: <br />

@@ -31,6 +31,7 @@ const SearchBar = (prop) => {
                 search: `?search=${searchInput}`,
               })
             }
+            sx={{ height: "100%" }}
           >
             <SearchIcon
               sx={{
@@ -42,7 +43,7 @@ const SearchBar = (prop) => {
         <Grid item xs={9} xl={10}>
           <Input
             disableUnderline
-            sx={{ width: "100%" }}
+            sx={{ width: "100%", height: "100%" }}
             placeholder="Tìm kiếm công việc, công ty,..."
             value={searchInput}
             onChange={(event) => setSearchInput(event.target.value)}

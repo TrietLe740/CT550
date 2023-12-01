@@ -60,15 +60,15 @@ const Home = (props) => {
 
   useEffect(() => {
     async function getCompanies() {
-      var companyData = await userServ.getAll();
+      var companyData = await userServ.getAllRecruiter();
       const companies = [];
       for (let i = 0; i < companyData.length; i++) {
-        if (companyData[i].type === "recruiter" && companyData[i].level == 4) {
+        if (companyData[i].level > 1) {
           companies[i] = companyData[i];
         }
       }
       setCompanyList(companies);
-      console.log(companies);
+      // console.log(companies);
     }
     getCompanies();
   }, []);
@@ -118,7 +118,7 @@ const Home = (props) => {
     });
     searchParams = [...searchParams, ...asc, ...desc];
     const queryString = searchParams.join("&");
-    console.log(queryString);
+    // console.log(queryString);
     let address = apiList.jobs;
     if (queryString !== "") {
       address = `${address}?${queryString}`;
@@ -131,7 +131,7 @@ const Home = (props) => {
         },
       })
       .then((response) => {
-        console.log(response.data);
+        // console.log(response.data);
         setJobs(
           response.data.filter((obj) => {
             const today = new Date();
@@ -141,7 +141,7 @@ const Home = (props) => {
         );
       })
       .catch((err) => {
-        console.log(err);
+        // console.log(err);
         setPopup({
           open: true,
           severity: "error",
@@ -298,15 +298,19 @@ const Home = (props) => {
 
             {/* DS cong viec */}
             <Grid item container xs={8} sx={{ padding: "0 0 0 20px" }}>
-              {jobs.length > 0
-                ? jobs.map((job) => {
-                    return (
-                      <Grid item>
-                        <JobCard job={job} />
-                      </Grid>
-                    );
-                  })
-                : null}
+              {jobs.length > 0 ? (
+                jobs.map((job) => {
+                  return (
+                    <Grid container item>
+                      <JobCard job={job} />
+                    </Grid>
+                  );
+                })
+              ) : (
+                <Typography sx={{ mb: 3 }}>
+                  Không tìm thấy Công việc phù hợp
+                </Typography>
+              )}
             </Grid>
           </Grid>
         </Grid>
@@ -320,15 +324,19 @@ const Home = (props) => {
           </Typography>
           <Grid container item>
             <Grid item container justifyContent="center" xs={12}>
-              {companyList?.length > 0
-                ? companyList?.map((company) => {
-                    return (
-                      <Grid item xs={3}>
-                        <RecruiterCard company={company} />
-                      </Grid>
-                    );
-                  })
-                : null}
+              {companyList?.length > 0 ? (
+                companyList?.map((company) => {
+                  return (
+                    <Grid item container xs={3}>
+                      <RecruiterCard company={company} />
+                    </Grid>
+                  );
+                })
+              ) : (
+                <Typography sx={{ mb: 3 }}>
+                  Không tìm thấy Nhà tuyển dụng phù hợp
+                </Typography>
+              )}
             </Grid>
           </Grid>
         </Grid>

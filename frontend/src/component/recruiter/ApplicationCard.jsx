@@ -41,7 +41,7 @@ const ApplicationCard = (props) => {
       application.jobApplicant.resume !== ""
     ) {
       const address = `${apiList.downloadResume}/${application.resume.filename}`;
-      console.log(address);
+      // console.log(address);
       axios(address, {
         method: "GET",
         responseType: "blob",
@@ -52,7 +52,7 @@ const ApplicationCard = (props) => {
           window.open(fileURL);
         })
         .catch((error) => {
-          console.log(error);
+          // console.log(error);
           setPopup({
             open: true,
             severity: "error",

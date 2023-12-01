@@ -25,6 +25,20 @@ let schema = new mongoose.Schema(
     major: {
       type: String,
     },
+    school: {
+      id: {
+        type: Number,
+      },
+      name: {
+        type: String,
+      },
+      code: {
+        type: String,
+      },
+      logo_url: {
+        type: String,
+      },
+    },
     contactNumber: {
       type: String,
       validate: {
@@ -34,27 +48,30 @@ let schema = new mongoose.Schema(
         msg: "Số điện thoại không hợp lệ!",
       },
     },
-    socialLink: [
-      {
-        link: {
-          type: String,
-          required: true,
-        },
-      },
-    ],
-    skills: [String],
-    activities: [String],
-    certificates: [String],
-    awards: [String],
-    target: String,
-    exp: String,
-    interest: String,
+    // socialLink: [
+    //   {
+    //     link: {
+    //       type: String,
+    //       required: true,
+    //     },
+    //   },
+    // ],
+    // skills: [String],
+    // activities: [String],
+    // certificates: [String],
+    // awards: [String],
+    // target: String,
+    // exp: String,
+    // interest: String,
     resume: [Object],
     level: {
       type: Number,
     },
     notification: [Object],
     following: [Object],
+    credit: {
+      type: Number,
+    },
   },
   { collation: { locale: "vi" } }
 );

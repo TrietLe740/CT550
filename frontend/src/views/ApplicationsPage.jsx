@@ -25,11 +25,11 @@ const ApplicationTile = (props) => {
       })
       .then((response) => {
         setRating(response.data.rating);
-        console.log(response.data);
+        // console.log(response.data);
       })
       .catch((err) => {
         // console.log(err.response);
-        console.log(err.response.data);
+        // console.log(err.response.data);
         setPopup({
           open: true,
           severity: "error",
@@ -50,7 +50,7 @@ const ApplicationTile = (props) => {
         }
       )
       .then((response) => {
-        console.log(response.data);
+        // console.log(response.data);
         setPopup({
           open: true,
           severity: "success",
@@ -61,7 +61,7 @@ const ApplicationTile = (props) => {
       })
       .catch((err) => {
         // console.log(err.response);
-        console.log(err);
+        // console.log(err);
         setPopup({
           open: true,
           severity: "error",

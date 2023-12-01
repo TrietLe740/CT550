@@ -361,7 +361,6 @@ const JobApplications = (props) => {
     });
     searchParams = [...searchParams, ...asc, ...desc];
     const queryString = searchParams.join("&");
-    console.log(queryString);
     let address = `${apiList.applicants}?jobId=${jobId}`;
     if (queryString !== "") {
       address = `${address}&${queryString}`;
@@ -374,12 +373,9 @@ const JobApplications = (props) => {
         },
       })
       .then((response) => {
-        console.log(response.data);
         setApplications(response.data);
       })
       .catch((err) => {
-        console.log(err.response);
-        // console.log(err.response.data);
         setApplications([]);
         setPopup({
           open: true,

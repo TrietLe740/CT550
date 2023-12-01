@@ -53,7 +53,6 @@ const CreateJobs = (props) => {
     async function getData() {
       const locations = await locationServ.getAll();
       const majors = await majorServ.getAll();
-      console.log(locations);
       setLocations(locations);
       setMajors(
         majors?.[0].majors.map((item) => {
@@ -71,7 +70,6 @@ const CreateJobs = (props) => {
   }, [jobDetails]);
 
   useEffect(() => {
-    console.log(jobDetails);
     setCommuneList([]);
     const tmp = districtList.find(
       (i) => i.name == jobDetails.location?.district
@@ -87,11 +85,9 @@ const CreateJobs = (props) => {
   };
 
   const handleMajorChange = (value) => {
-    console.log(value);
     const major = value?.map((item) => {
       return item.value;
     });
-    console.log(major);
     setJobDetails({
       ...jobDetails,
       major,
@@ -107,7 +103,6 @@ const CreateJobs = (props) => {
   };
 
   const handleUpdate = () => {
-    console.log(jobDetails);
     axios
       .post(apiList.jobs, jobDetails, {
         headers: {
@@ -146,7 +141,6 @@ const CreateJobs = (props) => {
           severity: "error",
           message: err.response.data.message,
         });
-        console.log(err.response);
       });
   };
 

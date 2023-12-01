@@ -15,10 +15,13 @@ import {
 import apiList, { server } from "../lib/apiList";
 
 import { userType } from "../lib/isAuth";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { SetPopupContext } from "../App";
+import UsersService from "../services/user.service";
 
 const JobCard = (props) => {
+  const userServ = new UsersService();
+  const [profileDetails, setProfileDetails] = useState();
   const { job } = props;
 
   const [open, setOpen] = useState(false);
@@ -28,6 +31,16 @@ const JobCard = (props) => {
     setOpen(false);
     setSop("");
   };
+
+  useEffect(() => {
+    async function getUser() {
+      const user = await userServ.getRecruiter(job.recruiter._id);
+      // console.log(user);
+      setProfileDetails(user);
+    }
+
+    getUser();
+  }, []);
 
   return (
     <Paper
@@ -55,7 +68,7 @@ const JobCard = (props) => {
                 padding: "10px",
               }}
               alt="avt_company"
-              src="https://png.pngtree.com/template/20190317/ourlarge/pngtree-businessmanavataremployeesales-man-purple-business-logo-image_78692.jpg"
+              src={profileDetails?.avatar}
             />
           </Grid>
 
@@ -73,10 +86,7 @@ const JobCard = (props) => {
                 {job.title}
               </Typography>
             </Grid>
-            <Grid item>{job.recruiter.nameCompany}</Grid>
-            {/* <Grid item>
-              <Rating value={job.rating !== -1 ? job.rating : null} readOnly />
-            </Grid> */}
+            <Grid item>{job.recruiter?.companyName}</Grid>
             <Grid item>
               Số tháng thực tập:{" "}
               {job.duration > 0 ? `${job.duration} Tháng` : `Linh hoạt`}

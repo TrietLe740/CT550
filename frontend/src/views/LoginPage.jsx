@@ -39,7 +39,7 @@ const Login = (props) => {
 
   let history = useHistory();
   const handleClick = (location) => {
-    console.log(location);
+    // console.log(location);
     history.push(location);
   };
 
@@ -77,7 +77,6 @@ const Login = (props) => {
             message: "Đăng nhập thành công",
           });
           PubSub.publish("RELOAD_PROFILE", null);
-          console.log("RELOAD_PROFILE");
         })
         .catch((err) => {
           setPopup({

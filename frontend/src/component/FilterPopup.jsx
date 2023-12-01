@@ -30,7 +30,7 @@ const FilterPopup = (props) => {
   useEffect(() => {
     async function getData() {
       const locations = await locationServ.getAll();
-      console.log(locations);
+      // console.log(locations);
       setLocations(locations);
     }
     getData();
@@ -41,7 +41,7 @@ const FilterPopup = (props) => {
       <Paper
         sx={{
           margin: "5% auto",
-          padding: "50px 80px",
+          padding: { md: "50px 80px", xs: "20px 30px" },
           outline: "none",
           maxWidth: "80%",
           borderRadius: "30px",
@@ -52,7 +52,13 @@ const FilterPopup = (props) => {
             <Grid item xs={3}>
               Loại
             </Grid>
-            <Grid container item xs={9} justifyContent="space-around">
+            <Grid
+              container
+              item
+              xs={9}
+              justifyContent="space-around"
+              sx={{ justifyContent: "left" }}
+            >
               <Grid item>
                 <FormControlLabel
                   control={
@@ -123,11 +129,11 @@ const FilterPopup = (props) => {
               <Slider
                 valueLabelDisplay="auto"
                 valueLabelFormat={(value) => {
-                  return value * (10000000 / 100);
+                  return value * (2000000 / 100);
                 }}
                 marks={[
                   { value: 0, label: "0" },
-                  { value: 100, label: "10,000,000 VNĐ" },
+                  { value: 100, label: "2,000,000 VNĐ" },
                 ]}
                 value={searchOptions.salary}
                 onChange={(event, value) =>

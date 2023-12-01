@@ -7,10 +7,14 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import PaidIcon from "@mui/icons-material/Paid";
 import React, { useContext, useEffect, useState } from "react";
 import Select from "react-select";
+
 import UsersService from "../services/user.service";
 import AuthService from "../services/auth.service";
+import SchoolsService from "../services/school.service";
+
 import { Link } from "react-router-dom";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import MajorsService from "../services/major.service";
@@ -25,23 +29,63 @@ export default function ProfileEditPage() {
   const userServ = new UsersService();
   const authServ = new AuthService();
   const majorServ = new MajorsService();
+  const schoolServ = new SchoolsService();
   const setPopup = useContext(SetPopupContext);
 
   const initValue = {
-    avatar: {},
     name: "",
-    education: [],
-    skills: [],
-    activity: [],
-    award: [],
-    certificate: [],
-    contactNumber: "",
-    email: "",
-    exp: "",
-    resume: [],
-    interest: "",
-    target: "",
+    avatar: "",
     major: "",
+    school: {},
+    contactNumber: "",
+    // skills: [],
+    // activity: [],
+    // award: [],
+    // certificate: [],
+    // exp: "",
+    // interest: "",
+    // target: "",
+    email: "",
+    resume: [],
+    level: "",
+    following: [],
+    credit: 0,
+  };
+
+  const [inputErrorHandler, setInputErrorHandler] = useState({
+    name: {
+      vi_name: "Họ và tên",
+      untouched: true,
+      required: true,
+      error: false,
+      message: "",
+    },
+    major: {
+      vi_name: "Ngành học",
+      untouched: true,
+      required: true,
+      error: false,
+      message: "",
+    },
+    contactNumber: {
+      vi_name: "Số điện thoại",
+      untouched: true,
+      required: true,
+      error: false,
+      message: "",
+    },
+  });
+
+  const handleInputError = (key, status, message) => {
+    setInputErrorHandler({
+      ...inputErrorHandler,
+      [key]: {
+        required: true,
+        untouched: false,
+        error: status,
+        message: message,
+      },
+    });
   };
 
   const [phone, setPhone] = useState("");
@@ -49,6 +93,7 @@ export default function ProfileEditPage() {
   const [profileDetails, setProfileDetails] = useState(initValue);
 
   const [majors, setMajors] = useState({});
+  const [schools, setSchools] = useState({});
 
   const handleInput = (key, value) => {
     setProfileDetails({
@@ -58,10 +103,29 @@ export default function ProfileEditPage() {
   };
 
   const handleUpdate = async () => {
+    const tmpErrorHandler = {};
+    Object.keys(inputErrorHandler).forEach((obj) => {
+      console.log(
+        inputErrorHandler[obj].required && inputErrorHandler[obj].untouched
+      );
+      if (inputErrorHandler[obj].required && inputErrorHandler[obj].untouched) {
+        tmpErrorHandler[obj] = {
+          required: true,
+          untouched: false,
+          error: true,
+          message: `${inputErrorHandler[obj].vi_name} là bắt buộc`,
+        };
+        console.log(obj);
+      } else {
+        tmpErrorHandler[obj] = inputErrorHandler[obj];
+        console.log(tmpErrorHandler[obj]);
+      }
+    });
+
     let updatedDetails = {
       ...profileDetails,
     };
-    console.log(updatedDetails);
+
     if (phone !== "") {
       updatedDetails = {
         ...profileDetails,
@@ -73,14 +137,34 @@ export default function ProfileEditPage() {
         contactNumber: "",
       };
     }
-    try {
-      await userServ.update(updatedDetails);
-      alert("Cập nhật thành công!");
-    } catch (error) {
+
+    const verified = Object.keys(tmpErrorHandler).some((obj) => {
+      console.log(inputErrorHandler[obj].error);
+      if (tmpErrorHandler[obj].error) return false;
+      return true;
+    });
+
+    if (verified) {
+      try {
+        await userServ.update(updatedDetails);
+        setPopup({
+          open: true,
+          severity: "success",
+          message: "Cập nhật thành công",
+        });
+      } catch (error) {
+        setPopup({
+          open: true,
+          severity: "error",
+          message: "Thông tin cung cấp chưa đầy đủ",
+        });
+      }
+    } else {
+      setInputErrorHandler(tmpErrorHandler);
       setPopup({
         open: true,
         severity: "error",
-        message: "Thông tin cung cấp chưa đầy đủ",
+        message: "Xin vui lòng cung cấp thông tin đúng yêu cầu",
       });
     }
   };
@@ -97,7 +181,6 @@ export default function ProfileEditPage() {
 
   const getResume = (i) => {
     const address = `${apiList.downloadResume}/${profileDetails.resume[i].filename}`;
-    console.log(address);
     axios(address, {
       method: "GET",
       responseType: "blob",
@@ -108,7 +191,6 @@ export default function ProfileEditPage() {
         window.open(fileURL);
       })
       .catch((error) => {
-        console.log(error);
         setPopup({
           open: true,
           severity: "error",
@@ -120,12 +202,26 @@ export default function ProfileEditPage() {
   async function getUser() {
     const auth = await authServ.get();
     const majors = await majorServ.getAll();
-    setProfileDetails(auth);
+    const schools = await schoolServ.getAll();
+    setProfileDetails({
+      ...auth,
+      school: {
+        value: auth?.school?.id,
+        label: auth?.school?.name,
+        ...(auth?.school || {}),
+      },
+    });
     setMajors(
       majors?.[0].majors.map((item) => {
         return { label: item, value: item };
       }) || []
     );
+    setSchools(
+      schools?.map((item) => {
+        return { label: item.name, value: item.id, ...item };
+      })
+    );
+    console.log(schools);
   }
 
   useEffect(() => {
@@ -167,20 +263,43 @@ export default function ProfileEditPage() {
               onChange={(event) => {
                 handleInput("name", event.target.value);
               }}
-              required="true"
+              onBlur={(event) => {
+                if (event.target.value === "") {
+                  handleInputError("name", true, "Họ và tên là bắt buộc");
+                } else {
+                  handleInputError("name", false, "");
+                }
+              }}
+              error={inputErrorHandler.name.error}
+              inputErrorHandler={inputErrorHandler}
+              handleInputError={handleInputError}
+              required={true}
+              helperText={inputErrorHandler.name.message}
             />
           </Grid>
           <Grid item sx={{ marginTop: "20px" }}>
             <PhoneInput
               inputStyle={{ width: "100%" }}
-              inputProps={{
-                name: "Liên hệ",
-                required: true,
-                autoFocus: true,
-              }}
+              placeholder="Số điện thoại"
               country={"vn"}
               value={profileDetails?.contactNumber}
               onChange={(phone) => setPhone(phone)}
+              onBlur={(event) => {
+                if (event.target.value === "") {
+                  handleInputError(
+                    "contactNumber",
+                    true,
+                    "Số điện thoại là bắt buộc"
+                  );
+                } else {
+                  handleInputError("contactNumber", false, "");
+                }
+              }}
+              error={inputErrorHandler.contactNumber.error}
+              inputErrorHandler={inputErrorHandler}
+              handleInputError={handleInputError}
+              required={true}
+              helperText={inputErrorHandler.contactNumber.message}
             />
           </Grid>
           <Grid sx={{ marginTop: "20px" }} item>
@@ -200,11 +319,45 @@ export default function ProfileEditPage() {
               }}
               onChange={(v) => {
                 handleInput("major", v.value);
-                console.log(v);
+              }}
+              onBlur={(event) => {
+                if (event.target.value === "") {
+                  handleInputError("major", true, "Ngành học là bắt buộc");
+                } else {
+                  handleInputError("major", false, "");
+                }
+              }}
+              error={inputErrorHandler.major.error}
+              inputErrorHandler={inputErrorHandler}
+              handleInputError={handleInputError}
+              required={true}
+              helperText={inputErrorHandler.major.message}
+            />
+          </Grid>
+
+          {/* School */}
+          <Grid sx={{ marginTop: "20px" }} item>
+            <Select
+              placeholder={"Trường"}
+              styles={{
+                control: (baseStyles, state) => ({
+                  ...baseStyles,
+                  height: "56px",
+                  margin: "10px 0",
+                }),
+              }}
+              options={schools}
+              value={{
+                value: profileDetails?.school?.value,
+                label: profileDetails?.school?.label,
+              }}
+              onChange={(v) => {
+                handleInput("school", v);
               }}
             />
           </Grid>
-          {/* <Grid item></Grid> */}
+
+          {/* Email */}
           <Grid item sx={{ marginTop: "20px" }}>
             <TextField
               sx={{ width: "100%", margin: "15px 0" }}
@@ -257,13 +410,26 @@ export default function ProfileEditPage() {
                   : `Tài khoản cấp tối đa`}
               </Typography>
               <br />
+              <Typography variant="p" sx={{ fontWeight: "bold" }}>
+                Số Xu: {""}
+                {profileDetails?.credit} <PaidIcon sx={{ color: "#FFB000" }} />
+              </Typography>
+              <br />
               <Link to={`/tai-khoan/nang-cap`}>
                 <Button variant="contained" sx={{ marginTop: "10px" }}>
                   <Typography fontSize={13}>Nâng cấp tài khoản</Typography>
                 </Button>
               </Link>
+              <br />
+              <Link to={`/tai-khoan/nap-tien`}>
+                <Button variant="contained" sx={{ marginTop: "10px" }}>
+                  <Typography fontSize={13}>Nạp Xu</Typography>
+                </Button>
+              </Link>
             </Grid>
           </Grid>
+
+          {/* Danh sach CV */}
           <Grid item container sx={{ marginTop: "30px" }}>
             <Grid
               item
@@ -291,6 +457,32 @@ export default function ProfileEditPage() {
                         <HighlightOffIcon />
                       </IconButton>
                     </Grid>
+                  ))
+                : null}
+              <br />
+              <Link to={`/update-cv`}>
+                <Button variant="contained">Upload CV</Button>
+              </Link>
+            </Grid>
+
+            {/* DS Following */}
+            <Grid
+              item
+              xs={12}
+              sx={{
+                border: "1px solid #48884A",
+                borderRadius: "20px",
+                padding: "20px",
+                mt: 4,
+              }}
+            >
+              <Typography variant="h6">
+                Nhà tuyển dụng bạn đang theo dõi
+              </Typography>
+              {profileDetails?.following !== ""
+                ? profileDetails?.following?.map((v, key) => (
+                    // TODO
+                    <Grid item>abc </Grid>
                   ))
                 : null}
               <br />

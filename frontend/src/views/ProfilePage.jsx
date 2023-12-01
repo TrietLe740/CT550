@@ -20,11 +20,9 @@ const Profile = (props) => {
   useEffect(() => {
     async function getUser() {
       const user = await authServ.get();
-      console.log(user);
       setProfileDetails(user);
     }
     getUser();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
