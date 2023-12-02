@@ -189,6 +189,7 @@ const Home = (props) => {
             {/* Thanh tim kiem */}
             <Grid
               item
+              container
               fullWidth
               sx={{
                 margin: "20px auto 0 auto",
@@ -198,46 +199,59 @@ const Home = (props) => {
                 backgroundColor: "common.white",
               }}
             >
-              <IconButton
-                onClick={() =>
-                  history.push({
-                    pathname: "/tim-kiem",
-                    search: `?search=${searchInput}`,
-                  })
-                }
-              >
-                <SearchIcon
-                  sx={{
-                    color: "common.black",
-                  }}
-                />
-              </IconButton>
-              <Input
-                sx={{ width: "80%", height: "50px" }}
-                placeholder="Tìm kiếm công việc, công ty,..."
-                value={searchInput}
-                onChange={(event) => setSearchInput(event.target.value)}
-                onKeyPress={(ev) => {
-                  if (ev.key === "Enter") {
+              <Grid item xs={1}>
+                <IconButton
+                  sx={{ height: "100%" }}
+                  onClick={() =>
                     history.push({
                       pathname: "/tim-kiem",
                       search: `?search=${searchInput}`,
-                    });
+                    })
                   }
-                }}
-              />
-              <Button
-                sx={{ marginLeft: "30px" }}
-                variant="contained"
-                onClick={() =>
-                  history.push({
-                    pathname: "/tim-kiem",
-                    search: `?search=${searchInput}`,
-                  })
-                }
-              >
-                Tìm kiếm
-              </Button>
+                >
+                  <SearchIcon
+                    sx={{
+                      color: "common.black",
+                    }}
+                  />
+                </IconButton>
+              </Grid>
+              <Grid item xs={8} md={9}>
+                <Input
+                  disableUnderline
+                  sx={{ width: "100%", height: "100%" }}
+                  placeholder="Tìm kiếm công việc, công ty,..."
+                  value={searchInput}
+                  onChange={(event) => setSearchInput(event.target.value)}
+                  onKeyPress={(ev) => {
+                    if (ev.key === "Enter") {
+                      history.push({
+                        pathname: "/tim-kiem",
+                        search: `?search=${searchInput}`,
+                      });
+                    }
+                  }}
+                />
+              </Grid>
+              <Grid item xs={3} md={2}>
+                <Button
+                  sx={{
+                    marginLeft: "3px",
+                    height: "100%",
+                    width: "100%",
+                    borderRadius: "0 20px 20px 0",
+                  }}
+                  variant="contained"
+                  onClick={() =>
+                    history.push({
+                      pathname: "/tim-kiem",
+                      search: `?search=${searchInput}`,
+                    })
+                  }
+                >
+                  Tìm kiếm
+                </Button>
+              </Grid>
             </Grid>
           </Grid>
         </Grid>
@@ -277,27 +291,14 @@ const Home = (props) => {
             TIN THỰC TẬP TỐT NHẤT VIỆT NAM
           </Typography>
           <Grid container item>
-            {/* Co the ban quan tam */}
+            {/* DS cong viec */}
             <Grid
               item
-              xs={4}
-              sx={{
-                boxShadow:
-                  "0px 3px 3px -2px rgba(0,0,0,0.2), 0px 3px 4px 0px rgba(0,0,0,0.14), 0px 1px 8px 0px rgba(0,0,0,0.12)",
-                borderRadius: "30px",
-                height: "500px",
-                marginTop: "20px",
-                padding: "30px",
-              }}
+              container
+              xs={12}
+              md={8}
+              sx={{ padding: { md: "0 20px 0 0", xs: "0" } }}
             >
-              <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-                Có thể bạn quan tâm
-              </Typography>
-              <Grid>Đang cập nhật</Grid>
-            </Grid>
-
-            {/* DS cong viec */}
-            <Grid item container xs={8} sx={{ padding: "0 0 0 20px" }}>
               {jobs.length > 0 ? (
                 jobs.map((job) => {
                   return (
@@ -311,6 +312,25 @@ const Home = (props) => {
                   Không tìm thấy Công việc phù hợp
                 </Typography>
               )}
+            </Grid>
+            {/* Co the ban quan tam */}
+            <Grid
+              item
+              xs={12}
+              md={4}
+              sx={{
+                boxShadow:
+                  "0px 3px 3px -2px rgba(0,0,0,0.2), 0px 3px 4px 0px rgba(0,0,0,0.14), 0px 1px 8px 0px rgba(0,0,0,0.12)",
+                borderRadius: "30px",
+                height: "500px",
+                marginTop: "20px",
+                padding: "30px",
+              }}
+            >
+              <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                Có thể bạn quan tâm
+              </Typography>
+              <Grid>Đang cập nhật</Grid>
             </Grid>
           </Grid>
         </Grid>

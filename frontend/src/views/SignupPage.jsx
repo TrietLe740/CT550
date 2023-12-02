@@ -150,11 +150,11 @@ const SignupPage = (props) => {
     setSignupDetails(updatedDetails);
 
     const verified = !Object.keys(tmpErrorHandler).some((obj) => {
-      console.log(inputErrorHandler[obj].error);
+      // console.log(inputErrorHandler[obj].error);
       if (tmpErrorHandler[obj].error) return true;
       return false;
     });
-    // console.log(verified);
+
     if (verified) {
       axios
         .post(apiList.signup, updatedDetails)

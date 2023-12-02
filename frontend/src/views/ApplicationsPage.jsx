@@ -25,11 +25,8 @@ const ApplicationTile = (props) => {
       })
       .then((response) => {
         setRating(response.data.rating);
-        // console.log(response.data);
       })
       .catch((err) => {
-        // console.log(err.response);
-        // console.log(err.response.data);
         setPopup({
           open: true,
           severity: "error",
@@ -60,8 +57,6 @@ const ApplicationTile = (props) => {
         setOpen(false);
       })
       .catch((err) => {
-        // console.log(err.response);
-        // console.log(err);
         setPopup({
           open: true,
           severity: "error",
@@ -237,7 +232,7 @@ const Applications = (props) => {
     >
       <Grid item sx={{ marginTop: "100px", marginBottom: "50px" }}>
         <Typography variant="h3" sx={{ fontWeight: "bold" }}>
-          CÔNG VIỆC BẠN ĐANG ỨNG TUYỂN
+          CÔNG VIỆC BẠN ỨNG TUYỂN
         </Typography>
       </Grid>
       <Grid

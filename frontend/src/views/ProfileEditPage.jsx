@@ -20,9 +20,12 @@ import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import MajorsService from "../services/major.service";
 import apiList, { server } from "../lib/apiList";
 import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/material.css";
+
 import axios from "axios";
 import UploadService from "../services/upload.sevice";
 import { SetPopupContext } from "../App";
+import FileUploadInput from "../component/FileUploadInput";
 
 export default function ProfileEditPage() {
   const uploadServ = new UploadService();
@@ -36,7 +39,7 @@ export default function ProfileEditPage() {
     name: "",
     avatar: "",
     major: "",
-    school: {},
+    school: null,
     contactNumber: "",
     // skills: [],
     // activity: [],
@@ -67,6 +70,13 @@ export default function ProfileEditPage() {
       error: false,
       message: "",
     },
+    school: {
+      vi_name: "Trường học",
+      untouched: true,
+      required: true,
+      error: false,
+      message: "",
+    },
     contactNumber: {
       vi_name: "Số điện thoại",
       untouched: true,
@@ -88,6 +98,10 @@ export default function ProfileEditPage() {
     });
   };
 
+  useEffect(() => {
+    console.log(inputErrorHandler);
+  }, [inputErrorHandler]);
+
   const [phone, setPhone] = useState("");
 
   const [profileDetails, setProfileDetails] = useState(initValue);
@@ -102,23 +116,24 @@ export default function ProfileEditPage() {
     });
   };
 
+  // Cap nhat
   const handleUpdate = async () => {
     const tmpErrorHandler = {};
+    console.log(profileDetails);
     Object.keys(inputErrorHandler).forEach((obj) => {
-      console.log(
-        inputErrorHandler[obj].required && inputErrorHandler[obj].untouched
-      );
-      if (inputErrorHandler[obj].required && inputErrorHandler[obj].untouched) {
+      if (
+        inputErrorHandler[obj].required &&
+        inputErrorHandler[obj].untouched &&
+        !profileDetails[obj]
+      ) {
         tmpErrorHandler[obj] = {
           required: true,
           untouched: false,
           error: true,
           message: `${inputErrorHandler[obj].vi_name} là bắt buộc`,
         };
-        console.log(obj);
       } else {
         tmpErrorHandler[obj] = inputErrorHandler[obj];
-        console.log(tmpErrorHandler[obj]);
       }
     });
 
@@ -138,10 +153,10 @@ export default function ProfileEditPage() {
       };
     }
 
-    const verified = Object.keys(tmpErrorHandler).some((obj) => {
+    const verified = !Object.keys(tmpErrorHandler).some((obj) => {
       console.log(inputErrorHandler[obj].error);
-      if (tmpErrorHandler[obj].error) return false;
-      return true;
+      if (tmpErrorHandler[obj].error) return true;
+      return false;
     });
 
     if (verified) {
@@ -152,6 +167,7 @@ export default function ProfileEditPage() {
           severity: "success",
           message: "Cập nhật thành công",
         });
+        getUser();
       } catch (error) {
         setPopup({
           open: true,
@@ -172,7 +188,11 @@ export default function ProfileEditPage() {
   const handleDeleteCV = async (cv) => {
     try {
       await uploadServ.deleteCV(cv);
-      alert("Xóa thành công!");
+      setPopup({
+        open: true,
+        severity: "success",
+        message: "Đã xóa CV thành công!",
+      });
       getUser();
     } catch (error) {
       console.log(error);
@@ -203,30 +223,35 @@ export default function ProfileEditPage() {
     const auth = await authServ.get();
     const majors = await majorServ.getAll();
     const schools = await schoolServ.getAll();
+
     setProfileDetails({
       ...auth,
-      school: {
-        value: auth?.school?.id,
-        label: auth?.school?.name,
-        ...(auth?.school || {}),
-      },
+      school: auth?.school
+        ? {
+            value: auth?.school?.id,
+            label: auth?.school?.name,
+            ...(auth?.school || {}),
+          }
+        : null,
     });
+
     setMajors(
       majors?.[0].majors.map((item) => {
         return { label: item, value: item };
       }) || []
     );
+
     setSchools(
       schools?.map((item) => {
         return { label: item.name, value: item.id, ...item };
       })
     );
-    console.log(schools);
   }
 
   useEffect(() => {
+    console.log(profileDetails);
     getUser();
-  }, []);
+  }, {});
 
   return (
     <Paper sx={{ padding: { md: "100px", xs: "none" } }}>
@@ -249,7 +274,13 @@ export default function ProfileEditPage() {
           sx={{ padding: "20px" }}
         >
           <Grid item>
-            <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+            <Typography
+              variant="h5"
+              sx={{
+                fontWeight: "bold",
+                textAlign: { xs: "center", md: "left" },
+              }}
+            >
               CÀI ĐẶT THÔNG TIN CÁ NHÂN
             </Typography>
           </Grid>
@@ -264,7 +295,7 @@ export default function ProfileEditPage() {
                 handleInput("name", event.target.value);
               }}
               onBlur={(event) => {
-                if (event.target.value === "") {
+                if (profileDetails?.name === "") {
                   handleInputError("name", true, "Họ và tên là bắt buộc");
                 } else {
                   handleInputError("name", false, "");
@@ -279,13 +310,22 @@ export default function ProfileEditPage() {
           </Grid>
           <Grid item sx={{ marginTop: "20px" }}>
             <PhoneInput
-              inputStyle={{ width: "100%" }}
+              className="react-select-error"
+              inputStyle={
+                inputErrorHandler.contactNumber.error
+                  ? { width: "100%", border: "1px solid red" }
+                  : { width: "100%", border: "1px solid hsl(0, 0%, 80%)" }
+              }
               placeholder="Số điện thoại"
               country={"vn"}
               value={profileDetails?.contactNumber}
+              inputProps={{
+                name: "Số điện thoại",
+                required: true,
+              }}
               onChange={(phone) => setPhone(phone)}
               onBlur={(event) => {
-                if (event.target.value === "") {
+                if (phone === "") {
                   handleInputError(
                     "contactNumber",
                     true,
@@ -295,15 +335,18 @@ export default function ProfileEditPage() {
                   handleInputError("contactNumber", false, "");
                 }
               }}
-              error={inputErrorHandler.contactNumber.error}
-              inputErrorHandler={inputErrorHandler}
-              handleInputError={handleInputError}
-              required={true}
-              helperText={inputErrorHandler.contactNumber.message}
             />
+            <Typography variant="p" className="react-select-msg-error">
+              {inputErrorHandler?.contactNumber.message}
+            </Typography>
           </Grid>
+
+          {/* Ngành */}
           <Grid sx={{ marginTop: "20px" }} item>
             <Select
+              className={
+                inputErrorHandler.major.error ? "react-select-error" : ""
+              }
               placeholder={"Ngành"}
               styles={{
                 control: (baseStyles, state) => ({
@@ -318,27 +361,31 @@ export default function ProfileEditPage() {
                 label: profileDetails?.major,
               }}
               onChange={(v) => {
+                console.log(v);
                 handleInput("major", v.value);
+                handleInputError("major", false, "");
               }}
+              required={true}
               onBlur={(event) => {
-                if (event.target.value === "") {
+                if (profileDetails?.major === "") {
                   handleInputError("major", true, "Ngành học là bắt buộc");
                 } else {
                   handleInputError("major", false, "");
                 }
               }}
-              error={inputErrorHandler.major.error}
-              inputErrorHandler={inputErrorHandler}
-              handleInputError={handleInputError}
-              required={true}
-              helperText={inputErrorHandler.major.message}
             />
+            <Typography variant="p" className="react-select-msg-error">
+              {inputErrorHandler.major.message}
+            </Typography>
           </Grid>
 
           {/* School */}
           <Grid sx={{ marginTop: "20px" }} item>
             <Select
-              placeholder={"Trường"}
+              className={
+                inputErrorHandler.school.error ? "react-select-error" : ""
+              }
+              placeholder="Trường"
               styles={{
                 control: (baseStyles, state) => ({
                   ...baseStyles,
@@ -353,8 +400,19 @@ export default function ProfileEditPage() {
               }}
               onChange={(v) => {
                 handleInput("school", v);
+                handleInputError("school", false, "");
+              }}
+              onBlur={(event) => {
+                if (!profileDetails?.school) {
+                  handleInputError("school", true, "Trường học là bắt buộc");
+                } else {
+                  handleInputError("school", false, "");
+                }
               }}
             />
+            <Typography variant="p" className="react-select-msg-error">
+              {inputErrorHandler.school.message}
+            </Typography>
           </Grid>
 
           {/* Email */}
@@ -443,26 +501,42 @@ export default function ProfileEditPage() {
               <Typography variant="h6">Danh sách CV của bạn</Typography>
               {profileDetails?.resume !== ""
                 ? profileDetails?.resume?.map((v, key) => (
-                    <Grid item>
-                      <Link onClick={() => getResume(key)}>
-                        {v.originalname}
-                      </Link>
-                      <IconButton
-                        variant="contained"
-                        sx={{ marginRight: "20px" }}
-                        onClick={() => {
-                          handleDeleteCV(v.filename);
-                        }}
+                    <Grid item container sx={{ mt: 1 }}>
+                      <Grid
+                        item
+                        xs={8}
+                        sx={{ display: "flex", alignItems: "center" }}
                       >
-                        <HighlightOffIcon />
-                      </IconButton>
+                        <Typography variant="p">{v.originalname}</Typography>
+                      </Grid>
+                      <Grid item xs={2}>
+                        <Button
+                          sx={{ height: "100%" }}
+                          onClick={() => getResume(key)}
+                        >
+                          Xem
+                        </Button>
+                      </Grid>
+                      <Grid item xs={2}>
+                        <IconButton
+                          variant="contained"
+                          sx={{ marginLeft: "auto" }}
+                          onClick={() => {
+                            handleDeleteCV(v.filename);
+                          }}
+                        >
+                          <HighlightOffIcon />
+                        </IconButton>
+                      </Grid>
                     </Grid>
                   ))
                 : null}
               <br />
-              <Link to={`/update-cv`}>
-                <Button variant="contained">Upload CV</Button>
-              </Link>
+              <FileUploadInput
+                onChangeCV={() => {
+                  getAuth();
+                }}
+              />
             </Grid>
 
             {/* DS Following */}

@@ -19,18 +19,18 @@ const FileUploadInput = (props) => {
 
     try {
       await uploadServ.uploadResume(data);
-      // console.log(uploadData);
       setPopup({
         open: true,
         severity: "success",
         message: "Upload CV thành công!",
       });
+      props.onChangeCV?.();
     } catch (error) {
-      // console.log(error);
+      console.log(error.response);
       setPopup({
         open: true,
         severity: "error",
-        message: "Đã có lỗi xảy ra!",
+        message: error?.response?.data?.message || "Đã xảy ra lỗi!",
       });
     }
   };
@@ -51,7 +51,6 @@ const FileUploadInput = (props) => {
               type="file"
               style={{ display: "none" }}
               onChange={(event) => {
-                // console.log(event.target.files);
                 if (event.target.files[0].type == "application/pdf") {
                   setUploadPercentage(0);
                   setFile(event.target.files[0]);

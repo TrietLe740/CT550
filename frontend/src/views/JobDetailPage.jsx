@@ -33,6 +33,7 @@ import UsersService from "../services/user.service";
 import AuthService from "../services/auth.service";
 import JobsService from "../services/jobs.service";
 import UploadService from "../services/upload.sevice";
+import ApplicationService from "../services/application.service";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -76,6 +77,7 @@ export default function JobDetailPage() {
   const userServ = new UsersService();
   const authServ = new AuthService();
   const uploadServ = new UploadService();
+  const applicationServ = new ApplicationService();
 
   let location = useLocation();
   let jobId = location.pathname.slice(10);
@@ -101,19 +103,32 @@ export default function JobDetailPage() {
     setListJobConnect(list);
   }
 
+  const [join, setJoin] = useState(false);
+  async function getApplications() {
+    let applications = await applicationServ.getAll();
+    console.log(applications);
+    for (let i = 0; i < applications.length; i++) {
+      if (applications[i].jobId === job._id) {
+        setJoin(true);
+        break;
+      }
+    }
+  }
+
   useEffect(() => {
     getJob();
   }, []);
 
   const [company, setCompany] = useState();
   async function getCompany() {
-    var us = await userServ.get(job.userId);
+    var us = await userServ.get(job?.userId);
     setCompany(us);
     // console.log(company);
   }
   useEffect(() => {
-    getCompany();
-  }, []);
+    job?.userId && getCompany();
+    job && getApplications();
+  }, [job]);
 
   const [user, setUser] = useState();
   async function getAuth() {
@@ -144,6 +159,25 @@ export default function JobDetailPage() {
     setResume(event.target.value);
   };
 
+  const getResume = (i) => {
+    const address = `${apiList.downloadResume}/${user.resume[i].filename}`;
+    axios(address, {
+      method: "GET",
+      responseType: "blob",
+    })
+      .then((response) => {
+        const file = new Blob([response.data], { type: "application/pdf" });
+        const fileURL = URL.createObjectURL(file);
+        window.open(fileURL);
+      })
+      .catch((error) => {
+        setPopup({
+          open: true,
+          severity: "error",
+          message: "Error",
+        });
+      });
+  };
   // Apply
   const handleApply = async (id) => {
     axios
@@ -170,8 +204,8 @@ export default function JobDetailPage() {
             `${apiList.user}/${user._id}`,
             {
               notification: {
-                AID: user.userId,
-                UID: user._id,
+                AID: user?.userId,
+                UID: user?._id,
                 title: "BẠN ĐÃ ỨNG TUYỂN VÀO MỘT CÔNG VIỆC",
                 desc: `Đã gửi yêu cầu xin thực tập công việc ${job.title} đến nhà tuyển dụng ${company.companyName}`,
                 type: "apply",
@@ -197,8 +231,8 @@ export default function JobDetailPage() {
             `${apiList.user}/${company._id}`,
             {
               notification: {
-                AID: company.userId,
-                UID: company._id,
+                AID: company?.userId,
+                UID: company?._id,
                 title: "BẠN CÓ ỨNG CỬ VIÊN MỚI",
                 desc: `${user.name} đã xin thực tập công việc ${job.title} của bạn`,
                 type: "apply",
@@ -221,7 +255,6 @@ export default function JobDetailPage() {
         handleClose();
       })
       .catch((err) => {
-        // console.log(err.response);
         setPopup({
           open: true,
           severity: "error",
@@ -234,8 +267,12 @@ export default function JobDetailPage() {
   const handleDeleteCV = async (cv) => {
     try {
       await uploadServ.deleteCV(cv);
-      alert("Xóa thành công!");
-      getUser();
+      setPopup({
+        open: true,
+        severity: "success",
+        message: "Đã xóa CV thành công!",
+      });
+      getAuth();
     } catch (error) {
       console.log(error);
     }
@@ -262,7 +299,6 @@ export default function JobDetailPage() {
                 width: "100%",
                 padding: "10px",
               }}
-              alt="avt_company"
               src={company?.avatar}
             />
           </Grid>
@@ -293,15 +329,33 @@ export default function JobDetailPage() {
 
             {/* Button */}
             <Grid item sx={{ marginTop: "20px" }}>
-              <Button
-                variant="contained"
-                onClick={() => {
-                  setOpen(true);
-                }}
-                disabled={userType() === "recruiter"}
-              >
-                Ứng tuyển
-              </Button>
+              {join == true ? (
+                <Button
+                  variant="contained"
+                  onClick={() => {
+                    setOpen(true);
+                  }}
+                  disabled
+                >
+                  Đã ứng tuyển
+                </Button>
+              ) : (
+                <>
+                  {user?.level > 0 ? (
+                    <Button
+                      variant="contained"
+                      onClick={() => {
+                        setOpen(true);
+                      }}
+                      disabled={userType() !== "applicant"}
+                    >
+                      Ứng tuyển
+                    </Button>
+                  ) : (
+                    <Grid>Bạn cần nâng cấp tài khoản lên cấp 1</Grid>
+                  )}
+                </>
+              )}
             </Grid>
           </Grid>
         </Grid>
@@ -366,15 +420,33 @@ export default function JobDetailPage() {
 
                     {/* Button */}
                     <Grid item xs={3}>
-                      <Button
-                        variant="contained"
-                        onClick={() => {
-                          setOpen(true);
-                        }}
-                        disabled={userType() === "recruiter"}
-                      >
-                        Ứng tuyển
-                      </Button>
+                      {join == true ? (
+                        <Button
+                          variant="contained"
+                          onClick={() => {
+                            setOpen(true);
+                          }}
+                          disabled
+                        >
+                          Đã ứng tuyển
+                        </Button>
+                      ) : (
+                        <>
+                          {user?.level > 0 ? (
+                            <Button
+                              variant="contained"
+                              onClick={() => {
+                                setOpen(true);
+                              }}
+                              disabled={userType() !== "applicant"}
+                            >
+                              Ứng tuyển
+                            </Button>
+                          ) : (
+                            <Grid>Bạn cần nâng cấp tài khoản lên cấp 1</Grid>
+                          )}
+                        </>
+                      )}
                     </Grid>
                   </Grid>
                   <Grid
@@ -503,15 +575,19 @@ export default function JobDetailPage() {
                 ? user?.resume?.map((v, i) => {
                     return (
                       <Grid container>
-                        <Grid item xs={11}>
+                        <Grid item xs={9}>
                           <FormControlLabel
                             value={i}
                             control={<Radio />}
                             label={v?.originalname}
                           />
                         </Grid>
-                        <Grid item xs={1}>
+                        <Grid item xs={2}>
+                          <Button onClick={() => getResume(i)}>Xem</Button>
+                        </Grid>
+                        <Grid item xs={1} sx={{ height: "100%" }}>
                           <IconButton
+                            sx={{ height: "100%" }}
                             key={i}
                             variant="contained"
                             onClick={() => {
@@ -527,7 +603,11 @@ export default function JobDetailPage() {
                 : null}
             </RadioGroup>
             <Grid item>
-              <FileUploadInput />
+              <FileUploadInput
+                onChangeCV={() => {
+                  getAuth();
+                }}
+              />
             </Grid>
           </Box>
           <Button

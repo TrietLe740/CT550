@@ -525,9 +525,6 @@ router.put("/user", jwtAuth, (req, res) => {
         if (data.resume) {
           jobApplicant.resume = data.resume;
         }
-        if (data.level) {
-          jobApplicant.level = data.level;
-        }
         if (data.notification) {
           jobApplicant.notification = data.notification;
         }
@@ -536,6 +533,15 @@ router.put("/user", jwtAuth, (req, res) => {
         }
         if (data.credit) {
           jobApplicant.credit = data.credit;
+        }
+        if (
+          jobApplicant?.name !== "" &&
+          jobApplicant?.contactNumber !== "" &&
+          jobApplicant?.school &&
+          jobApplicant?.major !== "" &&
+          jobApplicant?.level < 1
+        ) {
+          jobApplicant.level = 1;
         }
         console.log(jobApplicant);
         jobApplicant

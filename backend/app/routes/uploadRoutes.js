@@ -47,10 +47,12 @@ function checkFileType(file, cb) {
 
 router.post("/resume", upload.single("file"), jwtAuth, async (req, res) => {
   try {
+    let CVLimit = 5;
     const UID = req.user._id;
     const { file: CV } = req;
     const doc = await JobApplicant.findOne({ userId: UID });
-    if (doc.resume.length < 5) {
+    if (doc.level == 2) CVLimit *= doc.level || 1;
+    if (doc.resume.length < CVLimit) {
       doc.resume.push(CV);
       await doc.save();
       res.status(200).json({
@@ -58,7 +60,7 @@ router.post("/resume", upload.single("file"), jwtAuth, async (req, res) => {
       });
     } else {
       res.status(400).json({
-        message: "DS CV của bạn đã đạt giới hạn 5",
+        message: "DS CV của bạn đã đạt giới hạn " + CVLimit,
       });
     }
   } catch (e) {
