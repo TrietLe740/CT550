@@ -40,6 +40,7 @@ router.post("/signup", (req, res) => {
               notification: [],
               follower: [],
               credit: 0,
+              paymentCard: {},
             })
           : new JobApplicant({
               userId: user._id,
@@ -62,6 +63,7 @@ router.post("/signup", (req, res) => {
               notification: [],
               following: [],
               credit: 0,
+              paymentCard: {},
             });
 
       userDetails

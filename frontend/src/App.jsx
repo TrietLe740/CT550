@@ -19,6 +19,7 @@ import MyJobs from "./views/recruiter/MyJobs.jsx";
 import JobApplications from "./views/recruiter/JobApplications.jsx";
 import AcceptedApplicants from "./views/recruiter/AcceptedApplicants.jsx";
 import RecruiterEditProfile from "./views/recruiter/RecruiterEditProfile.jsx";
+import DepositMoneyPage from "./views/DepositMoneyPage.jsx";
 
 import SearchPage from "./views/SearchPage.jsx";
 import NewsPage from "./views/NewsPage.jsx";
@@ -32,16 +33,21 @@ import AdminLoginPage from "./views/admin/AdminLoginPage.jsx";
 import isAuth, { userType } from "./lib/isAuth.jsx";
 import JobDetailPage from "./views/JobDetailPage.jsx";
 import ProfileEditPage from "./views/ProfileEditPage.jsx";
+
 import UpdateAccountPage from "./views/UpdateAccountPage.jsx";
-import UploadCVPage from "./views/UploadCVPage.jsx";
+import UpdateRecruiterAccountPage from "./views/recruiter/UpdateRecruiterAccountPage.jsx";
+
 import Footer from "./component/Footer.jsx";
+
 import AdminDashBoardPage from "./views/admin/AdminDashBoardPage.jsx";
 import AdminListCPPage from "./views/admin/AdminListCPPage.jsx";
 import AdminListInternPage from "./views/admin/AdminListInternPage.jsx";
 import AdminListJobPage from "./views/admin/AdminListJobPage.jsx";
 import AdminNewsPage from "./views/admin/AdminNewsPage.jsx";
+import CreateNewsPage from "./views/admin/CreateNewsPage.jsx";
 import AdminServicesPage from "./views/admin/AdminServicesPage.jsx";
 import EditCPPage from "./views/admin/EditCPPage.jsx";
+import ApplicationPage from "./views/recruiter/ApplicationPage.jsx";
 
 export const SetPopupContext = createContext();
 
@@ -145,16 +151,16 @@ function App() {
                 <Route exact path="/tim-kiem">
                   <SearchPage />
                 </Route>
+                <Route exact path="/tai-khoan/nap-tien">
+                  <DepositMoneyPage />
+                </Route>
 
                 {/* Applicant */}
                 <Route exact path="/ung-vien">
                   <ApplicationsPage />
                 </Route>
-                <Route exact path="/ho-so/thuc-tap-sinh/:id">
+                <Route exact path="/ho-so">
                   <ProfilePage />
-                </Route>
-                <Route exact path="/update-cv">
-                  <UploadCVPage />
                 </Route>
 
                 {/* Profile */}
@@ -168,7 +174,11 @@ function App() {
 
                 {/* Update Level Account */}
                 <Route exact path="/tai-khoan/nang-cap">
-                  <UpdateAccountPage />
+                  {userType() === "recruiter" ? (
+                    <UpdateRecruiterAccountPage />
+                  ) : (
+                    <UpdateAccountPage />
+                  )}
                 </Route>
 
                 {/* Recruiter */}
@@ -183,6 +193,9 @@ function App() {
                 </Route>
                 <Route exact path="/ds-dang-thuc-tap">
                   <AcceptedApplicants />
+                </Route>
+                <Route exact path="/ho-so/:id">
+                  <ApplicationPage />
                 </Route>
                 <Route exact path="/tin-tuc">
                   <NewsPage />
@@ -215,9 +228,14 @@ function App() {
                 <Route exact path="/admin/tim-kiem-cong-viec">
                   <AdminListJobPage />
                 </Route>
+
                 <Route exact path="/admin/tin-tuc">
                   <AdminNewsPage />
                 </Route>
+                <Route exact path="/admin/tin-tuc/tao-moi">
+                  <CreateNewsPage />
+                </Route>
+
                 <Route exact path="/admin/dich-vu">
                   <AdminServicesPage />
                 </Route>

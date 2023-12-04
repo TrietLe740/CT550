@@ -150,7 +150,6 @@ const SignupPage = (props) => {
     setSignupDetails(updatedDetails);
 
     const verified = !Object.keys(tmpErrorHandler).some((obj) => {
-      // console.log(inputErrorHandler[obj].error);
       if (tmpErrorHandler[obj].error) return true;
       return false;
     });
@@ -235,7 +234,7 @@ const SignupPage = (props) => {
             severity: "success",
             message: "Đăng nhập thành công",
           });
-          console.log(response);
+          PubSub.publish("RELOAD_PROFILE", null);
         })
         .catch((err) => {
           setPopup({
@@ -463,10 +462,30 @@ const SignupPage = (props) => {
             </Grid>
             <Grid item>
               <PhoneInput
+                inputStyle={
+                  inputErrorHandler.contactNumber.error
+                    ? { width: "100%", border: "1px solid red" }
+                    : { width: "100%", border: "1px solid hsl(0, 0%, 80%)" }
+                }
+                placeholder="Số điện thoại"
                 country={"vn"}
                 value={phone}
                 onChange={(phone) => setPhone(phone)}
+                onBlur={(event) => {
+                  if (phone === "") {
+                    handleInputError(
+                      "contactNumber",
+                      true,
+                      "Số điện thoại là bắt buộc"
+                    );
+                  } else {
+                    handleInputError("contactNumber", false, "");
+                  }
+                }}
               />
+              <Typography variant="p" className="react-select-msg-error">
+                {inputErrorHandler?.contactNumber.message}
+              </Typography>
             </Grid>
           </>
         )}

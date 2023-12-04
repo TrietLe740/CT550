@@ -6,6 +6,7 @@ import {
   Paper,
   TextField,
   MenuItem,
+  Link,
 } from "@mui/material";
 import axios from "axios";
 import Select from "react-select";
@@ -17,10 +18,17 @@ import { useEffect } from "react";
 import LocationsService from "../../services/location.service";
 import MajorsService from "../../services/major.service";
 
+import isAuth from "../../lib/isAuth";
+import AuthService from "../../services/auth.service";
+import { useHistory } from "react-router-dom";
+
 const CreateJobs = (props) => {
+  const authServ = new AuthService();
   const majorServ = new MajorsService();
   const locationServ = new LocationsService();
   const setPopup = useContext(SetPopupContext);
+
+  let history = useHistory();
 
   const initValue = {
     title: "",
@@ -48,6 +56,19 @@ const CreateJobs = (props) => {
 
   const [locations, setLocations] = useState([]);
   const [majors, setMajors] = useState([]);
+
+  const [user, setUser] = useState();
+  async function getAuth() {
+    let auth = await authServ.get();
+    setUser(auth);
+  }
+  useEffect(() => {
+    getAuth();
+  }, []);
+
+  const handleClick = (location) => {
+    history.push(location);
+  };
 
   useEffect(() => {
     async function getData() {
@@ -149,251 +170,271 @@ const CreateJobs = (props) => {
       container
       direction="column"
       alignItems="center"
-      sx={{ padding: "50px 200px", minHeight: "93vh" }}
+      sx={{ padding: { md: "50px 200px", xs: "50px 0" }, minHeight: "93vh" }}
     >
       <Grid item>
         <Typography variant="h2">Đăng tin</Typography>
       </Grid>
-      <Grid item container xs direction="column" justifyContent="center">
-        <Grid item>
-          <Paper
-            sx={{
-              padding: "20px",
-              outline: "none",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Grid container direction="column" alignItems="stretch" spacing={3}>
-              <Grid item>
-                <TextField
-                  label="Tên công việc"
-                  required
-                  value={jobDetails.title}
-                  onChange={(event) => handleInput("title", event.target.value)}
-                  variant="outlined"
-                  fullWidth
-                />
-              </Grid>
-              <Grid item>
-                <TextField
-                  select
-                  label="Loại công việc"
-                  required
-                  variant="outlined"
-                  value={jobDetails.jobType}
-                  onChange={(event) => {
-                    handleInput("jobType", event.target.value);
-                  }}
-                  fullWidth
-                >
-                  <MenuItem value="Offline">Offline</MenuItem>
-                  <MenuItem value="Online">Online</MenuItem>
-                  <MenuItem value="Flexible">Linh hoạt</MenuItem>
-                </TextField>
-              </Grid>
-              <Grid item>
-                <TextField
-                  select
-                  label="Thời gian thực tập"
-                  required
-                  variant="outlined"
-                  value={jobDetails.duration}
-                  onChange={(event) => {
-                    handleInput("duration", event.target.value);
-                  }}
-                  fullWidth
-                >
-                  <MenuItem value={1}>1 Tháng</MenuItem>
-                  <MenuItem value={3}>3 Tháng</MenuItem>
-                  <MenuItem value={6}>6 Tháng</MenuItem>
-                  <MenuItem value={7}>Hơn 6 Tháng</MenuItem>
-                </TextField>
-              </Grid>
-              <Grid item>
-                <TextField
-                  label="Trợ phí"
-                  required
-                  type="number"
-                  variant="outlined"
-                  value={jobDetails.salary}
-                  onChange={(event) => {
-                    handleInput("salary", event.target.value);
-                  }}
-                  InputProps={{ inputProps: { min: 0 } }}
-                  fullWidth
-                />
-              </Grid>
-              <Grid item>
-                <TextField
-                  label="Hạn chót"
-                  required
-                  type="datetime-local"
-                  value={jobDetails.deadline}
-                  onChange={(event) => {
-                    handleInput("deadline", event.target.value);
-                  }}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  variant="outlined"
-                  fullWidth
-                />
-              </Grid>
-              <Grid item>
-                <TextField
-                  label="Số lượng tối đa"
-                  required
-                  type="number"
-                  variant="outlined"
-                  value={jobDetails.maxApplicants}
-                  onChange={(event) => {
-                    handleInput("maxApplicants", event.target.value);
-                  }}
-                  InputProps={{ inputProps: { min: 1 } }}
-                  fullWidth
-                />
-              </Grid>
-              <Grid item>
-                <TextField
-                  label="Số vị trí được nhận tối đa"
-                  required
-                  type="number"
-                  variant="outlined"
-                  value={jobDetails.maxPositions}
-                  onChange={(event) => {
-                    handleInput("maxPositions", event.target.value);
-                  }}
-                  InputProps={{ inputProps: { min: 1 } }}
-                  fullWidth
-                />
-              </Grid>
-              <Grid item container>
-                <Grid item xs={3}>
+      {user?.level > 0 ? (
+        <Grid item container xs direction="column" justifyContent="center">
+          <Grid item>
+            <Paper
+              sx={{
+                padding: "20px",
+                outline: "none",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Grid
+                container
+                direction="column"
+                alignItems="stretch"
+                spacing={3}
+              >
+                <Grid item>
                   <TextField
-                    label="Tòa nhà, ấp,..."
+                    label="Tên công việc"
                     required
-                    type="text"
-                    value={jobDetails?.location?.no}
+                    value={jobDetails.title}
+                    onChange={(event) =>
+                      handleInput("title", event.target.value)
+                    }
                     variant="outlined"
+                    fullWidth
+                  />
+                </Grid>
+                <Grid item>
+                  <TextField
+                    select
+                    label="Loại công việc"
+                    required
+                    variant="outlined"
+                    value={jobDetails.jobType}
                     onChange={(event) => {
-                      handleLocationChange("no", event.target.value);
+                      handleInput("jobType", event.target.value);
+                    }}
+                    fullWidth
+                  >
+                    <MenuItem value="Offline">Offline</MenuItem>
+                    <MenuItem value="Online">Online</MenuItem>
+                    <MenuItem value="Flexible">Linh hoạt</MenuItem>
+                  </TextField>
+                </Grid>
+                <Grid item>
+                  <TextField
+                    select
+                    label="Thời gian thực tập"
+                    required
+                    variant="outlined"
+                    value={jobDetails.duration}
+                    onChange={(event) => {
+                      handleInput("duration", event.target.value);
+                    }}
+                    fullWidth
+                  >
+                    <MenuItem value={1}>1 Tháng</MenuItem>
+                    <MenuItem value={3}>3 Tháng</MenuItem>
+                    <MenuItem value={6}>6 Tháng</MenuItem>
+                    <MenuItem value={7}>Hơn 6 Tháng</MenuItem>
+                  </TextField>
+                </Grid>
+                <Grid item>
+                  <TextField
+                    label="Trợ phí"
+                    required
+                    type="number"
+                    variant="outlined"
+                    value={jobDetails.salary}
+                    onChange={(event) => {
+                      handleInput("salary", event.target.value);
+                    }}
+                    InputProps={{ inputProps: { min: 0 } }}
+                    fullWidth
+                  />
+                </Grid>
+                <Grid item>
+                  <TextField
+                    label="Hạn chót"
+                    required
+                    type="datetime-local"
+                    value={jobDetails.deadline}
+                    onChange={(event) => {
+                      handleInput("deadline", event.target.value);
+                    }}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    variant="outlined"
+                    fullWidth
+                  />
+                </Grid>
+                <Grid item>
+                  <TextField
+                    label="Số lượng tối đa"
+                    required
+                    type="number"
+                    variant="outlined"
+                    value={jobDetails.maxApplicants}
+                    onChange={(event) => {
+                      handleInput("maxApplicants", event.target.value);
                     }}
                     InputProps={{ inputProps: { min: 1 } }}
                     fullWidth
                   />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item>
                   <TextField
-                    select
-                    id="province"
-                    label="Tỉnh/Thành"
+                    label="Số vị trí được nhận tối đa"
                     required
+                    type="number"
                     variant="outlined"
-                    value={jobDetails?.location?.province}
+                    value={jobDetails.maxPositions}
                     onChange={(event) => {
-                      handleLocationChange("province", event.target.value);
+                      handleInput("maxPositions", event.target.value);
                     }}
                     InputProps={{ inputProps: { min: 1 } }}
                     fullWidth
-                  >
-                    {locations.map((v, index) => (
-                      <MenuItem key={index} value={v.name}>
-                        {v.name}
-                      </MenuItem>
-                    ))}
-                  </TextField>
+                  />
                 </Grid>
-                <Grid item xs={3}>
-                  <TextField
-                    select
-                    id="district"
-                    label="Quận/Huyện"
-                    required
-                    variant="outlined"
-                    InputProps={{ inputProps: { min: 1 } }}
-                    value={jobDetails?.location?.district}
-                    fullWidth
-                    onChange={(event) => {
-                      handleLocationChange("district", event.target.value);
+                <Grid item container>
+                  <Grid item xs={3}>
+                    <TextField
+                      label="Tòa nhà, ấp,..."
+                      required
+                      type="text"
+                      value={jobDetails?.location?.no}
+                      variant="outlined"
+                      onChange={(event) => {
+                        handleLocationChange("no", event.target.value);
+                      }}
+                      InputProps={{ inputProps: { min: 1 } }}
+                      fullWidth
+                    />
+                  </Grid>
+                  <Grid item xs={3}>
+                    <TextField
+                      select
+                      id="province"
+                      label="Tỉnh/Thành"
+                      required
+                      variant="outlined"
+                      value={jobDetails?.location?.province}
+                      onChange={(event) => {
+                        handleLocationChange("province", event.target.value);
+                      }}
+                      InputProps={{ inputProps: { min: 1 } }}
+                      fullWidth
+                    >
+                      {locations.map((v, index) => (
+                        <MenuItem key={index} value={v.name}>
+                          {v.name}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  </Grid>
+                  <Grid item xs={3}>
+                    <TextField
+                      select
+                      id="district"
+                      label="Quận/Huyện"
+                      required
+                      variant="outlined"
+                      InputProps={{ inputProps: { min: 1 } }}
+                      value={jobDetails?.location?.district}
+                      fullWidth
+                      onChange={(event) => {
+                        handleLocationChange("district", event.target.value);
+                      }}
+                    >
+                      {districtList?.map((v, index) => (
+                        <MenuItem key={index} value={v.name}>
+                          {v.name}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  </Grid>
+                  <Grid item xs={3}>
+                    <TextField
+                      select
+                      id="commune"
+                      label="Xã/Phường"
+                      required
+                      variant="outlined"
+                      InputProps={{ inputProps: { min: 1 } }}
+                      fullWidth
+                      value={jobDetails?.location?.commune}
+                      onChange={(event) => {
+                        handleLocationChange("commune", event.target.value);
+                      }}
+                    >
+                      {communeList?.map((v, index) => (
+                        <MenuItem key={index} value={v.name}>
+                          {v.name}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  </Grid>
+                </Grid>
+                <Grid item>
+                  <Select
+                    isMulti
+                    styles={{
+                      control: (baseStyles, state) => ({
+                        ...baseStyles,
+                        height: "56px",
+                        margin: "10px 0",
+                      }),
                     }}
-                  >
-                    {districtList?.map((v, index) => (
-                      <MenuItem key={index} value={v.name}>
-                        {v.name}
-                      </MenuItem>
-                    ))}
-                  </TextField>
-                </Grid>
-                <Grid item xs={3}>
-                  <TextField
-                    select
-                    id="commune"
-                    label="Xã/Phường"
-                    required
-                    variant="outlined"
-                    InputProps={{ inputProps: { min: 1 } }}
-                    fullWidth
-                    value={jobDetails?.location?.commune}
-                    onChange={(event) => {
-                      handleLocationChange("commune", event.target.value);
+                    maxLength={5}
+                    aria-valuemax={5}
+                    placeholder="Ngành nghề liên quan"
+                    // value={jobDetails?.major}
+                    options={majors}
+                    onChange={(v) => {
+                      handleMajorChange(v);
                     }}
-                  >
-                    {communeList?.map((v, index) => (
-                      <MenuItem key={index} value={v.name}>
-                        {v.name}
-                      </MenuItem>
-                    ))}
-                  </TextField>
+                  />
+                </Grid>
+                <Grid item>
+                  <TextField
+                    multiline
+                    rows={8}
+                    label="Thông tin mô tả"
+                    value={jobDetails?.detail}
+                    required
+                    onChange={(event) =>
+                      handleInput("detail", event.target.value)
+                    }
+                    variant="outlined"
+                    fullWidth
+                  />
                 </Grid>
               </Grid>
-              <Grid item>
-                <Select
-                  isMulti
-                  styles={{
-                    control: (baseStyles, state) => ({
-                      ...baseStyles,
-                      height: "56px",
-                      margin: "10px 0",
-                    }),
-                  }}
-                  maxLength={5}
-                  aria-valuemax={5}
-                  placeholder="Ngành nghề liên quan"
-                  // value={jobDetails?.major}
-                  options={majors}
-                  onChange={(v) => {
-                    handleMajorChange(v);
-                  }}
-                />
-              </Grid>
-              <Grid item>
-                <TextField
-                  multiline
-                  rows={8}
-                  label="Thông tin mô tả"
-                  value={jobDetails?.detail}
-                  required
-                  onChange={(event) =>
-                    handleInput("detail", event.target.value)
-                  }
-                  variant="outlined"
-                  fullWidth
-                />
-              </Grid>
-            </Grid>
-            <Button
-              variant="contained"
-              sx={{ padding: "10px 50px", marginTop: "30px" }}
-              onClick={() => handleUpdate()}
-            >
-              Tạo công việc
-            </Button>
-          </Paper>
+              <Button
+                variant="contained"
+                sx={{ padding: "10px 50px", marginTop: "30px" }}
+                onClick={() => handleUpdate()}
+              >
+                Tạo công việc
+              </Button>
+            </Paper>
+          </Grid>
         </Grid>
-      </Grid>
+      ) : (
+        <Typography variant="p" textAlign="center" sx={{ mt: 2 }}>
+          Bạn cần nâng cấp tài khoản lên cấp 1 để sử dụng chức năng này!
+          <br />
+          <Button
+            variant="outlined"
+            onClick={() => handleClick("/tai-khoan/nang-cap")}
+          >
+            Nâng cấp ngay
+          </Button>
+        </Typography>
+      )}
     </Grid>
   );
 };

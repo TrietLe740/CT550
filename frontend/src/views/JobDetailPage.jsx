@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import apiList from "../lib/apiList";
 import {
   Box,
@@ -16,7 +16,6 @@ import {
   Radio,
   IconButton,
   Link,
-  Input,
 } from "@mui/material";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
@@ -69,6 +68,8 @@ function a11yProps(index) {
 }
 
 export default function JobDetailPage() {
+  let history = useHistory();
+
   const setPopup = useContext(SetPopupContext);
   const [open, setOpen] = useState(false);
   const [sop, setSop] = useState("");
@@ -88,6 +89,10 @@ export default function JobDetailPage() {
   const handleClose = () => {
     setOpen(false);
     setSop("");
+  };
+
+  const handleClick = (location) => {
+    history.push(location);
   };
 
   async function getJob() {
@@ -352,7 +357,18 @@ export default function JobDetailPage() {
                       Ứng tuyển
                     </Button>
                   ) : (
-                    <Grid>Bạn cần nâng cấp tài khoản lên cấp 1</Grid>
+                    <>
+                      <Typography variant="p" xs={{ color: "#d32f2f" }}>
+                        Bạn cần nâng cấp tài khoản lên cấp 1
+                      </Typography>
+                      <br />
+                      <Button
+                        variant="contained"
+                        onClick={() => handleClick("/tai-khoan/nang-cap")}
+                      >
+                        Nâng cấp ngay
+                      </Button>
+                    </>
                   )}
                 </>
               )}
@@ -443,7 +459,20 @@ export default function JobDetailPage() {
                               Ứng tuyển
                             </Button>
                           ) : (
-                            <Grid>Bạn cần nâng cấp tài khoản lên cấp 1</Grid>
+                            <>
+                              <Typography variant="p" xs={{ color: "#d32f2f" }}>
+                                Bạn cần nâng cấp tài khoản lên cấp 1
+                              </Typography>
+                              <br />
+                              <Button
+                                variant="contained"
+                                onClick={() =>
+                                  handleClick("/tai-khoan/nang-cap")
+                                }
+                              >
+                                Nâng cấp ngay
+                              </Button>
+                            </>
                           )}
                         </>
                       )}

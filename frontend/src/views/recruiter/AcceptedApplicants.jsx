@@ -506,36 +506,32 @@ const ApplicationTile = (props) => {
             alignItems: "center",
           }}
         >
-          <Avatar src={`${server}${application.jobApplicant.profile}`} />
+          <Avatar src={`${server}${application?.jobApplicant?.profile}`} />
         </Grid>
         <Grid container item xs={7} spacing={1} direction="column">
           <Grid item>
             <Typography variant="h5">
-              {application.jobApplicant.name}
+              {application?.jobApplicant?.name}
             </Typography>
           </Grid>
           <Grid item>
             <Rating
               value={
-                application.jobApplicant.rating !== -1
-                  ? application.jobApplicant.rating
+                application?.jobApplicant?.rating !== -1
+                  ? application?.jobApplicant?.rating
                   : null
               }
               readOnly
             />
           </Grid>
-          <Grid item>Công việc: {application.job.title}</Grid>
-          <Grid item>Loại: {application.job.jobType}</Grid>
+          <Grid item>Công việc: {application?.job?.title}</Grid>
+          <Grid item>Loại: {application?.job?.jobType}</Grid>
           <Grid item>
             Ứng tuyển vào: {appliedOn.toLocaleDateString("en-GB")}
           </Grid>
           <Grid item>
-            Mô tả khác: {application.sop !== "" ? application.sop : "Không có"}
-          </Grid>
-          <Grid item>
-            {application.jobApplicant.skills.map((skill) => (
-              <Chip label={skill} style={{ marginRight: "2px" }} />
-            ))}
+            Mô tả khác:{" "}
+            {application?.sop !== "" ? application?.sop : "Không có"}
           </Grid>
         </Grid>
         <Grid item container direction="column" xs={3}>
@@ -593,7 +589,7 @@ const ApplicationTile = (props) => {
             borderRadius: "20px",
           }}
         >
-          Đánh giá thực tập sinh {application.jobApplicant?.name}
+          Đánh giá thực tập sinh {application?.jobApplicant?.name}
           <Rating
             name="simple-controlled"
             style={{ marginBottom: "30px" }}
@@ -750,7 +746,7 @@ const AcceptedApplicants = (props) => {
         alignItems="center"
       >
         <Grid item>
-          <Typography variant="h2">DANH SÁCH ỨNG VIÊN</Typography>
+          <Typography variant="h2">DS ỨNG VIÊN ĐƯỢC TIẾP NHẬN</Typography>
         </Grid>
         <Grid item>
           <IconButton onClick={() => setFilterOpen(true)}>
@@ -766,8 +762,8 @@ const AcceptedApplicants = (props) => {
           justify="center"
           sx={{ marginTop: "20px" }}
         >
-          {applications.length > 0 ? (
-            applications.map((obj) => (
+          {applications?.length > 0 ? (
+            applications?.map((obj) => (
               <Grid item>
                 <ApplicationTile
                   sx={{ borderRadius: "30px" }}

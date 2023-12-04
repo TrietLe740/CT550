@@ -6,9 +6,13 @@ import {
   Typography,
   Pagination,
   Input,
+  Box,
+  Paper,
 } from "@mui/material";
+import Carousel from "react-material-ui-carousel";
 import axios from "axios";
 import SearchIcon from "@mui/icons-material/Search";
+import Ads1 from "../assets/Ads1.png";
 
 import { SetPopupContext } from "../App";
 
@@ -19,6 +23,10 @@ import UsersService from "../services/user.service";
 import JobCard from "../component/JobCard";
 import FilterPopup from "../component/FilterPopup";
 import RecruiterCard from "../component/recruiter/RecruiterCard";
+
+function Item(props) {
+  return <Paper>abc</Paper>;
+}
 
 const Home = (props) => {
   const userServ = new UsersService();
@@ -58,12 +66,13 @@ const Home = (props) => {
     getData();
   }, []);
 
+  // Level
   useEffect(() => {
     async function getCompanies() {
       var companyData = await userServ.getAllRecruiter();
       const companies = [];
       for (let i = 0; i < companyData.length; i++) {
-        if (companyData[i].level > 1) {
+        if (companyData[i].level >= 0) {
           companies[i] = companyData[i];
         }
       }
@@ -156,7 +165,7 @@ const Home = (props) => {
         container
         direction="column"
         alignItems="center"
-        sx={{ padding: "80px", minHeight: "93vh" }}
+        sx={{ padding: { md: "80px", xs: "20px" }, minHeight: "93vh" }}
       >
         <Grid
           item
@@ -167,14 +176,18 @@ const Home = (props) => {
           sx={{
             backgroundColor: "primary.main",
             borderRadius: "20px",
-            padding: "100px",
+            padding: { md: "100px", xs: "50px" },
           }}
         >
           <Grid item>
             <Typography
               variant="h2"
               align="center"
-              sx={{ fontWeight: "900", color: "common.white" }}
+              sx={{
+                fontWeight: "900",
+                color: "common.white",
+                typography: { xs: "h3", md: "h2" },
+              }}
             >
               TÌM CÔNG VIỆC THỰC TẬP MỚI NHẤT
             </Typography>
@@ -184,7 +197,7 @@ const Home = (props) => {
               align="center"
               sx={{ fontWeight: "500", color: "common.white" }}
             >
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
+              Nhà tuyển dụng đang chờ bạn!
             </Typography>
             {/* Thanh tim kiem */}
             <Grid
@@ -261,32 +274,47 @@ const Home = (props) => {
           container
           sx={{
             backgroundColor: "primary.main",
-            height: "200px",
             marginTop: "50px",
             marginBottom: "50px",
             borderRadius: "20px",
+            color: "common.white",
           }}
         >
-          <Typography
-            align="center"
-            variant="p"
-            sx={{
-              padding: "50px",
-              color: "common.white",
-            }}
+          <Grid
+            item
+            xs={8}
+            sx={{ padding: { md: "50px 80px", xs: "30px 50px" } }}
           >
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa
-            ratione eius recusandae ducimus ipsam voluptatibus pariatur facilis
-            repudiandae aut a, fuga necessitatibus. Placeat maiores temporibus,
-            qui quod nesciunt perspiciatis quae.
-          </Typography>
+            <Typography sx={{ typography: { xs: "h5", md: "h4" } }}>
+              BẠN CÓ BIẾT?
+              <br />
+            </Typography>
+            <Typography sx={{ typography: { xs: "p", md: "h5" } }}>
+              Kỹ năng làm việc nhóm là một trong các kỹ năng quan trọng mà Nhà
+              tuyển dụng cần bên cạnh kỹ năng cứng...
+            </Typography>
+          </Grid>
+          <Grid
+            item
+            xs={4}
+            sx={{ width: "100%", display: "flex", alignItems: "center" }}
+          >
+            <Box
+              sx={{ width: "100%", padding: "30px 0" }}
+              component="img"
+              src={Ads1}
+            />
+          </Grid>
         </Grid>
 
         <Grid container item direction="column">
           <Typography
-            variant="h4"
             align="center"
-            sx={{ fontWeight: "500", marginBottom: "30px" }}
+            sx={{
+              fontWeight: "500",
+              marginBottom: "30px",
+              typography: { xs: "h4", md: "h2" },
+            }}
           >
             TIN THỰC TẬP TỐT NHẤT VIỆT NAM
           </Typography>
@@ -296,72 +324,93 @@ const Home = (props) => {
               item
               container
               xs={12}
-              md={8}
               sx={{ padding: { md: "0 20px 0 0", xs: "0" } }}
             >
-              {jobs.length > 0 ? (
-                jobs.map((job) => {
+              {jobs?.length > 0 ? (
+                jobs?.map((job) => {
                   return (
-                    <Grid container item>
+                    <Grid
+                      container
+                      item
+                      xs={12}
+                      md={6}
+                      lg={4}
+                      sx={{ padding: "10px" }}
+                    >
                       <JobCard job={job} />
                     </Grid>
                   );
                 })
               ) : (
-                <Typography sx={{ mb: 3 }}>
-                  Không tìm thấy Công việc phù hợp
-                </Typography>
+                <Grid
+                  item
+                  textAlign="center"
+                  xs={12}
+                  sx={{ display: "flex", justifyContent: "center" }}
+                >
+                  <Typography textAlign="center" sx={{ mb: 3 }}>
+                    Không tìm thấy Công việc phù hợp
+                  </Typography>
+                </Grid>
               )}
             </Grid>
-            {/* Co the ban quan tam */}
             <Grid
-              item
               xs={12}
-              md={4}
-              sx={{
-                boxShadow:
-                  "0px 3px 3px -2px rgba(0,0,0,0.2), 0px 3px 4px 0px rgba(0,0,0,0.14), 0px 1px 8px 0px rgba(0,0,0,0.12)",
-                borderRadius: "30px",
-                height: "500px",
-                marginTop: "20px",
-                padding: "30px",
-              }}
+              item
+              container
+              direction="column"
+              alignItems="center"
+              justifyContent="center"
+              sx={{ marginTop: "30px" }}
             >
-              <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-                Có thể bạn quan tâm
-              </Typography>
-              <Grid>Đang cập nhật</Grid>
+              <Pagination count={1} />
             </Grid>
           </Grid>
         </Grid>
         <Grid container item direction="column">
           <Typography
-            variant="h4"
             align="center"
-            sx={{ fontWeight: "500", margin: "50px 0 30px 0" }}
+            sx={{
+              fontWeight: "500",
+              margin: "50px 0 30px 0",
+              typography: { xs: "h4", md: "h2" },
+            }}
           >
             NHÀ TUYỂN DỤNG HÀNG ĐẦU
           </Typography>
           <Grid container item>
             <Grid item container justifyContent="center" xs={12}>
-              {companyList?.length > 0 ? (
-                companyList?.map((company) => {
-                  return (
-                    <Grid item container xs={3}>
-                      <RecruiterCard company={company} />
-                    </Grid>
-                  );
-                })
-              ) : (
-                <Typography sx={{ mb: 3 }}>
-                  Không tìm thấy Nhà tuyển dụng phù hợp
-                </Typography>
-              )}
+              <Carousel
+                sx={{ width: "100%" }}
+                animation="slide"
+                duration={2000}
+                navButtonsAlwaysVisible={true}
+                indicators={false}
+              >
+                {companyList?.length > 0 ? (
+                  companyList?.map((company) => {
+                    return (
+                      <Grid
+                        justifyContent="center"
+                        item
+                        container
+                        xs={12}
+                        md={4}
+                        lg={3}
+                        sx={{ padding: "5px" }}
+                      >
+                        <RecruiterCard company={company} />
+                      </Grid>
+                    );
+                  })
+                ) : (
+                  <Typography sx={{ mb: 3 }}>
+                    Không tìm thấy Nhà tuyển dụng phù hợp
+                  </Typography>
+                )}
+              </Carousel>
             </Grid>
           </Grid>
-        </Grid>
-        <Grid item>
-          <Pagination count={jobs.length / 10 > 1 ? jobs.length / 10 : 1} />
         </Grid>
       </Grid>
       <FilterPopup

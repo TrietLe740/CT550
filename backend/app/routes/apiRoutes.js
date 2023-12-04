@@ -11,6 +11,7 @@ const Major = require("../db/Major");
 const School = require("../db/Shool");
 const Location = require("../db/Location");
 const Rating = require("../db/Rating");
+const News = require("../db/News");
 
 const router = express.Router();
 
@@ -445,9 +446,6 @@ router.put("/user", jwtAuth, (req, res) => {
         if (data.avatar) {
           recruiter.avatar = data.avatar;
         }
-        if (data.level) {
-          recruiter.level = data.level;
-        }
         if (data.notification) {
           recruiter.notification = data.notification;
         }
@@ -456,6 +454,20 @@ router.put("/user", jwtAuth, (req, res) => {
         }
         if (data.credit) {
           recruiter.credit = data.credit;
+        }
+        if (data.paymentCard) {
+          recruiter.paymentCard = data.paymentCard;
+        }
+        if (
+          recruiter?.name !== "" &&
+          recruiter?.contactNumber !== "" &&
+          recruiter?.companyName &&
+          recruiter?.companyMail !== "" &&
+          recruiter?.bio !== "" &&
+          recruiter?.location !== "" &&
+          recruiter?.level < 1
+        ) {
+          recruiter.level = 1;
         }
         recruiter
           .save()
@@ -533,6 +545,9 @@ router.put("/user", jwtAuth, (req, res) => {
         }
         if (data.credit) {
           jobApplicant.credit = data.credit;
+        }
+        if (data.paymentCard) {
+          jobApplicant.paymentCard = data.paymentCard;
         }
         if (
           jobApplicant?.name !== "" &&
@@ -1438,6 +1453,140 @@ router.put("/rating", jwtAuth, (req, res) => {
         res.status(400).json(err);
       });
   }
+});
+
+router.post("/payment", jwtAuth, (req, res) => {
+  const user = req.user;
+  const data = req.body;
+  console.log(data);
+  console.log(user);
+});
+
+router.post("/news", jwtAuth, (req, res) => {
+  const user = req.user;
+
+  if (user.type != "admin") {
+    res.status(401).json({
+      message: "Bạn không có quyền thêm công việc!",
+    });
+    return;
+  }
+
+  const data = req.body;
+
+  let news = new News({
+    userId: user._id,
+    title: data.title,
+    img: data.img,
+    content: data.content,
+    majors: data.majors,
+    dateOfPosting: data.dateOfPosting,
+  });
+
+  console.log(data);
+  news
+    .save()
+    .then(() => {
+      res.json({ message: "Bài viết đã được tạo thành công!" });
+    })
+    .catch((err) => {
+      res.status(400).json(err);
+    });
+});
+
+router.get("/news", jwtAuth, (req, res) => {
+  const news = News.find().then((news) => {
+    res.json(news);
+  });
+});
+
+router.get("/news/:id", jwtAuth, (req, res) => {
+  Job.findOne({ _id: req.params.id })
+    .then((news) => {
+      if (news == null) {
+        res.status(400).json({
+          message: "Công việc không tồn tại!",
+        });
+        return;
+      }
+      res.json(news);
+    })
+    .catch((err) => {
+      res.status(400).json(err);
+    });
+});
+
+router.put("/news/:id", jwtAuth, (req, res) => {
+  const user = req.user;
+  if (user.type != "recruiter") {
+    res.status(401).json({
+      message: "Bạn không có quyền thay đổi chi tiết công việc!",
+    });
+    return;
+  }
+  Job.findOne({
+    _id: req.params.id,
+    userId: user.id,
+  })
+    .then((news) => {
+      if (news == null) {
+        res.status(404).json({
+          message: "Công việc không tồn tại!",
+        });
+        return;
+      }
+      const data = req.body;
+      if (data.maxApplicants) {
+        news.maxApplicants = data.maxApplicants;
+      }
+      if (data.maxPositions) {
+        news.maxPositions = data.maxPositions;
+      }
+      if (data.deadline) {
+        news.deadline = data.deadline;
+      }
+      news
+        .save()
+        .then(() => {
+          res.json({
+            message: "Công việc đã được cập nhật thành công!",
+          });
+        })
+        .catch((err) => {
+          res.status(400).json(err);
+        });
+    })
+    .catch((err) => {
+      res.status(400).json(err);
+    });
+});
+
+router.delete("/news/:id", jwtAuth, (req, res) => {
+  const user = req.user;
+  if (user.type != "recruiter") {
+    res.status(401).json({
+      message: "Bạn không được quyền xóa công việc!",
+    });
+    return;
+  }
+  Job.findOneAndDelete({
+    _id: req.params.id,
+    userId: user.id,
+  })
+    .then((news) => {
+      if (news === null) {
+        res.status(401).json({
+          message: "Bạn không có quyền xóa công việc!",
+        });
+        return;
+      }
+      res.json({
+        message: "Công việc đã được xóa thành công!",
+      });
+    })
+    .catch((err) => {
+      res.status(400).json(err);
+    });
 });
 
 module.exports = router;

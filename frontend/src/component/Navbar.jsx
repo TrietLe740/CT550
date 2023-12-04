@@ -222,7 +222,15 @@ const Navbar = (props) => {
                         textAlign="center"
                         onClick={() => handleClick("/ung-vien")}
                       >
-                        Nộp đơn
+                        Đơn đã nộp
+                      </Typography>
+                    </MenuItem>
+                    <MenuItem onClick={handleCloseNavMenu}>
+                      <Typography
+                        textAlign="center"
+                        onClick={() => handleClick("/ho-so")}
+                      >
+                        Hồ sơ
                       </Typography>
                     </MenuItem>
                   </>
@@ -495,7 +503,15 @@ const Navbar = (props) => {
                         textAlign="center"
                         onClick={() => handleClick("/ung-vien")}
                       >
-                        Nộp đơn
+                        Đơn đã nộp
+                      </Typography>
+                    </MenuItem>
+                    <MenuItem onClick={handleCloseNavMenu}>
+                      <Typography
+                        textAlign="center"
+                        onClick={() => handleClick("/ho-so")}
+                      >
+                        Hồ sơ
                       </Typography>
                     </MenuItem>
                     {/* Right Nav */}
@@ -810,7 +826,7 @@ const Navbar = (props) => {
                             textAlign="center"
                             onClick={() => handleClick("/ho-so/chinh-sua")}
                           >
-                            Hồ sơ
+                            Cài đặt thông tin cá nhân
                           </Typography>
                         </MenuItem>
                       ) : null}

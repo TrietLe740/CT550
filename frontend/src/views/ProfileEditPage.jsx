@@ -284,6 +284,17 @@ export default function ProfileEditPage() {
               CÀI ĐẶT THÔNG TIN CÁ NHÂN
             </Typography>
           </Grid>
+
+          {profileDetails?.level > 0 ? null : (
+            <Typography
+              variant="h7"
+              textAlign="center"
+              sx={{ color: "red", mt: 2 }}
+            >
+              Bạn cần cập nhật các thông tin bắt buộc bên dưới để sử dụng hệ
+              thống!
+            </Typography>
+          )}
           <Grid item sx={{ marginTop: "20px" }}>
             <TextField
               type="text"
@@ -309,8 +320,19 @@ export default function ProfileEditPage() {
             />
           </Grid>
           <Grid item sx={{ marginTop: "20px" }}>
+            <TextField
+              type="text"
+              sx={{ width: "100%", margin: "15px 0" }}
+              label="Link ảnh đại diện"
+              variant="outlined"
+              value={profileDetails?.avatar}
+              onChange={(event) => {
+                handleInput("avatar", event.target.value);
+              }}
+            />
+          </Grid>
+          <Grid item sx={{ marginTop: "20px" }}>
             <PhoneInput
-              className="react-select-error"
               inputStyle={
                 inputErrorHandler.contactNumber.error
                   ? { width: "100%", border: "1px solid red" }
@@ -325,7 +347,7 @@ export default function ProfileEditPage() {
               }}
               onChange={(phone) => setPhone(phone)}
               onBlur={(event) => {
-                if (phone === "") {
+                if (!profileDetails?.contactNumber) {
                   handleInputError(
                     "contactNumber",
                     true,
@@ -559,10 +581,6 @@ export default function ProfileEditPage() {
                     <Grid item>abc </Grid>
                   ))
                 : null}
-              <br />
-              <Link to={`/update-cv`}>
-                <Button variant="contained">Upload CV</Button>
-              </Link>
             </Grid>
           </Grid>
         </Grid>

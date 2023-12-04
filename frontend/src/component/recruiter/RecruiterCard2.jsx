@@ -15,30 +15,33 @@ const RecruiterCard2 = (props) => {
         sx={{
           margin: "10px",
           padding: "30px",
-          width: "400px",
-          height: "400px",
+          width: "100%",
+          height: "350px",
           textDecoration: "none",
           borderRadius: "30px",
         }}
       >
         <Grid container columns>
           {/* Ảnh đại diện công ty */}
-          <Grid item xs={12}>
+          <Grid item xs={12} sx={{ height: "100px" }}>
             <Box
               component="img"
               sx={{
                 maxWidth: "100px",
+
                 boxShadow: "rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px",
               }}
               alt="avt_company"
-              src="https://png.pngtree.com/template/20190317/ourlarge/pngtree-businessmanavataremployeesales-man-purple-business-logo-image_78692.jpg"
+              src={company?.avatar}
             />
           </Grid>
-          <Grid item xs={12} sx={{ marginTop: "10px" }}>
+          <Grid item xs={12} sx={{ marginTop: "10px", height: "80px" }}>
             <Typography variant="h6">{company?.companyName}</Typography>
           </Grid>
           <Grid item xs={12}>
-            <Typography variant="p">{company?.bio}</Typography>
+            <Typography variant="p" className="cut-off-text">
+              {company?.bio}
+            </Typography>
           </Grid>
         </Grid>
       </Paper>

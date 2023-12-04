@@ -27,6 +27,7 @@
     "pubsub-js": "^1.9.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-material-ui-carousel": "^3.4.2",
     "react-mui-dropzone": "^4.0.7",
     "react-phone-input-2": "^2.13.9",
     "react-router-dom": "^5.2.0",

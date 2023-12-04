@@ -52,6 +52,23 @@ let schema = new mongoose.Schema(
     credit: {
       type: Number,
     },
+    paymentCard: {
+      name: {
+        type: String,
+      },
+      cardNumber: {
+        type: String,
+      },
+      cvv: {
+        type: String,
+      },
+      month: {
+        type: String,
+      },
+      year: {
+        type: String,
+      },
+    },
   },
   { collation: { locale: "vi" } }
 );

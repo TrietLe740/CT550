@@ -9,7 +9,9 @@ import {
   FormControlLabel,
   Checkbox,
 } from "@mui/material";
-import { useParams } from "react-router-dom";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+
+import { useHistory, useParams } from "react-router-dom";
 import axios from "axios";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
@@ -306,6 +308,7 @@ const FilterPopup = (props) => {
 };
 
 const JobApplications = (props) => {
+  let history = useHistory();
   const setPopup = useContext(SetPopupContext);
   const [applications, setApplications] = useState([]);
   const { jobId } = useParams();
@@ -332,6 +335,10 @@ const JobApplications = (props) => {
       },
     },
   });
+
+  const handleClick = (location) => {
+    history.push(location);
+  };
 
   const getData = () => {
     let searchParams = [];
@@ -398,6 +405,12 @@ const JobApplications = (props) => {
         alignItems="center"
         sx={{ padding: "50px 160px", minHeight: "93vh" }}
       >
+        <Button
+          sx={{ marginRight: "auto", justifyContent: "left" }}
+          onClick={() => handleClick("/cong-viec")}
+        >
+          <ArrowBackIosNewIcon /> Quay lại
+        </Button>
         <Grid item>
           <Typography variant="h2">DS ỨNG VIÊN</Typography>
         </Grid>

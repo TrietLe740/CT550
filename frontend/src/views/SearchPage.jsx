@@ -22,8 +22,19 @@ import FilterPopup from "../component/FilterPopup";
 import JobCard from "../component/JobCard";
 import SearchBar from "../component/SearchBar";
 import LocationsService from "../services/location.service";
+import NewsService from "../services/news.service";
+import NewsCard2 from "../component/NewsCard2";
 
 export default function SearchPage() {
+  const newsServ = new NewsService();
+  const [newsList, setNewsList] = useState([]);
+  useEffect(() => {
+    async function getNews() {
+      var newsData = await newsServ.getAll();
+      setNewsList(newsData);
+    }
+    getNews();
+  }, []);
   // const locationServ = new LocationsService();
   // const [location, setLocation] = useState([]);
   const search = useLocation().search;
@@ -31,6 +42,7 @@ export default function SearchPage() {
   const searchStr = searchParams.get("search");
 
   const [jobs, setJobs] = useState([]);
+
   const [filterOpen, setFilterOpen] = useState(false);
   const [searchOptions, setSearchOptions] = useState({
     query: searchStr,
@@ -105,6 +117,10 @@ export default function SearchPage() {
     }
     if (searchOptions.duration !== "0") {
       searchParams = [...searchParams, `duration=${searchOptions.duration}`];
+    }
+
+    if (!searchOptions.location) {
+      searchParams = [...searchParams, `location=${searchOptions.location}`];
     }
 
     let asc = [],
@@ -209,7 +225,21 @@ export default function SearchPage() {
             <Typography variant="h6" sx={{ fontWeight: "bold" }}>
               Có thể bạn quan tâm
             </Typography>
-            <Grid>Đang cập nhật</Grid>
+            <Grid>
+              {newsList.length > 0 ? (
+                newsList.map((news) => {
+                  return (
+                    <Grid container item>
+                      <NewsCard2 news={news} />
+                    </Grid>
+                  );
+                })
+              ) : (
+                <Typography sx={{ mb: 3 }}>
+                  Không tìm thấy bản tin phù hợp
+                </Typography>
+              )}
+            </Grid>
           </Grid>
         </Grid>
         <Grid

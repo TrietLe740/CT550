@@ -122,35 +122,35 @@ const JobTile = (props) => {
   const postedOn = new Date(job.dateOfPosting);
 
   return (
-    <Paper elevation={3}>
+    <Paper elevation={3} sx={{ width: "100%" }}>
       <Grid container sx={{ padding: "30px" }}>
         <Grid container item xs={9} spacing={1} direction="column">
           <Grid item>
-            <Typography variant="h5">{job.title}</Typography>
+            <Typography variant="h5">{job?.title}</Typography>
           </Grid>
           <Grid item>
-            <Rating value={job.rating !== -1 ? job.rating : null} readOnly />
+            <Rating value={job?.rating !== -1 ? job?.rating : null} readOnly />
           </Grid>
-          <Grid item>Loại: {job.jobType}</Grid>
+          <Grid item>Loại: {job?.jobType}</Grid>
           <Grid item>
-            Trợ phí: {job.salary ? `${job.salary} VNĐ/Tháng}` : `Không có`}
+            Trợ phí: {job?.salary ? `${job?.salary} VNĐ/Tháng}` : `Không có`}
           </Grid>
           <Grid item>
             Thời gian thực tập:{" "}
-            {job.duration > 0 ? `${job.duration} Tháng` : `Linh động`}
+            {job.duration > 0 ? `${job?.duration} Tháng` : `Linh động`}
           </Grid>
           <Grid item>
             Ngày đăng tuyển: {postedOn.toLocaleDateString("en-GB")}
           </Grid>
-          <Grid item>Số lượng tối đa: {job.maxApplicants}</Grid>
+          <Grid item>Số lượng tối đa: {job?.maxApplicants}</Grid>
           <Grid item>
             Số chỗ tiếp nhận còn lại:{" "}
-            {job.maxPositions - job.acceptedCandidates}
+            {job?.maxPositions - job?.acceptedCandidates}
           </Grid>
           <Grid item>
             Ngành nghề liên quan:
             <br />
-            {job.majors.map((m) => (
+            {job?.majors?.map((m) => (
               <Chip label={m} sx={{ marginRight: "2px" }} />
             ))}
           </Grid>
@@ -255,7 +255,7 @@ const JobTile = (props) => {
                 label="Tên công việc"
                 type="text"
                 disabled
-                value={jobDetails.title}
+                value={jobDetails?.title}
                 onChange={(event) => {
                   handleInput("title", event.target.value);
                 }}
@@ -271,7 +271,7 @@ const JobTile = (props) => {
                 sx={{ marginTop: "20px" }}
                 label="Hạn chót"
                 type="datetime-local"
-                value={jobDetails.deadline.substr(0, 16)}
+                value={jobDetails?.deadline.substr(0, 16)}
                 onChange={(event) => {
                   handleInput("deadline", event.target.value);
                 }}
@@ -289,7 +289,7 @@ const JobTile = (props) => {
                   label="Số lượng tối đa"
                   type="number"
                   variant="outlined"
-                  value={jobDetails.maxApplicants}
+                  value={jobDetails?.maxApplicants}
                   onChange={(event) => {
                     handleInput("maxApplicants", event.target.value);
                   }}
@@ -303,7 +303,7 @@ const JobTile = (props) => {
                   label="Số chỗ tiếp nhận còn lại"
                   type="number"
                   variant="outlined"
-                  value={jobDetails.maxPositions}
+                  value={jobDetails?.maxPositions}
                   onChange={(event) => {
                     handleInput("maxPositions", event.target.value);
                   }}

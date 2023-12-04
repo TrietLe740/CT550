@@ -12,10 +12,9 @@ export default function CompaniesPage() {
   useEffect(() => {
     async function getCompanies() {
       var companyData = await userServ.getAllRecruiter();
-      // console.log(companyData);
       const companies = [];
       for (let i = 0; i < companyData.length; i++) {
-        if (companyData[i].level > 0) {
+        if (companyData[i].level >= 0) {
           companies[i] = companyData[i];
         }
       }
@@ -30,7 +29,14 @@ export default function CompaniesPage() {
         {companyList?.length > 0
           ? companyList?.map((company) => {
               return (
-                <Grid item xs={4}>
+                <Grid
+                  container
+                  item
+                  xs={12}
+                  md={6}
+                  lg={4}
+                  sx={{ padding: "10px" }}
+                >
                   <RecruiterCard2 company={company} />
                 </Grid>
               );

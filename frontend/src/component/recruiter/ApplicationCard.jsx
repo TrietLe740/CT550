@@ -13,13 +13,20 @@ import {
 } from "@mui/material";
 import apiList, { server } from "../../lib/apiList";
 import axios from "axios";
+import { useHistory } from "react-router-dom";
 
 const ApplicationCard = (props) => {
+  let history = useHistory();
+
   const { application, getData } = props;
   const setPopup = useContext(SetPopupContext);
   const [open, setOpen] = useState(false);
 
   const appliedOn = new Date(application.dateOfApplication);
+
+  const handleClick = (location) => {
+    history.push(location);
+  };
 
   const handleClose = () => {
     setOpen(false);
@@ -89,13 +96,13 @@ const ApplicationCard = (props) => {
         getData();
         axios
           .post(
-            `${apiList.user}/${application.jobApplicant._id}`,
+            `${apiList?.user}/${application?.jobApplicant?._id}`,
             {
               notification: {
-                AID: application.jobApplicant.userId,
-                UID: application.jobApplicant._id,
+                AID: application?.jobApplicant?.userId,
+                UID: application?.jobApplicant?._id,
                 title: "BẠN CÓ TIN CẬP NHẬT TRẠNG THÁI CÔNG VIỆC",
-                desc: `Công việc ${application.job.title} mà bạn đang ứng tuyển đã được nhà tuyển dụng đưa vào danh sách ${status}`,
+                desc: `Công việc ${application?.job?.title} mà bạn đang ứng tuyển đã được nhà tuyển dụng đưa vào danh sách ${status}`,
                 type: "update",
                 link: "/ung-vien",
                 createAt: "",
@@ -138,6 +145,7 @@ const ApplicationCard = (props) => {
               background: colorSet["shortlisted"],
               color: "#ffffff",
               width: "100%",
+              height: "100%",
             }}
             onClick={() => updateStatus("shortlisted")}
           >
@@ -151,6 +159,7 @@ const ApplicationCard = (props) => {
               background: colorSet["rejected"],
               color: "#ffffff",
               width: "100%",
+              height: "100%",
             }}
             onClick={() => updateStatus("rejected")}
           >
@@ -198,7 +207,11 @@ const ApplicationCard = (props) => {
             sx={{
               background: colorSet["rejected"],
               color: "#ffffff",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
               width: "100%",
+              height: "100%",
             }}
           >
             Từ chối
@@ -215,8 +228,9 @@ const ApplicationCard = (props) => {
               color: "#ffffff",
               width: "100%",
               height: "100%",
-              textAlign: "center",
-              padding: "25% 0",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
             }}
           >
             ĐÃ DUYỆT
@@ -231,6 +245,10 @@ const ApplicationCard = (props) => {
             sx={{
               background: colorSet["cancelled"],
               color: "#ffffff",
+              display: "flex",
+              height: "100%",
+              justifyContent: "center",
+              alignItems: "center",
             }}
           >
             Cancelled
@@ -245,9 +263,13 @@ const ApplicationCard = (props) => {
             sx={{
               background: colorSet["finished"],
               color: "#ffffff",
+              height: "100%",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
             }}
           >
-            Finished
+            Hoàn thành thực tập
           </Paper>
         </Grid>
       </>
@@ -276,19 +298,19 @@ const ApplicationCard = (props) => {
             alignItems: "center",
           }}
         >
-          <Avatar src={`${server}${application.jobApplicant.profile}`} />
+          <Avatar src={`${server}${application?.jobApplicant?.profile}`} />
         </Grid>
         <Grid container item xs={7} spacing={1} direction="column">
           <Grid item>
             <Typography variant="h5">
-              {application.jobApplicant.name}
+              {application?.jobApplicant?.name}
             </Typography>
           </Grid>
           <Grid item>
             <Rating
               value={
-                application.jobApplicant.rating !== -1
-                  ? application.jobApplicant.rating
+                application?.jobApplicant?.rating !== -1
+                  ? application?.jobApplicant?.rating
                   : null
               }
               readOnly
@@ -298,15 +320,10 @@ const ApplicationCard = (props) => {
             Ngày ứng tuyển: {appliedOn.toLocaleDateString("en-GB")}
           </Grid>
           <Grid item>Ngành học: {application?.jobApplicant?.major}</Grid>
-          <Grid item>Trường: {application?.jobApplicant?.school}</Grid>
+          <Grid item>Trường: {application?.jobApplicant?.school?.name}</Grid>
           <Grid item>
             Lời giới thiệu:{" "}
-            {application.sop !== "" ? application.sop : "Not Submitted"}
-          </Grid>
-          <Grid item>
-            {application.jobApplicant.skills.map((skill) => (
-              <Chip label={skill} sx={{ marginRight: "2px" }} />
-            ))}
+            {application?.sop !== "" ? application?.sop : "Không có"}
           </Grid>
         </Grid>
         <Grid item container direction="column" xs={3}>
@@ -322,6 +339,15 @@ const ApplicationCard = (props) => {
           <Grid item container xs>
             {buttonSet[application.status]}
           </Grid>
+          <Grid item>
+            <Button
+              sx={{ width: "100%" }}
+              variant="contained"
+              onClick={() => handleClick(`/ho-so/${application?.userId}`)}
+            >
+              Xem hồ sơ
+            </Button>
+          </Grid>
         </Grid>
       </Grid>
 
@@ -330,9 +356,9 @@ const ApplicationCard = (props) => {
           <Button
             variant="contained"
             sx={{ padding: "10px 50px" }}
-            // onClick={() => changeRating()}
+            onClick={() => changeRating()}
           >
-            Submit
+            Xác nhận
           </Button>
         </Paper>
       </Modal>

@@ -519,9 +519,13 @@ const MyJobs = (props) => {
           alignItems="stretch"
           justifyContent="center"
         >
-          {jobs.length > 0 ? (
-            jobs.map((job) => {
-              return <JobTile job={job} getData={getData} />;
+          {jobs?.length > 0 ? (
+            jobs?.map((job) => {
+              return (
+                <Grid container item sx={{ padding: "20px" }}>
+                  <JobTile job={job} getData={getData} />
+                </Grid>
+              );
             })
           ) : (
             <Typography variant="h5" style={{ textAlign: "center" }}>

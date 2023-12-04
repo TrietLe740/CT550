@@ -36,8 +36,7 @@ const CompanyDetailPage = (props) => {
   const jobServ = new JobsService();
 
   async function getUser() {
-    const user = await userServ.getRecruiter(id);
-    // console.log(user);
+    const user = await userServ.get(id);
     setProfileDetails(user);
   }
 
@@ -54,7 +53,6 @@ const CompanyDetailPage = (props) => {
         list[i] = job[i];
       }
     }
-    // console.log(list);
     setJobs(list);
   }
 
@@ -78,6 +76,7 @@ const CompanyDetailPage = (props) => {
         <Grid
           item
           container
+          justifyContent="center"
           sx={{
             width: "100%",
             borderRadius: { md: "30px 30px 0 0", xs: "0" },
@@ -147,14 +146,16 @@ const CompanyDetailPage = (props) => {
             width: "100%",
             borderRadius: "0 0 30px 30px",
             color: "common.black",
+            padding: "30px 50px",
           }}
         >
           <Grid
             item
-            xs={9}
+            xs={12}
+            md={9}
             container
             sx={{
-              padding: "20px 0 20px 50px",
+              padding: "20px",
             }}
           >
             <Grid item>
@@ -162,7 +163,7 @@ const CompanyDetailPage = (props) => {
                 Giới thiệu công ty
               </Typography>
               <Grid item sx={{ padding: "10px 20px 10px 0" }}>
-                <Typography variant="p" textAlign="justify">
+                <Typography variant="p" xs={{ textAlign: "justify" }}>
                   {profileDetails?.bio}
                 </Typography>
               </Grid>
@@ -170,9 +171,10 @@ const CompanyDetailPage = (props) => {
           </Grid>
           <Grid
             item
-            xs={3}
+            xs={12}
+            md={3}
             sx={{
-              padding: "20px 0 0 0",
+              padding: "20px",
             }}
           >
             <Typography variant="h5" sx={{ fontWeight: "bold" }}>
@@ -190,11 +192,11 @@ const CompanyDetailPage = (props) => {
               Tuyển dụng
             </Typography>
           </Grid>
-          <Grid item container>
+          <Grid item container sx={{ mb: 5 }}>
             {jobs.length > 0
               ? jobs.map((job) => {
                   return (
-                    <Grid item>
+                    <Grid item container>
                       <JobCard job={job} />
                     </Grid>
                   );

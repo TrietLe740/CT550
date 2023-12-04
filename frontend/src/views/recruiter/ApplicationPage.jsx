@@ -8,29 +8,26 @@ import {
   Box,
 } from "@mui/material";
 
-import { SetPopupContext } from "../App";
+import { SetPopupContext } from "../../App";
 
-import AuthService from "../services/auth.service";
-import EditIcon from "@mui/icons-material/Edit";
-import { Link } from "react-router-dom";
-import ApplicationService from "../services/application.service";
-import isAuth from "../lib/isAuth";
+import UserSevice from "../../services/user.service";
+import ApplicationService from "../../services/application.service";
+import { useLocation } from "react-router-dom";
 
-const Profile = (props) => {
+const ApplicationPage = (props) => {
   const setPopup = useContext(SetPopupContext);
+  let location = useLocation();
+  let path = location.pathname.split("/");
+  let id = path[path.length - 1];
 
-  const [profileDetails, setProfileDetails] = useState({
-    name: "",
-    bio: "",
-    contactNumber: "",
-  });
+  const [profileDetails, setProfileDetails] = useState({});
   const [application, setApplication] = useState([]);
-  const authServ = new AuthService();
+  const userServ = new UserSevice();
   const applicationServ = new ApplicationService();
 
   useEffect(() => {
     async function getUser() {
-      const user = await authServ.get();
+      const user = await userServ.get(id);
       setProfileDetails(user);
     }
 
@@ -65,23 +62,6 @@ const Profile = (props) => {
             padding: "30px",
           }}
         >
-          {isAuth ? (
-            <Grid item xs={12}>
-              <Link to={`/ho-so/chinh-sua`}>
-                <IconButton
-                  variant="contained"
-                  sx={{
-                    marginLeft: "auto",
-                    display: "flex",
-                    color: "common.white",
-                  }}
-                >
-                  <EditIcon />
-                </IconButton>
-              </Link>
-            </Grid>
-          ) : null}
-
           <Grid item xs={12} md={4}>
             <Avatar
               sx={{
@@ -166,4 +146,4 @@ const Profile = (props) => {
   );
 };
 
-export default Profile;
+export default ApplicationPage;
