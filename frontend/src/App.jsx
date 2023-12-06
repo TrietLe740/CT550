@@ -51,6 +51,7 @@ import AdminServicesPage from "./views/admin/AdminServicesPage.jsx";
 import EditCPPage from "./views/admin/EditCPPage.jsx";
 import ApplicationPage from "./views/recruiter/ApplicationPage.jsx";
 import EditNewsPage from "./views/admin/EditNewsPage.jsx";
+import NewsPageDetail from "./views/NewsPageDetail.jsx";
 
 export const SetPopupContext = createContext();
 
@@ -202,6 +203,9 @@ function App() {
                 </Route>
                 <Route exact path="/tin-tuc">
                   <NewsPage />
+                </Route>
+                <Route exact path="/tin-tuc/:id">
+                  <NewsPageDetail />
                 </Route>
                 <Route exact path="/cong-ty">
                   <CompaniesPage />

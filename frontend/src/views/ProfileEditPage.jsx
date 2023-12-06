@@ -389,7 +389,7 @@ export default function ProfileEditPage() {
               }}
               required={true}
               onBlur={(event) => {
-                if (profileDetails?.major === "") {
+                if (!profileDetails?.major) {
                   handleInputError("major", true, "Ngành học là bắt buộc");
                 } else {
                   handleInputError("major", false, "");

@@ -24,10 +24,14 @@ import SearchBar from "../component/SearchBar";
 import LocationsService from "../services/location.service";
 import NewsService from "../services/news.service";
 import NewsCard2 from "../component/NewsCard2";
+import AuthService from "../services/auth.service";
 
 export default function SearchPage() {
+  const authServ = new AuthService();
   const newsServ = new NewsService();
   const [newsList, setNewsList] = useState([]);
+  const [user, setUser] = useState();
+
   useEffect(() => {
     async function getNews() {
       var newsData = await newsServ.getAll();
@@ -47,9 +51,9 @@ export default function SearchPage() {
   const [searchOptions, setSearchOptions] = useState({
     query: searchStr,
     jobType: {
-      fullTime: false,
-      partTime: false,
-      wfh: false,
+      offline: false,
+      online: false,
+      flexible: false,
     },
     salary: [0, 100],
     duration: "0",
@@ -71,20 +75,20 @@ export default function SearchPage() {
   });
 
   useEffect(() => {
-    // async function getLocation() {
-    //   const locations = await locationServ.getAll();
-    //   console.log(locations);
-    //   setLocation(locations);
-    // }
-    setSearchOptions((value) => {
-      return {
-        ...value,
-        // ...location,
-        query: searchStr,
-      };
+    async function getAuth() {
+      let user = await authServ.get();
+      setUser(user);
+      console.log(user);
+    }
+    getAuth().then(() => {
+      setSearchOptions((value) => {
+        return {
+          ...value,
+          query: searchStr,
+        };
+      });
+      getData(searchStr);
     });
-    // console.log(searchStr);
-    getData(searchStr);
   }, [searchStr]);
 
   const setPopup = useContext(SetPopupContext);
@@ -119,8 +123,13 @@ export default function SearchPage() {
       searchParams = [...searchParams, `duration=${searchOptions.duration}`];
     }
 
-    if (!searchOptions.location) {
-      searchParams = [...searchParams, `location=${searchOptions.location}`];
+    console.log(searchOptions.location);
+    if (searchOptions.location) {
+      searchParams = [...searchParams, `province=${searchOptions.location}`];
+    }
+
+    if (user?.major) {
+      searchParams = [...searchParams, `major=${user?.major}`];
     }
 
     let asc = [],

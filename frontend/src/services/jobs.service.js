@@ -8,6 +8,10 @@ export default class JobsService {
   async getAll() {
     return (await this.api.get("/")).data;
   }
+  async getAllWithMjor() {
+    return (await this.api.get("/major")).data;
+  }
+
   async create(data) {
     return (await this.api.post("/", data)).data;
   }

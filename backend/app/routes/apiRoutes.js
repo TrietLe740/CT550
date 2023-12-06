@@ -59,8 +59,8 @@ router.post("/jobs", jwtAuth, (req, res) => {
 router.get("/jobs", jwtAuth, (req, res) => {
   let user = req.user;
   console.log(req.user);
-  let major = req.user.major;
-  console.log(req.user.major);
+  let major = req.query.major;
+  console.log(major);
 
   let findParams = {};
   let sortParams = {};
@@ -137,6 +137,18 @@ router.get("/jobs", jwtAuth, (req, res) => {
         $lt: parseInt(req.query.duration),
       },
     };
+  }
+
+  console.log("================");
+  console.log(req.query.province);
+  if (req.query.province) {
+    findParams = {
+      ...findParams,
+      location: {
+        province: req.query.province,
+      },
+    };
+    console.log(findParams);
   }
 
   if (req.query.asc) {
@@ -1514,6 +1526,7 @@ router.put("/rating", jwtAuth, (req, res) => {
                       },
                     ])
                       .then((result) => {
+                        console.log("here");
                         console.log(result);
                         if (result === null) {
                           res.status(400).json({
@@ -1521,20 +1534,20 @@ router.put("/rating", jwtAuth, (req, res) => {
                           });
                           return;
                         }
-                        console.log("RS: ");
-                        console.log(result);
-                        const avg = result[0].average;
-                        console.log("AVG: ");
-                        console.log(avg);
+                        // console.log("RS: ");
+                        // console.log(result);
+                        // const avg = result[0].average;
+                        // console.log("AVG: ");
+                        // console.log(avg);
                         JobApplicant.findOneAndUpdate(
                           {
                             userId: data.applicantId,
-                          },
-                          {
-                            $set: {
-                              rating: avg,
-                            },
                           }
+                          // {
+                          //   $set: {
+                          //     rating: avg,
+                          //   },
+                          // }
                         )
                           .then((applicant) => {
                             if (applicant === null) {

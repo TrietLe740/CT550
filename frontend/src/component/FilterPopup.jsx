@@ -367,7 +367,7 @@ const FilterPopup = (props) => {
                   })
                 }
               >
-                <MenuItem value="0">Tất cả</MenuItem>
+                <MenuItem value=" ">Tất cả</MenuItem>
                 {locations.map((v, index) => (
                   <MenuItem key={index} value={v.name}>
                     {v.name}

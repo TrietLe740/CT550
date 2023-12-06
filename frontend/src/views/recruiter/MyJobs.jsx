@@ -32,6 +32,9 @@ const FilterPopup = (props) => {
     <Modal open={open} onClose={handleClose}>
       <Paper
         sx={{
+          width: "80%",
+          borderRadius: "30px",
+          margin: "5% auto",
           padding: "50px",
           outline: "none",
           minWidth: "50%",
@@ -53,8 +56,8 @@ const FilterPopup = (props) => {
                 <FormControlLabel
                   control={
                     <Checkbox
-                      name="fullTime"
-                      checked={searchOptions.jobType.fullTime}
+                      name="offline"
+                      checked={searchOptions.jobType.offline}
                       onChange={(event) => {
                         setSearchOptions({
                           ...searchOptions,
@@ -66,15 +69,15 @@ const FilterPopup = (props) => {
                       }}
                     />
                   }
-                  label="Full Time"
+                  label="Offline"
                 />
               </Grid>
               <Grid item>
                 <FormControlLabel
                   control={
                     <Checkbox
-                      name="partTime"
-                      checked={searchOptions.jobType.partTime}
+                      name="online"
+                      checked={searchOptions.jobType.online}
                       onChange={(event) => {
                         setSearchOptions({
                           ...searchOptions,
@@ -86,7 +89,7 @@ const FilterPopup = (props) => {
                       }}
                     />
                   }
-                  label="Part Time"
+                  label="Online"
                 />
               </Grid>
               <Grid item>
@@ -106,7 +109,7 @@ const FilterPopup = (props) => {
                       }}
                     />
                   }
-                  label="Work From Home"
+                  label="Linh hoạt"
                 />
               </Grid>
             </Grid>
@@ -361,9 +364,9 @@ const MyJobs = (props) => {
   const [searchOptions, setSearchOptions] = useState({
     query: "",
     jobType: {
-      fullTime: false,
-      partTime: false,
-      wfh: false,
+      offline: false,
+      online: false,
+      flexible: false,
     },
     salary: [0, 100],
     duration: "0",
@@ -394,14 +397,14 @@ const MyJobs = (props) => {
     if (searchOptions.query !== "") {
       searchParams = [...searchParams, `q=${searchOptions.query}`];
     }
-    if (searchOptions.jobType.fullTime) {
-      searchParams = [...searchParams, `jobType=Full%20Time`];
+    if (searchOptions.jobType.offline) {
+      searchParams = [...searchParams, `jobType=Offline`];
     }
-    if (searchOptions.jobType.partTime) {
-      searchParams = [...searchParams, `jobType=Part%20Time`];
+    if (searchOptions.jobType.online) {
+      searchParams = [...searchParams, `jobType=Online`];
     }
-    if (searchOptions.jobType.wfh) {
-      searchParams = [...searchParams, `jobType=Work%20From%20Home`];
+    if (searchOptions.jobType.flexible) {
+      searchParams = [...searchParams, `jobType=Flexible`];
     }
     if (searchOptions.salary[0] !== 0) {
       searchParams = [
