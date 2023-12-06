@@ -41,7 +41,7 @@ const Profile = (props) => {
   }, []);
 
   return (
-    <Paper sx={{ padding: "100px" }}>
+    <Paper sx={{ padding: "50px 100px" }}>
       <Grid
         container
         direction="column"

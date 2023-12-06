@@ -90,34 +90,54 @@ router.delete("/resume/:filename", jwtAuth, async (req, res) => {
   }
 });
 
-router.post("/profile", upload.single("file"), (req, res) => {
-  const { file } = req;
-  if (
-    file.detectedFileExtension != ".jpg" &&
-    file.detectedFileExtension != ".png"
-  ) {
-    res.status(400).json({
-      message: "Sai định dạng",
+router.delete("/resume/admin/:filename", jwtAuth, async (req, res) => {
+  // Mo rong: Check /public/file truoc khi xoa
+  console.log(req.body.id);
+  try {
+    const UID = req.body.id;
+    const fileName = req.params.filename;
+    const doc = await JobApplicant.findOne({ _id: UID });
+    doc.resume = doc.resume.filter((i) => i.filename !== fileName);
+    await doc.save();
+    res.status(200).json({
+      message: "Xóa thành công",
     });
-  } else {
-    const filename = `${uuidv4()}${file.detectedFileExtension}`;
-
-    pipeline(
-      file.stream,
-      fs.createWriteStream(`${__dirname}/../public/profile/${filename}`)
-    )
-      .then(() => {
-        res.send({
-          message: "Ảnh của bạn đã được tải lên",
-          url: `/host/profile/${filename}`,
-        });
-      })
-      .catch((err) => {
-        res.status(400).json({
-          message: "Lỗi khi tải lên",
-        });
-      });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({
+      message: "Có lỗi xảy ra",
+    });
   }
 });
+
+// router.post("/profile", upload.single("file"), (req, res) => {
+//   const { file } = req;
+//   if (
+//     file.detectedFileExtension != ".jpg" &&
+//     file.detectedFileExtension != ".png"
+//   ) {
+//     res.status(400).json({
+//       message: "Sai định dạng",
+//     });
+//   } else {
+//     const filename = `${uuidv4()}${file.detectedFileExtension}`;
+
+//     pipeline(
+//       file.stream,
+//       fs.createWriteStream(`${__dirname}/../public/profile/${filename}`)
+//     )
+//       .then(() => {
+//         res.send({
+//           message: "Ảnh của bạn đã được tải lên",
+//           url: `/host/profile/${filename}`,
+//         });
+//       })
+//       .catch((err) => {
+//         res.status(400).json({
+//           message: "Lỗi khi tải lên",
+//         });
+//       });
+//   }
+// });
 
 module.exports = router;

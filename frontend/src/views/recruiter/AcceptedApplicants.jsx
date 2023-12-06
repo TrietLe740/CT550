@@ -372,6 +372,28 @@ const ApplicationTile = (props) => {
     setProfileDetails(value);
   };
 
+  const fetchRating = () => {
+    axios
+      .get(`${apiList.rating}?id=${application.job._id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
+      .then((response) => {
+        setRating(response.data.rating);
+        console.log(response.data);
+      })
+      .catch((err) => {
+        // console.log(err.response);
+        console.log(err.response.data);
+        setPopup({
+          open: true,
+          severity: "error",
+          message: "Error",
+        });
+      });
+  };
+
   const changeRating = () => {
     axios
       .put(
@@ -395,7 +417,7 @@ const ApplicationTile = (props) => {
           severity: "success",
           message: "Đánh giá thành công!",
         });
-        // fetchRating();
+        fetchRating();
         getData();
         setOpen(false);
       })
@@ -405,7 +427,7 @@ const ApplicationTile = (props) => {
           severity: "error",
           message: err.response.data.message,
         });
-        // fetchRating();
+        fetchRating();
         getData();
         setOpen(false);
       });
@@ -455,7 +477,7 @@ const ApplicationTile = (props) => {
       setPopup({
         open: true,
         severity: "error",
-        message: "No resume found",
+        message: "Không tìm thấy CV",
       });
     }
   };
@@ -739,14 +761,16 @@ const AcceptedApplicants = (props) => {
   return (
     <Paper>
       <Grid
-        sx={{ padding: "50px 160px", minHeight: "93vh" }}
+        sx={{ padding: { md: "50px 160px", xs: "50px" }, minHeight: "93vh" }}
         container
         item
         direction="column"
         alignItems="center"
       >
         <Grid item>
-          <Typography variant="h2">DS ỨNG VIÊN ĐƯỢC TIẾP NHẬN</Typography>
+          <Typography variant="h2" textAlign="center">
+            DS ỨNG VIÊN ĐƯỢC TIẾP NHẬN
+          </Typography>
         </Grid>
         <Grid item>
           <IconButton onClick={() => setFilterOpen(true)}>
@@ -764,7 +788,7 @@ const AcceptedApplicants = (props) => {
         >
           {applications?.length > 0 ? (
             applications?.map((obj) => (
-              <Grid item>
+              <Grid item container sx={{ padding: "10px" }}>
                 <ApplicationTile
                   sx={{ borderRadius: "30px" }}
                   application={obj}

@@ -286,7 +286,7 @@ const SignupPage = (props) => {
             }}
           >
             <MenuItem value="applicant">Thực tập sinh</MenuItem>
-            <MenuItem value="recruiter">Cơ quan nơi thực tập</MenuItem>
+            <MenuItem value="recruiter">Nhà tuyển dụng</MenuItem>
           </TextField>
         </Grid>
         <Grid item>
@@ -410,7 +410,7 @@ const SignupPage = (props) => {
                 required={true}
                 helperText={inputErrorHandler.role.message}
                 onBlur={(event) => {
-                  if (event.target.value === "") {
+                  if (!event.target.value) {
                     handleInputError(
                       "role",
                       true,
@@ -464,8 +464,8 @@ const SignupPage = (props) => {
               <PhoneInput
                 inputStyle={
                   inputErrorHandler.contactNumber.error
-                    ? { width: "100%", border: "1px solid red" }
-                    : { width: "100%", border: "1px solid hsl(0, 0%, 80%)" }
+                    ? { width: "300px", border: "1px solid red" }
+                    : { width: "300px", border: "1px solid hsl(0, 0%, 80%)" }
                 }
                 placeholder="Số điện thoại"
                 country={"vn"}

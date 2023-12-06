@@ -23,4 +23,8 @@ export default class AuthService {
     this.api = createApiClient(this.baseUrl);
     return (await this.api.get("/auth")).data;
   }
+
+  async update(data) {
+    return (await this.api.put("/auth/update")).data;
+  }
 }

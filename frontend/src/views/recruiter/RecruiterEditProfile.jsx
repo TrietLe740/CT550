@@ -278,7 +278,7 @@ const RecruiterEditProfile = (props) => {
   return (
     <Paper sx={{ minHeight: "93vh" }}>
       <Grid
-        sx={{ padding: "100px" }}
+        sx={{ padding: { md: "100px", xs: "30px" } }}
         container
         item
         direction="column"
@@ -340,7 +340,7 @@ const RecruiterEditProfile = (props) => {
                   <Grid item>
                     <TextField
                       label="Họ và tên"
-                      value={profileDetails?.name}
+                      value={profileDetails?.name.trim()}
                       onChange={(event) =>
                         handleInput("name", event.target.value)
                       }

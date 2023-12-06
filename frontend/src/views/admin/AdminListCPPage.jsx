@@ -20,6 +20,8 @@ export default function AdminListCPPage() {
   const userServ = new UsersService();
   const [companyList, setCompanyList] = useState([]);
 
+  let history = useHistory();
+
   useEffect(() => {
     async function getData() {
       let usersData = await userServ.getAllRecruiter();
@@ -27,6 +29,10 @@ export default function AdminListCPPage() {
     }
     getData();
   }, []);
+
+  const handleClick = (location) => {
+    history.push(location);
+  };
 
   return (
     <TableContainer component={Paper} sx={{ padding: "50px 100px" }}>
@@ -37,6 +43,7 @@ export default function AdminListCPPage() {
             <TableCell align="left">Công ty</TableCell>
             <TableCell align="left">Địa chỉ</TableCell>
             <TableCell align="left">Liên hệ</TableCell>
+            <TableCell align="left">Cấp độ</TableCell>
             <TableCell align="center">Thao tác</TableCell>
           </TableRow>
         </TableHead>
@@ -46,14 +53,15 @@ export default function AdminListCPPage() {
               <TableRow key={index} company={value}>
                 <TableCell align="left">{value?._id}</TableCell>
                 <TableCell align="left">{value?.companyName}</TableCell>
-                <TableCell align="left">{value?.location?.district}</TableCell>
+                <TableCell align="left">{value?.location?.province}</TableCell>
                 <TableCell align="left">{value?.contactNumber}</TableCell>
+                <TableCell align="left">{value?.level}</TableCell>
                 <TableCell align="center">
-                  <Link href={`/admin/cong-ty/${value?._id}`} target="_blank">
-                    <IconButton>
-                      <EditIcon />
-                    </IconButton>
-                  </Link>
+                  <IconButton
+                    onClick={() => handleClick(`/admin/cong-ty/${value?._id}`)}
+                  >
+                    <EditIcon />
+                  </IconButton>
                   <IconButton>
                     <DeleteForeverIcon />
                   </IconButton>

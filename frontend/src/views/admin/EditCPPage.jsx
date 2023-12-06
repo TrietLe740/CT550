@@ -7,6 +7,7 @@ import {
   TextField,
   MenuItem,
 } from "@mui/material";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/material.css";
 
@@ -16,12 +17,18 @@ import apiList from "../../lib/apiList";
 import AuthService from "../../services/auth.service";
 import UsersService from "../../services/user.service";
 import LocationsService from "../../services/location.service";
-import { useLocation } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 
 const EditCPPage = (props) => {
   const authServ = new AuthService();
   const userServ = new UsersService();
   const locationServ = new LocationsService();
+
+  let history = useHistory();
+
+  const handleClick = (location) => {
+    history.push(location);
+  };
 
   const setPopup = useContext(SetPopupContext);
   const [locations, setLocations] = useState([]);
@@ -80,7 +87,7 @@ const EditCPPage = (props) => {
     }
 
     try {
-      await userServ.update(updatedDetails);
+      await userServ.updateRecruiter(updatedDetails);
       setPopup({
         open: true,
         severity: "success",
@@ -102,8 +109,9 @@ const EditCPPage = (props) => {
     async function getUser() {
       const locations = await locationServ.getAll();
       setLocations(locations);
-      const user = await userServ.get(userId);
+      const user = await userServ.getRecruiter(userId);
       setProfileDetails(user);
+      const auth = await authServ.get();
     }
     getUser();
   }, []);
@@ -126,15 +134,24 @@ const EditCPPage = (props) => {
 
   return (
     <Paper>
-      <Grid
-        sx={{ padding: "50px 100px" }}
-        container
-        item
-        direction="column"
-        alignItems="center"
-      >
+      <Grid sx={{ padding: "50px 100px" }} container item direction="column">
+        <Grid
+          item
+          xs={12}
+          justifyContent="left"
+          sx={{ display: "flex", justifyContent: "left" }}
+        >
+          <Button
+            sx={{ marginRight: "auto", justifyContent: "left" }}
+            onClick={() => handleClick("/admin/cong-ty")}
+          >
+            <ArrowBackIosNewIcon /> Quay lại
+          </Button>
+        </Grid>
         <Grid item>
-          <Typography variant="h2">Quản lý thông tin công ty</Typography>
+          <Typography variant="h2" textAlign="center">
+            Quản lý thông tin công ty
+          </Typography>
         </Grid>
         {/* --Noi dung-- */}
         <Grid container item xs={12} sx={{ width: "100%", marginTop: "50px" }}>
@@ -180,14 +197,22 @@ const EditCPPage = (props) => {
                 <MenuItem value="Tổng giám đốc">Tổng giám đốc</MenuItem>
               </TextField>
             </Grid>
-            <Grid item>
+            {/* <Grid item>
               <TextField
                 type="text"
                 sx={{ width: "100%" }}
                 label="Email"
                 variant="outlined"
                 value={profileDetails?.email}
-                disabled
+              />
+            </Grid> */}
+            <Grid item>
+              <TextField
+                type="text"
+                sx={{ width: "100%" }}
+                label="Cấp độ"
+                variant="outlined"
+                value={profileDetails?.level}
               />
             </Grid>
           </Grid>
@@ -356,7 +381,11 @@ const EditCPPage = (props) => {
         <Grid item>
           <Button
             variant="contained"
-            sx={{ padding: "10px 50px", marginTop: "30px" }}
+            sx={{
+              padding: "10px 50px",
+              display: "flex",
+              margin: "30px auto",
+            }}
             onClick={() => handleUpdate()}
           >
             Cập nhật thông tin

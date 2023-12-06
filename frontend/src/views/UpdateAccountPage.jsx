@@ -1,13 +1,18 @@
 import { Button, Grid, Paper, Typography } from "@mui/material";
 import PaidIcon from "@mui/icons-material/Paid";
 
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import AuthService from "../services/auth.service";
 import { Link, useHistory } from "react-router-dom";
+import { SetPopupContext } from "../App";
+import UsersService from "../services/user.service";
 
 export default function UpdateAccountPage() {
+  const setPopup = useContext(SetPopupContext);
+
   const [user, setUser] = useState();
   const authServ = new AuthService();
+  const userServ = new UsersService();
 
   let history = useHistory();
 
@@ -15,12 +20,33 @@ export default function UpdateAccountPage() {
     history.push(location);
   };
 
-  useEffect(() => {
-    async function getUser() {
-      const auth = await authServ.get();
-      setUser(auth);
-      console.log(auth);
+  async function getUser() {
+    const auth = await authServ.get();
+    setUser(auth);
+    console.log(auth);
+  }
+
+  const handleUpdate = async (credit) => {
+    console.log(credit);
+    try {
+      await userServ.updateLV({ credit });
+      setPopup({
+        open: true,
+        severity: "success",
+        message: response.data.message,
+      });
+      getUser();
+    } catch (error) {
+      console.log(error);
+      setPopup({
+        open: true,
+        severity: "error",
+        message: "Thông tin cung cấp chưa đầy đủ",
+      });
     }
+  };
+
+  useEffect(() => {
     getUser();
   }, []);
 
@@ -112,15 +138,6 @@ export default function UpdateAccountPage() {
             ) : (
               <>
                 {user?.level == 2 ? (
-                  <Button variant="contained" sx={{ width: "90%", mb: "30px" }}>
-                    <Link
-                      style={{ color: "#fff", textDecoration: "none" }}
-                      to="/ho-so/chinh-sua"
-                    >
-                      Nâng cấp
-                    </Link>
-                  </Button>
-                ) : (
                   <Grid>
                     <Button
                       disabled
@@ -130,6 +147,14 @@ export default function UpdateAccountPage() {
                       Đã nâng cấp
                     </Button>
                   </Grid>
+                ) : (
+                  <Button
+                    variant="contained"
+                    sx={{ width: "90%", mb: "30px" }}
+                    onClick={() => handleUpdate(100)}
+                  >
+                    Nâng cấp
+                  </Button>
                 )}
               </>
             )}

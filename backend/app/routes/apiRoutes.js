@@ -12,10 +12,11 @@ const School = require("../db/Shool");
 const Location = require("../db/Location");
 const Rating = require("../db/Rating");
 const News = require("../db/News");
+const Payment = require("../db/Payment");
 
 const router = express.Router();
 
-// To add new job
+// Công việc
 router.post("/jobs", jwtAuth, (req, res) => {
   const user = req.user;
 
@@ -312,6 +313,7 @@ router.delete("/jobs/:id", jwtAuth, (req, res) => {
     });
 });
 
+// Người dùng
 router.get("/user", jwtAuth, (req, res) => {
   const users = User.find().then((users) => {
     res.json(users);
@@ -321,6 +323,12 @@ router.get("/user", jwtAuth, (req, res) => {
 router.get("/user/recruiter", jwtAuth, (req, res) => {
   const recruiters = Recruiter.find().then((recruiters) => {
     res.json(recruiters);
+  });
+});
+
+router.get("/user/intern", jwtAuth, (req, res) => {
+  const interns = JobApplicant.find().then((interns) => {
+    res.json(interns);
   });
 });
 
@@ -334,6 +342,22 @@ router.get("/user/recruiter/:id", jwtAuth, (req, res) => {
         return;
       }
       res.json(recruiter);
+    })
+    .catch((err) => {
+      res.status(400).json(err);
+    });
+});
+
+router.get("/user/intern/:id", jwtAuth, (req, res) => {
+  JobApplicant.findOne({ _id: req.params.id })
+    .then((intern) => {
+      if (intern === null) {
+        res.status(404).json({
+          message: "Người dùng không tồn tại!!",
+        });
+        return;
+      }
+      res.json(intern);
     })
     .catch((err) => {
       res.status(400).json(err);
@@ -410,6 +434,8 @@ router.get("/user/:id", jwtAuth, async (req, res) => {
 router.put("/user", jwtAuth, (req, res) => {
   const user = req.user;
   const data = req.body;
+  console.log(user);
+  console.log(data);
   if (user.type == "recruiter") {
     Recruiter.findOne({ userId: user._id })
       .then((recruiter) => {
@@ -540,6 +566,9 @@ router.put("/user", jwtAuth, (req, res) => {
         if (data.notification) {
           jobApplicant.notification = data.notification;
         }
+        if (data.rating) {
+          jobApplicant.rating = data.rating;
+        }
         if (data.following) {
           jobApplicant.follower = data.following;
         }
@@ -574,6 +603,322 @@ router.put("/user", jwtAuth, (req, res) => {
         res.status(400).json(err);
       });
   }
+});
+
+router.put("/user/updateLV", jwtAuth, (req, res) => {
+  const user = req.user;
+  const data = req.body;
+  if (user.type == "recruiter") {
+    Recruiter.findOne({ userId: user._id })
+      .then((recruiter) => {
+        if (recruiter == null) {
+          res.status(404).json({
+            message: "Người dùng không tồn tại!",
+          });
+          return;
+        }
+        if (data.credit) {
+          recruiter.credit = parseInt(data.credit) - parseInt(recruiter.credit);
+        }
+        if (data.credit == 100) {
+          recruiter.level = 2;
+        }
+        if (data.paymentCard) {
+          recruiter.paymentCard = data.paymentCard;
+        }
+        if (recruiter.credit >= data.credit) {
+          if (data.credit) {
+            recruiter.credit =
+              parseInt(data.credit) - parseInt(recruiter.credit);
+          }
+          if (data.credit == 100) {
+            recruiter.level = 2;
+          }
+          if (data.paymentCard) {
+            recruiter.paymentCard = data.paymentCard;
+          }
+          recruiter
+            .save()
+            .then(() => {
+              let payment = new Payment({
+                userId: recruiter.userId,
+                paymentCard: recruiter.paymentCard,
+                credit: data.credit,
+              });
+
+              payment
+                .save()
+                .then(() => {
+                  res.json({
+                    message: `Bạn đã nâng cấp thành công!`,
+                  });
+                })
+                .catch((err) => {
+                  res.status(400).json(err);
+                });
+            })
+            .catch((err) => {
+              res.status(400).json(err);
+            });
+        } else {
+          res.json({
+            message: `Tài khoản bạn không đủ xu`,
+          });
+        }
+      })
+      .catch((err) => {
+        res.status(400).json(err);
+      });
+  } else {
+    JobApplicant.findOne({ userId: user._id })
+      .then((jobApplicant) => {
+        if (jobApplicant == null) {
+          res.status(404).json({
+            message: "Người dùng không tồn tại!",
+          });
+          return;
+        }
+        if (jobApplicant.credit >= data.credit) {
+          if (data.credit) {
+            jobApplicant.credit =
+              parseInt(data.credit) - parseInt(jobApplicant.credit);
+          }
+          if (data.credit == 100) {
+            jobApplicant.level = 2;
+          }
+          if (data.paymentCard) {
+            jobApplicant.paymentCard = data.paymentCard;
+          }
+          jobApplicant
+            .save()
+            .then(() => {
+              let payment = new Payment({
+                userId: jobApplicant.userId,
+                paymentCard: jobApplicant.paymentCard,
+                credit: data.credit,
+              });
+
+              payment
+                .save()
+                .then(() => {
+                  res.json({
+                    message: `Bạn đã nâng cấp thành công!`,
+                  });
+                })
+                .catch((err) => {
+                  res.status(400).json(err);
+                });
+            })
+            .catch((err) => {
+              res.status(400).json(err);
+            });
+        } else {
+          res.json({
+            message: `Tài khoản bạn không đủ xu`,
+          });
+        }
+      })
+      .catch((err) => {
+        res.status(400).json(err);
+      });
+  }
+});
+
+router.put("/user/recruiter", jwtAuth, (req, res) => {
+  const data = req.body;
+  console.log("USER_ID: " + data._id);
+
+  // User.findOne({ _id: user.userId }).then((user) => {
+  //   if (user == null) {
+  //     res.status(404).json({
+  //       message: "Người dùng không tồn tại!",
+  //     });
+  //     return;
+  //   }
+  //   if (data.email) {
+  //     user.email = data.email;
+  //   }
+  //   user
+  //     .save()
+  //     .then(() => {
+  //       res.json({
+  //         message: "Thông tin người dùng được cập nhật thành công!",
+  //       });
+  //     })
+  //     .catch((err) => {
+  //       res.status(400).json(err);
+  //     });
+  // });
+
+  Recruiter.findOne({ _id: data._id })
+    .then((recruiter) => {
+      if (recruiter == null) {
+        res.status(404).json({
+          message: "Người dùng không tồn tại!",
+        });
+        return;
+      }
+      if (data.name) {
+        recruiter.name = data.name;
+      }
+      if (data.role) {
+        recruiter.role = data.role;
+      }
+      if (data.companyName) {
+        recruiter.companyName = data.companyName;
+      }
+      if (data.companyMail) {
+        recruiter.companyMail = data.companyMail;
+      }
+      if (data.website) {
+        recruiter.website = data.website;
+      }
+      if (data.bio) {
+        recruiter.bio = data.bio;
+      }
+      if (data.contactNumber) {
+        recruiter.contactNumber = data.contactNumber;
+      }
+      if (data.location) {
+        recruiter.location = data.location;
+      }
+      if (data.avatar) {
+        recruiter.avatar = data.avatar;
+      }
+      if (data.notification) {
+        recruiter.notification = data.notification;
+      }
+      if (data.follower) {
+        recruiter.follower = data.follower;
+      }
+      if (data.credit) {
+        recruiter.credit = data.credit;
+      }
+      if (data.paymentCard) {
+        recruiter.paymentCard = data.paymentCard;
+      }
+      if (
+        recruiter?.name !== "" &&
+        recruiter?.contactNumber !== "" &&
+        recruiter?.companyName &&
+        recruiter?.companyMail !== "" &&
+        recruiter?.bio !== "" &&
+        recruiter?.location !== "" &&
+        recruiter?.level < 1
+      ) {
+        recruiter.level = 1;
+      }
+      recruiter
+        .save()
+        .then(() => {
+          res.json({
+            message: "Thông tin người dùng được cập nhật thành công!",
+          });
+        })
+        .catch((err) => {
+          res.status(400).json(err);
+        });
+    })
+    .catch((err) => {
+      res.status(400).json(err);
+    });
+});
+
+router.put("/user/intern", jwtAuth, (req, res) => {
+  const data = req.body;
+  console.log("ID: " + data._id);
+  JobApplicant.findOne({ _id: data._id })
+    .then((jobApplicant) => {
+      if (jobApplicant == null) {
+        res.status(404).json({
+          message: "Người dùng không tồn tại!",
+        });
+        return;
+      }
+      if (data.name) {
+        jobApplicant.name = data.name;
+      }
+      if (data.rating) {
+        jobApplicant.rating = data.rating;
+      }
+      if (data.avatar) {
+        jobApplicant.avatar = data.avatar;
+      }
+      if (data.major) {
+        jobApplicant.major = data.major;
+      }
+      if (data.school) {
+        jobApplicant.school = data.school;
+      }
+      if (data.contactNumber) {
+        jobApplicant.contactNumber = data.contactNumber;
+      }
+      // if (data.socialLink) {
+      //   jobApplicant.socialLink = data.socialLink;
+      // }
+      // if (data.skills) {
+      //   jobApplicant.skills = data.skills;
+      // }
+      // if (data.activities) {
+      //   jobApplicant.activities = data.activities;
+      // }
+      // if (data.certificates) {
+      //   jobApplicant.certificates = data.certificates;
+      // }
+      // if (data.awards) {
+      //   jobApplicant.awards = data.awards;
+      // }
+      // if (data.targer) {
+      //   jobApplicant.targer = data.targer;
+      // }
+      // if (data.exp) {
+      //   jobApplicant.exp = data.exp;
+      // }
+      // if (data.interest) {
+      //   jobApplicant.interest = data.interest;
+      // }
+      if (data.resume) {
+        jobApplicant.resume = data.resume;
+      }
+      if (data.notification) {
+        jobApplicant.notification = data.notification;
+      }
+      if (data.rating) {
+        jobApplicant.rating = data.rating;
+      }
+      if (data.following) {
+        jobApplicant.follower = data.following;
+      }
+      if (data.credit) {
+        jobApplicant.credit = data.credit;
+      }
+      if (data.paymentCard) {
+        jobApplicant.paymentCard = data.paymentCard;
+      }
+      if (
+        jobApplicant?.name !== "" &&
+        jobApplicant?.contactNumber !== "" &&
+        jobApplicant?.school &&
+        jobApplicant?.major !== "" &&
+        jobApplicant?.level < 1
+      ) {
+        jobApplicant.level = 1;
+      }
+      console.log(jobApplicant);
+      jobApplicant
+        .save()
+        .then(() => {
+          res.json({
+            message: "Thông tin người dùng được cập nhật thành công!",
+          });
+        })
+        .catch((err) => {
+          res.status(400).json(err);
+        });
+    })
+    .catch((err) => {
+      res.status(400).json(err);
+    });
 });
 
 router.post("/user/:id", jwtAuth, async (req, res) => {
@@ -612,6 +957,7 @@ router.post("/user/:id", jwtAuth, async (req, res) => {
   }
 });
 
+// Ứng tuyển
 router.post("/jobs/:id/applications", jwtAuth, (req, res) => {
   const user = req.user;
   if (user.type != "applicant") {
@@ -812,6 +1158,12 @@ router.get("/applications", jwtAuth, (req, res) => {
     });
 });
 
+router.get("/applications/all", jwtAuth, (req, res) => {
+  const applications = Application.find().then((applications) => {
+    res.json(applications);
+  });
+});
+
 router.put("/applications/:id", jwtAuth, (req, res) => {
   const user = req.user;
   const id = req.params.id;
@@ -990,6 +1342,7 @@ router.put("/applications/:id", jwtAuth, (req, res) => {
   }
 });
 
+// Người ứng tuyển
 router.get("/applicants", jwtAuth, (req, res) => {
   const user = req.user;
   if (user.type === "recruiter") {
@@ -1186,8 +1539,7 @@ router.put("/rating", jwtAuth, (req, res) => {
                           .then((applicant) => {
                             if (applicant === null) {
                               res.status(400).json({
-                                message:
-                                  "Lỗi khi cập nhật đánh giá của người nộp đơn",
+                                message: "Lỗi khi cập nhật đánh giá",
                               });
                               return;
                             }
@@ -1240,7 +1592,7 @@ router.put("/rating", jwtAuth, (req, res) => {
                   // update the user's rating
                   if (result === null) {
                     res.status(400).json({
-                      message: "Error while calculating rating",
+                      message: "Lỗi khi đánh giá",
                     });
                     return;
                   }
@@ -1259,12 +1611,12 @@ router.put("/rating", jwtAuth, (req, res) => {
                       if (applicant === null) {
                         res.status(400).json({
                           message:
-                            "Error while updating applicant's average rating",
+                            "Lỗi khi cập nhật đánh giá trung bình của người nộp đơn",
                         });
                         return;
                       }
                       res.json({
-                        message: "Rating updated successfully",
+                        message: "Đã cập nhật đánh giá thành công",
                       });
                     })
                     .catch((err) => {
@@ -1335,7 +1687,7 @@ router.put("/rating", jwtAuth, (req, res) => {
                       .then((result) => {
                         if (result === null) {
                           res.status(400).json({
-                            message: "Error while calculating rating",
+                            message: "Lỗi khi tính đánh giá",
                           });
                           return;
                         }
@@ -1354,12 +1706,12 @@ router.put("/rating", jwtAuth, (req, res) => {
                             if (foundJob === null) {
                               res.status(400).json({
                                 message:
-                                  "Error while updating job's average rating",
+                                  "Lỗi khi cập nhật đánh giá trung bình của công việc",
                               });
                               return;
                             }
                             res.json({
-                              message: "Rating added successfully",
+                              message: "Thêm đánh giá thành công",
                             });
                           })
                           .catch((err) => {
@@ -1377,7 +1729,7 @@ router.put("/rating", jwtAuth, (req, res) => {
                 // you cannot rate
                 res.status(400).json({
                   message:
-                    "You haven't worked for this job. Hence you cannot give a rating.",
+                    "Bạn chưa từng làm công việc này. Do đó bạn không thể đưa ra đánh giá.",
                 });
               }
             })
@@ -1408,7 +1760,7 @@ router.put("/rating", jwtAuth, (req, res) => {
                 .then((result) => {
                   if (result === null) {
                     res.status(400).json({
-                      message: "Error while calculating rating",
+                      message: "Lỗi khi đánh giá",
                     });
                     return;
                   }
@@ -1428,12 +1780,13 @@ router.put("/rating", jwtAuth, (req, res) => {
                     .then((foundJob) => {
                       if (foundJob === null) {
                         res.status(400).json({
-                          message: "Error while updating job's average rating",
+                          message:
+                            "Lỗi khi cập nhật đánh giá trung bình của công việc",
                         });
                         return;
                       }
                       res.json({
-                        message: "Rating added successfully",
+                        message: "Đánh giá thành công",
                       });
                     })
                     .catch((err) => {
@@ -1458,10 +1811,96 @@ router.put("/rating", jwtAuth, (req, res) => {
 router.post("/payment", jwtAuth, (req, res) => {
   const user = req.user;
   const data = req.body;
-  console.log(data);
-  console.log(user);
+  if (user.type == "recruiter") {
+    Recruiter.findOne({ userId: user._id })
+      .then((recruiter) => {
+        if (recruiter == null) {
+          res.status(404).json({
+            message: "Người dùng không tồn tại!",
+          });
+          return;
+        }
+        if (data.credit) {
+          recruiter.credit = parseInt(data.credit) + parseInt(recruiter.credit);
+        }
+        if (data.paymentCard) {
+          recruiter.paymentCard = data.paymentCard;
+        }
+        recruiter
+          .save()
+          .then(() => {
+            let payment = new Payment({
+              userId: data._id,
+              paymentCard: data.paymentCard,
+              credit: data.redit,
+            });
+
+            payment
+              .save()
+              .then(() => {
+                res.json({
+                  message: `Bạn đã nạp thành công!`,
+                });
+              })
+              .catch((err) => {
+                res.status(400).json(err);
+              });
+          })
+          .catch((err) => {
+            res.status(400).json(err);
+          });
+      })
+      .catch((err) => {
+        res.status(400).json(err);
+      });
+  } else {
+    JobApplicant.findOne({ userId: user._id })
+      .then((jobApplicant) => {
+        if (jobApplicant == null) {
+          res.status(404).json({
+            message: "Người dùng không tồn tại!",
+          });
+          return;
+        }
+        if (data.credit) {
+          jobApplicant.credit =
+            parseInt(data.credit) + parseInt(jobApplicant.credit);
+        }
+        if (data.paymentCard) {
+          jobApplicant.paymentCard = data.paymentCard;
+        }
+        console.log(jobApplicant);
+        jobApplicant
+          .save()
+          .then(() => {
+            let payment = new Payment({
+              userId: data.userId,
+              paymentCard: data.paymentCard,
+              credit: data.credit,
+            });
+
+            payment
+              .save()
+              .then(() => {
+                res.json({
+                  message: `Bạn đã nạp thành công!`,
+                });
+              })
+              .catch((err) => {
+                res.status(400).json(err);
+              });
+          })
+          .catch((err) => {
+            res.status(400).json(err);
+          });
+      })
+      .catch((err) => {
+        res.status(400).json(err);
+      });
+  }
 });
 
+// Bài viết
 router.post("/news", jwtAuth, (req, res) => {
   const user = req.user;
 
@@ -1483,7 +1922,6 @@ router.post("/news", jwtAuth, (req, res) => {
     dateOfPosting: data.dateOfPosting,
   });
 
-  console.log(data);
   news
     .save()
     .then(() => {
@@ -1501,11 +1939,11 @@ router.get("/news", jwtAuth, (req, res) => {
 });
 
 router.get("/news/:id", jwtAuth, (req, res) => {
-  Job.findOne({ _id: req.params.id })
+  News.findOne({ _id: req.params.id })
     .then((news) => {
       if (news == null) {
         res.status(400).json({
-          message: "Công việc không tồn tại!",
+          message: "Bài viết không tồn tại!",
         });
         return;
       }
@@ -1518,13 +1956,13 @@ router.get("/news/:id", jwtAuth, (req, res) => {
 
 router.put("/news/:id", jwtAuth, (req, res) => {
   const user = req.user;
-  if (user.type != "recruiter") {
+  if (user.type != "admin") {
     res.status(401).json({
-      message: "Bạn không có quyền thay đổi chi tiết công việc!",
+      message: "Bạn không có quyền thay đổi chi tiết bài viết!",
     });
     return;
   }
-  Job.findOne({
+  News.findOne({
     _id: req.params.id,
     userId: user.id,
   })
@@ -1536,20 +1974,20 @@ router.put("/news/:id", jwtAuth, (req, res) => {
         return;
       }
       const data = req.body;
-      if (data.maxApplicants) {
-        news.maxApplicants = data.maxApplicants;
+      if (data.title) {
+        news.title = data.title;
       }
-      if (data.maxPositions) {
-        news.maxPositions = data.maxPositions;
+      if (data.img) {
+        news.img = data.img;
       }
-      if (data.deadline) {
-        news.deadline = data.deadline;
+      if (data.content) {
+        news.content = data.content;
       }
       news
         .save()
         .then(() => {
           res.json({
-            message: "Công việc đã được cập nhật thành công!",
+            message: "Bài viết đã được cập nhật thành công!",
           });
         })
         .catch((err) => {
@@ -1563,25 +2001,25 @@ router.put("/news/:id", jwtAuth, (req, res) => {
 
 router.delete("/news/:id", jwtAuth, (req, res) => {
   const user = req.user;
-  if (user.type != "recruiter") {
+  if (user.type != "admin") {
     res.status(401).json({
-      message: "Bạn không được quyền xóa công việc!",
+      message: "Bạn không được quyền xóa bài viết!",
     });
     return;
   }
-  Job.findOneAndDelete({
+  News.findOneAndDelete({
     _id: req.params.id,
     userId: user.id,
   })
     .then((news) => {
       if (news === null) {
         res.status(401).json({
-          message: "Bạn không có quyền xóa công việc!",
+          message: "Bạn không có quyền xóa bài viết!",
         });
         return;
       }
       res.json({
-        message: "Công việc đã được xóa thành công!",
+        message: "Bài viết đã được xóa thành công!",
       });
     })
     .catch((err) => {

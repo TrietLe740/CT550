@@ -6,7 +6,7 @@ export default class ApplicationService {
   }
 
   async getAll() {
-    return (await this.api.get("/")).data;
+    return (await this.api.get("/all")).data;
   }
 
   async get(id) {

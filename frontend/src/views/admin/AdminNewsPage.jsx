@@ -67,11 +67,11 @@ export default function AdminNewsPage() {
                 <TableCell align="left">{value?.title}</TableCell>
                 <TableCell align="left">{value?.dateOfPosting}</TableCell>
                 <TableCell align="center">
-                  <Link href={`/admin/tin-tuc/${value?._id}`} target="_blank">
-                    <IconButton>
-                      <EditIcon />
-                    </IconButton>
-                  </Link>
+                  <IconButton
+                    onClick={() => handleClick(`/admin/tin-tuc/${value?._id}`)}
+                  >
+                    <EditIcon />
+                  </IconButton>
                   <IconButton>
                     <DeleteForeverIcon />
                   </IconButton>

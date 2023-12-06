@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import UsersService from "../services/user.service";
-import { Grid } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import RecruiterCard from "../component/recruiter/RecruiterCard";
 import RecruiterCard2 from "../component/recruiter/RecruiterCard2";
 
@@ -25,6 +25,9 @@ export default function CompaniesPage() {
   }, []);
   return (
     <Grid container item sx={{ minHeight: "93vh" }}>
+      <Grid item sx={{ width: "100%", mt: 5, mb: 5 }} textAlign="center">
+        <Typography variant="h3">DANH SÁCH CÔNG TY</Typography>
+      </Grid>
       <Grid item container justifyContent="center" xs={12}>
         {companyList?.length > 0
           ? companyList?.map((company) => {

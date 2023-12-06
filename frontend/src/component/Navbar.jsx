@@ -264,7 +264,7 @@ const Navbar = (props) => {
                     <MenuItem onClick={handleCloseNavMenu}>
                       <Typography
                         textAlign="center"
-                        onClick={() => handleClick("/admin/tim-kiem-cong-viec")}
+                        onClick={() => handleClick("/admin/cong-viec")}
                       >
                         Tìm kiếm công việc
                       </Typography>
@@ -277,14 +277,14 @@ const Navbar = (props) => {
                         Tin tức
                       </Typography>
                     </MenuItem>
-                    <MenuItem onClick={handleCloseNavMenu}>
+                    {/* <MenuItem onClick={handleCloseNavMenu}>
                       <Typography
                         textAlign="center"
                         onClick={() => handleClick("/admin/dich-vu")}
                       >
                         Gói dịch vụ
                       </Typography>
-                    </MenuItem>
+                    </MenuItem> */}
                   </>
                 )
               ) : (
@@ -629,9 +629,9 @@ const Navbar = (props) => {
                   <MenuItem onClick={handleCloseNavMenu}>
                     <Typography
                       textAlign="center"
-                      onClick={() => handleClick("/admin/tim-kiem-cong-viec")}
+                      onClick={() => handleClick("/admin/cong-viec")}
                     >
-                      Tìm kiếm công việc
+                      Công việc
                     </Typography>
                   </MenuItem>
                   <MenuItem onClick={handleCloseNavMenu}>
@@ -642,14 +642,14 @@ const Navbar = (props) => {
                       Tin tức
                     </Typography>
                   </MenuItem>
-                  <MenuItem onClick={handleCloseNavMenu}>
+                  {/* <MenuItem onClick={handleCloseNavMenu}>
                     <Typography
                       textAlign="center"
                       onClick={() => handleClick("/admin/dich-vu")}
                     >
                       Gói dịch vụ
                     </Typography>
-                  </MenuItem>
+                  </MenuItem> */}
                 </>
               )
             ) : (

@@ -42,12 +42,15 @@ import Footer from "./component/Footer.jsx";
 import AdminDashBoardPage from "./views/admin/AdminDashBoardPage.jsx";
 import AdminListCPPage from "./views/admin/AdminListCPPage.jsx";
 import AdminListInternPage from "./views/admin/AdminListInternPage.jsx";
+import EditApplicantsPage from "./views/admin/EditApplicantsPage.jsx";
 import AdminListJobPage from "./views/admin/AdminListJobPage.jsx";
+import EditJobPage from "./views/admin/EditJobPage.jsx";
 import AdminNewsPage from "./views/admin/AdminNewsPage.jsx";
 import CreateNewsPage from "./views/admin/CreateNewsPage.jsx";
 import AdminServicesPage from "./views/admin/AdminServicesPage.jsx";
 import EditCPPage from "./views/admin/EditCPPage.jsx";
 import ApplicationPage from "./views/recruiter/ApplicationPage.jsx";
+import EditNewsPage from "./views/admin/EditNewsPage.jsx";
 
 export const SetPopupContext = createContext();
 
@@ -225,8 +228,15 @@ function App() {
                 <Route exact path="/admin/thuc-tap-sinh">
                   <AdminListInternPage />
                 </Route>
-                <Route exact path="/admin/tim-kiem-cong-viec">
+                <Route exact path="/admin/thuc-tap-sinh/:id">
+                  <EditApplicantsPage />
+                </Route>
+
+                <Route exact path="/admin/cong-viec">
                   <AdminListJobPage />
+                </Route>
+                <Route exact path="/admin/cong-viec/:id">
+                  <EditJobPage />
                 </Route>
 
                 <Route exact path="/admin/tin-tuc">
@@ -234,6 +244,9 @@ function App() {
                 </Route>
                 <Route exact path="/admin/tin-tuc/tao-moi">
                   <CreateNewsPage />
+                </Route>
+                <Route exact path="/admin/tin-tuc/:id">
+                  <EditNewsPage />
                 </Route>
 
                 <Route exact path="/admin/dich-vu">

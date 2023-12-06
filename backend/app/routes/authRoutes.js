@@ -31,24 +31,30 @@ router.post("/signup", (req, res) => {
               role: data.role,
               companyName: data.companyName,
               companyMail: "",
-              website: "",
-              bio: "",
-              contactNumber: data.contactNumber,
-              location: [],
               avatar: "",
-              level: 0,
-              notification: [],
+              location: {},
+              bio: "",
               follower: [],
+              notification: [],
+              contactNumber: data.contactNumber,
+              website: "",
+              level: 0,
               credit: 0,
               paymentCard: {},
             })
           : new JobApplicant({
               userId: user._id,
               name: data.name,
-              rating: [],
               avatar: "",
-              major: "",
+              resume: [],
               school: {},
+              major: "",
+              following: [],
+              notification: [],
+              level: 0,
+              credit: 0,
+              paymentCard: {},
+              rating: [],
               contactNumber: "",
               // socialLink: data.socialLink,
               // skills: data.skills,
@@ -58,12 +64,6 @@ router.post("/signup", (req, res) => {
               // target: data.target,
               // exp: data.exp,
               // interest: data.interest,
-              resume: [],
-              level: 0,
-              notification: [],
-              following: [],
-              credit: 0,
-              paymentCard: {},
             });
 
       userDetails
@@ -89,7 +89,9 @@ router.post("/signup", (req, res) => {
         });
     })
     .catch((err) => {
-      res.status(400).json(err);
+      res.status(400).json({
+        message: "Email đăng ký đã tồn tại",
+      });
     });
 });
 
@@ -148,6 +150,39 @@ router.get("/auth", jwtAuth, (req, res) => {
       res.json(user);
     });
   }
+});
+
+router.put("/auth/update", jwtAuth, (req, res) => {
+  const user = req.user;
+  const data = req.body;
+  User.findOne({ _idd: user._id })
+    .then((user) => {
+      if (user == null) {
+        res.status(404).json({
+          message: "Người dùng không tồn tại!",
+        });
+        return;
+      }
+      if (data.email) {
+        user.email = data.email;
+      }
+      if (data.password) {
+        user.password = data.password;
+      }
+      user
+        .save()
+        .then(() => {
+          res.json({
+            message: "Thông tin người dùng được cập nhật thành công!",
+          });
+        })
+        .catch((err) => {
+          res.status(400).json(err);
+        });
+    })
+    .catch((err) => {
+      res.status(400).json(err);
+    });
 });
 
 module.exports = router;

@@ -30,7 +30,7 @@ const FileUploadInput = (props) => {
       setPopup({
         open: true,
         severity: "error",
-        message: error?.response?.data?.message || "Đã xảy ra lỗi!",
+        message: error.response.data.message || "Đã xảy ra lỗi!",
       });
     }
   };

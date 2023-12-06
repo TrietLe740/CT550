@@ -1,5 +1,13 @@
 import { useState, useEffect, useContext } from "react";
-import { Button, Chip, Grid, Paper, Typography, Modal } from "@mui/material";
+import {
+  Button,
+  Chip,
+  Grid,
+  Paper,
+  Typography,
+  Modal,
+  TextField,
+} from "@mui/material";
 import Rating from "@mui/material/Rating";
 import axios from "axios";
 
@@ -15,6 +23,10 @@ const ApplicationTile = (props) => {
 
   const appliedOn = new Date(application.dateOfApplication);
   const joinedOn = new Date(application.dateOfJoining);
+
+  const [profileDetails, setProfileDetails] = useState({
+    comment: "",
+  });
 
   const fetchRating = () => {
     axios
@@ -39,7 +51,13 @@ const ApplicationTile = (props) => {
     axios
       .put(
         apiList.rating,
-        { rating: rating, jobId: application.job._id },
+        {
+          rating: {
+            star: rating,
+            comment: profileDetails,
+          },
+          jobId: application?.job?._id,
+        },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -51,7 +69,7 @@ const ApplicationTile = (props) => {
         setPopup({
           open: true,
           severity: "success",
-          message: "Rating updated successfully",
+          message: "Đánh giá thành công",
         });
         fetchRating();
         setOpen(false);
@@ -143,6 +161,8 @@ const ApplicationTile = (props) => {
               </Typography>
             </Paper>
           </Grid>
+
+          {/* Đánh giá */}
           {application.status === "accepted" ||
           application.status === "finished" ? (
             <Grid item>
@@ -164,13 +184,15 @@ const ApplicationTile = (props) => {
       <Modal open={open} onClose={handleClose}>
         <Paper
           style={{
+            margin: "5% auto",
             padding: "20px",
             outline: "none",
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
-            minWidth: "30%",
+            maxWidth: "50%",
             alignItems: "center",
+            borderRadius: "20px",
           }}
         >
           <Rating
@@ -180,6 +202,16 @@ const ApplicationTile = (props) => {
             onChange={(event, newValue) => {
               setRating(newValue);
             }}
+          />
+          <TextField
+            label="Đóng góp cải thiện chất lượng công việc"
+            value={profileDetails?.comment}
+            multiline
+            rows={10}
+            onChange={(event) => handleInput(event.target.value)}
+            variant="outlined"
+            fullWidth
+            sx={{ width: "100%" }}
           />
           <Button
             variant="contained"

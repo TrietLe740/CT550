@@ -386,23 +386,31 @@ const Home = (props) => {
                 duration={2000}
                 navButtonsAlwaysVisible={true}
                 indicators={false}
+                autoPlay={false}
               >
                 {companyList?.length > 0 ? (
-                  companyList?.map((company) => {
-                    return (
-                      <Grid
-                        justifyContent="center"
-                        item
-                        container
-                        xs={12}
-                        md={4}
-                        lg={3}
-                        sx={{ padding: "5px" }}
-                      >
-                        <RecruiterCard company={company} />
-                      </Grid>
-                    );
-                  })
+                  companyList
+                    .reduce((acc, curr, index) => {
+                      const sectionIndex = Math.floor(index / 3);
+                      if (!acc[sectionIndex]) acc[sectionIndex] = [curr];
+                      else acc[sectionIndex].push(curr);
+                      return acc;
+                    }, [])
+                    .map((companySection) => {
+                      return (
+                        <Grid
+                          justifyContent="center"
+                          item
+                          container
+                          xs={12}
+                          sx={{ padding: "5px" }}
+                        >
+                          {companySection.map((company) => {
+                            return <RecruiterCard company={company} />;
+                          })}
+                        </Grid>
+                      );
+                    })
                 ) : (
                   <Typography sx={{ mb: 3 }}>
                     Không tìm thấy Nhà tuyển dụng phù hợp

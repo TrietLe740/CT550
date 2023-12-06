@@ -22,9 +22,9 @@ export default function DepositMoneyPage() {
   const initValue = {
     name: "",
     cardNumber: "",
-    cvv: "",
-    month: "",
-    year: "",
+    cvv: 0,
+    month: 1,
+    year: 2016,
     credit: "",
   };
 
@@ -148,7 +148,7 @@ export default function DepositMoneyPage() {
         setPopup({
           open: true,
           severity: "success",
-          message: "Thanh toán thành công",
+          message: response.data.message,
         });
         getUser();
       } catch (error) {
@@ -171,13 +171,10 @@ export default function DepositMoneyPage() {
   async function getUser() {
     const auth = await authServ.get();
 
-    setProfileDetails({
-      userId: auth._id,
-    });
+    setProfileDetails(auth);
   }
 
   useEffect(() => {
-    console.log(profileDetails);
     getUser();
   }, {});
 
@@ -204,11 +201,19 @@ export default function DepositMoneyPage() {
               sx={{ mt: 4, padding: "0 50px" }}
             >
               <Grid sx={{ padding: "10px" }}>
+                <Typography variant="p">
+                  Bạn hiện có: {profileDetails?.credit}
+                  <PaidIcon sx={{ color: "#FFB000" }} />
+                </Typography>
+                <br />
                 <Typography variant="p" textAlign="center">
                   Bạn muốn nâng cấp tài khoản?
                 </Typography>
                 <br />
-                <Button onClick={() => handleClick(`/tai-khoan/nang-cap`)}>
+                <Button
+                  variant="outlined"
+                  onClick={() => handleClick(`/tai-khoan/nang-cap`)}
+                >
                   Nâng cấp ngay
                 </Button>
               </Grid>
@@ -268,9 +273,11 @@ export default function DepositMoneyPage() {
                       type="number"
                       inputProps={{ maxLength: 16 }}
                       value={profileDetails?.paymentCard?.cardNumber}
-                      onChange={(event) =>
-                        handleChangePayment("cardNumber", event.target.value)
-                      }
+                      onChange={(event) => {
+                        if (event.target.value.toString().length <= 16) {
+                          handleChangePayment("cardNumber", event.target.value);
+                        }
+                      }}
                       onBlur={(event) => {
                         if (!profileDetails?.paymentCard?.cardNumber) {
                           handleInputError(
@@ -296,9 +303,12 @@ export default function DepositMoneyPage() {
                       margin="normal"
                       type="number"
                       inputProps={{ maxLength: 3, min: 0 }}
-                      onChange={(event) =>
-                        handleChangePayment("cvv", event.target.value)
-                      }
+                      value={profileDetails?.paymentCard?.cvv}
+                      onChange={(event) => {
+                        if (event.target.value.toString().length <= 3) {
+                          handleChangePayment("cvv", event.target.value);
+                        }
+                      }}
                       onBlur={(event) => {
                         if (!profileDetails?.paymentCard?.cvv) {
                           handleInputError("cvv", true, "Mã bảo mật CVV");
@@ -322,9 +332,16 @@ export default function DepositMoneyPage() {
                           margin="normal"
                           type="number"
                           inputProps={{ min: 1, max: 12 }}
-                          onChange={(event) =>
-                            handleChangePayment("month", event.target.value)
-                          }
+                          value={profileDetails?.paymentCard?.month}
+                          onChange={(event) => {
+                            if (
+                              event.target.value.toString().length <= 2 &&
+                              event.target.value > 0 &&
+                              event.target.value <= 12
+                            ) {
+                              handleChangePayment("month", event.target.value);
+                            }
+                          }}
                           onBlur={(event) => {
                             if (!profileDetails?.paymentCard?.month) {
                               handleInputError(
@@ -351,9 +368,15 @@ export default function DepositMoneyPage() {
                           margin="normal"
                           type="number"
                           inputProps={{ min: 2016 }}
-                          onChange={(event) =>
-                            handleChangePayment("year", event.target.value)
-                          }
+                          value={profileDetails?.paymentCard?.year}
+                          onChange={(event) => {
+                            if (
+                              event.target.value.toString().length === 4 &&
+                              event.target.value >= 2016
+                            ) {
+                              handleChangePayment("year", event.target.value);
+                            }
+                          }}
                           onBlur={(event) => {
                             if (!event.target.value) {
                               handleInputError(
@@ -380,11 +403,18 @@ export default function DepositMoneyPage() {
                           margin="normal"
                           type="number"
                           inputProps={{ min: 100, max: 10000 }}
-                          onChange={(event) =>
-                            handleChangePayment("credit", event.target.value)
-                          }
+                          value={profileDetails?.credit}
+                          onChange={(event) => {
+                            if (
+                              event.target.value.toString().length <= 5 &&
+                              event.target.value > 0 &&
+                              event.target.value <= 10000
+                            ) {
+                              handleInput("credit", event.target.value);
+                            }
+                          }}
                           onBlur={(event) => {
-                            if (!profileDetails?.paymentCard?.credit) {
+                            if (!profileDetails?.credit) {
                               handleInputError(
                                 "credit",
                                 true,

@@ -129,6 +129,7 @@ let schema = new mongoose.Schema(
     duration: {
       type: "String",
     },
+    rating: [Object],
   },
   { collation: { locale: "vi" } }
 );

@@ -556,7 +556,7 @@ export default function ProfileEditPage() {
               <br />
               <FileUploadInput
                 onChangeCV={() => {
-                  getAuth();
+                  getUser();
                 }}
               />
             </Grid>

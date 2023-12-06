@@ -21,6 +21,14 @@ export default class UsersService {
     return (await this.api.get(`/recruiter/${id}`)).data;
   }
 
+  async getAllIntern() {
+    return (await this.api.get(`/intern`)).data;
+  }
+
+  async getIntern(id) {
+    return (await this.api.get(`/intern/${id}`)).data;
+  }
+
   async create(data) {
     return (await this.api.post("/", data)).data;
   }
@@ -31,6 +39,18 @@ export default class UsersService {
 
   async update(data) {
     return (await this.api.put("/", data)).data;
+  }
+
+  async updateLV(data) {
+    return (await this.api.put("/updateLV", data)).data;
+  }
+
+  async updateRecruiter(data) {
+    return (await this.api.put("/recruiter", data)).data;
+  }
+
+  async updateIntern(data) {
+    return (await this.api.put("/intern", data)).data;
   }
 
   async delete(id) {

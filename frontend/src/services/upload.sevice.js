@@ -16,4 +16,10 @@ export default class UploadService {
   async deleteCV(filename) {
     return (await this.api.delete(`/resume/${filename}`)).data;
   }
+
+  async adminDeleteCV(filename, id) {
+    return (
+      await this.api.delete(`/resume/admin/${filename}`, { data: { id } })
+    ).data;
+  }
 }

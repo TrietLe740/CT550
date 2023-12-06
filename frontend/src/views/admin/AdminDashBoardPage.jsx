@@ -8,14 +8,18 @@ import WorkIcon from "@mui/icons-material/Work";
 
 import UsersService from "../../services/user.service";
 import JobsService from "../../services/jobs.service";
+import ApplicationService from "../../services/application.service";
 
 export default function AdminDashBoardPage() {
   let history = useHistory();
   const userServ = new UsersService();
   const jobsServ = new JobsService();
+  const applicationServ = new ApplicationService();
+
   const [companyList, setCompanyList] = useState([]);
   const [internList, setInternList] = useState([]);
   const [jobList, setJobList] = useState([]);
+  const [applicationList, setApplicationList] = useState([]);
   const [jobs, setJobs] = useState([]);
 
   const handleClick = (location) => {
@@ -24,23 +28,15 @@ export default function AdminDashBoardPage() {
 
   useEffect(() => {
     async function getData() {
-      let usersData = await userServ.getAll();
+      let company = await userServ.getAllRecruiter();
+      let intern = await userServ.getAllIntern();
       let jobsData = await jobsServ.getAll();
-      const companies = [];
-      const interns = [];
+      let applicationData = await applicationServ.getAll();
 
-      for (let i = 0; i < usersData.length; i++) {
-        if (usersData[i].type === "recruiter") {
-          companies[i] = usersData[i];
-        }
-        if (usersData[i].type === "applicant") {
-          interns[i] = usersData[i];
-        }
-      }
-
-      setCompanyList(companies);
-      setInternList(interns);
+      setCompanyList(company);
+      setInternList(intern);
       setJobList(jobsData);
+      setApplicationList(applicationData);
     }
     getData();
   }, []);
@@ -143,17 +139,17 @@ export default function AdminDashBoardPage() {
               <Grid item xs={8} container direction="column">
                 <Typography variant="h8">
                   <br />
-                  ...
+                  Đơn ứng tuyển
                 </Typography>
-                {/* <Typography variant="h3">{jobList?.length}</Typography> */}
+                <Typography variant="h3">{applicationList?.length}</Typography>
               </Grid>
             </Grid>
           </Button>
         </Grid>
       </Grid>
-      <Grid item container>
+      {/* <Grid item container>
         Biểu đồ
-      </Grid>
+      </Grid> */}
     </Grid>
   );
 }
